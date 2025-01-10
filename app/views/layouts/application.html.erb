@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Bible Plan Generator" %></title>
+    <title><%= content_for(:title) || "Bible Planner" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -24,6 +24,44 @@
   </head>
 
   <body>
-    <%= yield %>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <%= link_to 'Bible Planner', root_path, class: 'navbar-brand' %>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <%= link_to 'Home', root_path, class: "nav-link #{'active' if current_page?(root_path)}" %>
+            </li>
+            <li class="nav-item">
+              <%= link_to 'My Plans', plans_path, class: "nav-link #{'active' if current_page?(plans_path)}" %>
+            </li>
+            <% if user_signed_in? %>
+              <li class="nav-item">
+                <%= link_to 'Account', edit_user_registration_path, class: "nav-link #{'active' if current_page?(edit_user_registration_path)}" %>
+              </li>
+               <li class="nav-item">
+                <%= link_to 'Logout', destroy_user_session_path, class: "nav-link", data: { "turbo-method": :delete } %>
+              </li>
+            <% else %>
+              <li class="nav-item">
+                <%= link_to 'Login', new_user_session_path, class: "nav-link #{'active' if current_page?(new_user_session_path)}" %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="container mt-3">
+      <% flash.each do |key, value| %>
+        <div class="alert alert-<%= key == 'notice' ? 'success' : 'danger' %> alert-dismissible fade show" role="alert">
+          <%= value %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <% end %>
+      <%= yield %>
+    </div>
   </body>
 </html>

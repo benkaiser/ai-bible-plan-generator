@@ -1,0 +1,38 @@
+<h2>Sign up</h2>
+
+<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "needs-validation", novalidate: true }) do |f| %>
+  <%= render "devise/shared/error_messages", resource: resource %>
+
+  <div class="mb-3">
+    <%= f.label :email, class: "form-label" %>
+    <%= f.email_field :email, class: "form-control", autofocus: true, autocomplete: "email", required: true %>
+    <div class="invalid-feedback">
+      Please enter a valid email.
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :password, class: "form-label" %>
+    <% if @minimum_password_length %>
+    <em>(<%= @minimum_password_length %> characters minimum)</em>
+    <% end %>
+    <%= f.password_field :password, class: "form-control", autocomplete: "new-password", required: true %>
+    <div class="invalid-feedback">
+      Please enter a password.
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :password_confirmation, class: "form-label" %>
+    <%= f.password_field :password_confirmation, class: "form-control", autocomplete: "new-password", required: true %>
+    <div class="invalid-feedback">
+      Please confirm your password.
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <%= f.submit "Sign up", class: "btn btn-primary" %>
+  </div>
+<% end %>
+
+<%= render "devise/shared/links" %>
