@@ -1,24 +1,11 @@
-# README
+# AI Bible Plan Generator
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Running with docker
 
-Things you may want to cover:
+```
+docker-compose up -d
+```
 
-* Ruby version
+## License
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+This source is licensed under MIT, however since I am selling this as a product for charity purposes, I would appreciate others not re-hosting this code and undercutting the pricing. If I cease to operate the service, feel free to do as you wish. That said, self-hosting for personal use is perfectly fine.
