@@ -1,2 +1,53 @@
-<h1>Plans#index</h1>
-<p>Find me in app/views/plans/index.html.erb</p>
+<h1 class="mb-4">Plans</h1>
+
+<div class="d-flex justify-content-start mb-4">
+  <%= link_to 'Create New Plan', new_plan_path, class: 'btn btn-success btn-lg' %>
+</div>
+
+<div class="mb-5">
+  <h2>My Plans</h2>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">Plan 1</h5>
+          <p class="card-text">Description of Plan 1.</p>
+          <%= link_to 'View Plan', plan_path(1), class: 'btn btn-primary' %>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">Plan 2</h5>
+          <p class="card-text">Description of Plan 2.</p>
+          <%= link_to 'View Plan', plan_path(2), class: 'btn btn-primary' %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <h2>Browse Plans</h2>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">Community Plan 1</h5>
+          <p class="card-text">Description of Community Plan 1.</p>
+          <%= link_to 'View Plan', plan_path(3), class: 'btn btn-primary' %>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5 class="card-title">Community Plan 2</h5>
+          <p class="card-text">Description of Community Plan 2.</p>
+          <%= link_to 'View Plan', plan_path(4), class: 'btn btn-primary' %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

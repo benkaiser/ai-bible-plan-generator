@@ -1,0 +1,33 @@
+<h1>New Plan</h1>
+
+<%= form_with model: @plan, local: true, id: 'plan-form' do |form| %>
+  <%= form.hidden_field :name, id: 'plan-name' %>
+  <%= form.hidden_field :description, id: 'plan-description' %>
+  <%= form.hidden_field :cover_photo, id: 'plan-cover-photo' %>
+  <%= form.hidden_field :days, id: 'plan-days' %>
+
+  <div class="form-group mt-2">
+    <%= label_tag :topic, 'What do you want your bible plan to be about?' %>
+    <%= text_field_tag :topic, '', class: 'form-control my-2', id: 'plan-topic' %>
+  </div>
+
+  <div class="form-group d-flex align-items-center mt-2">
+    <div class="me-2">
+      <%= label_tag :length, 'How long do you want the plan to be?' %>
+    </div>
+    <div class="me-2">
+      <%= select_tag :length, options_for_select([['7 days', 7], ['1 month', 30], ['3 months', 90], ['Custom', 'custom']], 7), class: 'form-control', id: 'plan-length', style: 'width: auto;' %>
+    </div>
+    <div>
+      <div class="input-group" style="display:none; width: auto;" id="custom-length-group">
+        <%= number_field_tag :custom_length, '', class: 'form-control', id: 'custom-length', min: 1, max: 180, value: 7 %>
+        <div class="input-group-append">
+          <span class="input-group-text">days</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%= button_tag 'Generate Plan', class: 'btn btn-primary mt-2', id: 'generate-plan' %>
+<% end %>
+<%= javascript_include_tag "new-plan", "data-turbo-track": "reload" %>

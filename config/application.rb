@@ -20,8 +20,12 @@ module BiblePlanGenerator
     #
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
-    #
+
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+    OpenAI.configure do |config|
+      config.access_token = ENV.fetch("FIREWORKS_ACCESS_TOKEN")
+      config.uri_base = "https://api.fireworks.ai/inference/v1"
+    end
   end
 end

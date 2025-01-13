@@ -2,7 +2,10 @@ Rails.application.routes.draw do
   devise_for :users
   root 'home#index'
 
-  get 'plans', to: 'plans#index', as: 'plans'
+  resources :plans, only: [:index, :new, :create, :show]
+
+  # API routes
+  post 'api/generate_plan', to: 'plans#generate_plan'
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
