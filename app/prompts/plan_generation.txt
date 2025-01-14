@@ -65,4 +65,4 @@ Given the below JSON schema:
   "additionalProperties": false
 }
 ```
-I want you to give me a {length}-day bible reading plan about "{topic}", following the above schema. Provide roughly a chapter worth of content in each day, and making sure to give a title and description for the plan overall. Respond only in JSON.
+I want you to give me a {length}-day bible reading plan about "{topic}", following the above schema. Provide multiple readings in each day. Make sure to give a title and description for the plan overall. Respond only in JSON.

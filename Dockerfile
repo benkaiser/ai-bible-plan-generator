@@ -8,7 +8,7 @@ WORKDIR /myapp
 
 # Install dependencies
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential libpq-dev nodejs postgresql-client && \
+    apt-get install --no-install-recommends -y build-essential libpq-dev nodejs postgresql-client libyaml-dev && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Copy the Gemfile and Gemfile.lock

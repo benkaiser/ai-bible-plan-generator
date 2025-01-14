@@ -1,7 +1,95 @@
 import { parse } from 'best-effort-json-parser';
+import { render, h, Component } from 'preact';
+import { useState } from 'preact/hooks';
 
-document.getElementById('plan-length').addEventListener('change', function() {
-  var customLengthGroup = document.getElementById('custom-length-group');
+const planLengthSelect = document.getElementById('plan-length') as HTMLSelectElement;
+const topicInput = document.getElementById('plan-topic') as HTMLInputElement;
+const customLengthInput = document.getElementById('custom-length') as HTMLInputElement;
+const generatePlanButton = document.getElementById('generate-plan') as HTMLButtonElement;
+const planContainer = document.getElementById('plan-container');
+
+interface IPlan {
+  title: string;
+  description: string;
+  days: Array<IPlanDay>;
+}
+
+interface IPlanDay {
+  day_number: number;
+  outline: string;
+  readings: Array<IReading>;
+}
+
+interface IReading {
+  book: string;
+  chapter: number;
+  verse_range?: string;
+  why_selected: string;
+}
+
+function Plan({ plan }: { plan: IPlan }) {
+  if (!plan) {
+    return null;
+  }
+  return (
+    <section className="border rounded p-4 bg-light bg-gradient">
+      <h2>{plan.title}</h2>
+      <div className="plan-container py-2">
+        {plan.days && plan.days.map(day => <PlanDay day={day} />)}
+      </div>
+    </section>
+  );
+}
+
+function PlanDay({ day }: { day: IPlanDay }) {
+  if (!day.readings || !day.outline || day.readings.length === 0) {
+    // Since response is streamed, we may receive incomplete days
+    return null;
+  }
+  return (
+    <div className="card">
+      <div className="card-body">
+        <h3>Day {day.day_number}</h3>
+        <p>{day.outline}</p>
+        <ul>
+          {day.readings.map(reading => <PlanReading reading={reading} />)}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+function PlanReading({ reading }: { reading: IReading }) {
+  return (
+    <li>
+      <p>{reading.book} {reading.chapter}{reading.verse_range && `:${reading.verse_range}`}</p>
+    </li>
+  );
+}
+
+let globalSetPlan: (plan: IPlan) => void;
+class PlanManager extends Component<{}, { plan: IPlan | null }> {
+  constructor(props) {
+    super(props);
+    this.state = { plan: null };
+    globalSetPlan = this.setPlan.bind(this);
+  }
+
+  setPlan(plan: IPlan) {
+    this.setState({ plan });
+  }
+
+  render() {
+    return (
+      <Plan plan={this.state.plan} />
+    );
+  }
+}
+
+render(<PlanManager />, planContainer);
+
+planLengthSelect.addEventListener('change', function() {
+  var customLengthGroup = document.getElementById('custom-length-group')!;
   if (this.value === 'custom') {
     customLengthGroup.style.display = 'flex';
   } else {
@@ -9,27 +97,25 @@ document.getElementById('plan-length').addEventListener('change', function() {
   }
 });
 
-document.getElementById('custom-length').addEventListener('input', function() {
+customLengthInput.addEventListener('input', function() {
   var min = parseInt(this.min);
   var max = parseInt(this.max);
   var value = parseInt(this.value);
 
   if (value < min) {
-    this.value = min;
+    this.value = String(min);
   } else if (value > max) {
-    this.value = max;
+    this.value = String(max);
   }
 });
-
-const generatePlanButton = document.getElementById('generate-plan');
 
 generatePlanButton.addEventListener('click', function(event) {
   event.preventDefault();
 
-  var topic = document.getElementById('plan-topic').value;
-  var length = document.getElementById('plan-length').value;
+  var topic = topicInput.value;
+  var length = planLengthSelect.value;
   if (length === 'custom') {
-    length = document.getElementById('custom-length').value;
+    length = customLengthInput.value;
   }
 
   generatePlanButton.disabled = true;
@@ -39,17 +125,20 @@ generatePlanButton.addEventListener('click', function(event) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')!.getAttribute('content') as string
     },
     body: JSON.stringify({ topic: topic, length: length })
   })
   .then(response => {
-    const reader = response.body.getReader();
+    const reader = response.body?.getReader();
     const decoder = new TextDecoder();
     let result = '';
     let completion = '';
 
     function read() {
+      if (!reader) {
+        return;
+      }
       reader.read().then(({ done, value }) => {
         if (done) {
           console.log('Stream complete');
@@ -72,14 +161,13 @@ generatePlanButton.addEventListener('click', function(event) {
             } else {
               completion += data;
               try {
-                console.log(parse(completion)); // Handle the streamed data here
+                const plan = parse(completion);
+                console.log(plan);
+                globalSetPlan(plan);
               } catch (e) {
                 console.error(e);
               }
             }
-          } else {
-            completion += line;
-            console.log(parse(completion)); // Handle the streamed data here
           }
         });
 
@@ -131,7 +219,6 @@ const suggestions = shuffle([
 );
 let suggestionIndex = 0;
 let charIndex = 0;
-const topicInput = document.getElementById('plan-topic');
 const typingSpeed = 30;
 const pauseDuration = 3000;
 const emptyDuration = 200;
