@@ -3,6 +3,8 @@ class PlansController < ApplicationController
   before_action :authenticate_user!, only: [:generate_plan, :new, :create]
   protect_from_forgery with: :null_session
 
+  PLAN_GENERATION_PROMPT = File.read(Rails.root.join('app', 'prompts', 'plan_generation.txt'))
+
   def index
     @plans = Plan.all
   end
@@ -28,11 +30,18 @@ class PlansController < ApplicationController
 
     client = OpenAI::Client.new()
 
+    prompt = PLAN_GENERATION_PROMPT.gsub("{length}", length.to_s).gsub("{topic}", topic)
+
     client.chat(
       parameters: {
         model: "accounts/fireworks/models/llama-v3p1-8b-instruct", # Required.
-        messages: [{ role: "user", content: "Generate a #{length}-day bible reading plan about #{topic}"}], # Required.
-        temperature: 0.7,
+        messages: [
+          {
+            role: "user",
+            content: prompt
+          }], # Required.
+        response_format: { type: "json_object" },
+        temperature: 0.5,
         stream: proc do |chunk, _bytesize|
           response.stream.write "data: #{chunk.dig('choices', 0, 'delta', 'content')}\n\n"
         end

@@ -1,0 +1,68 @@
+Given the below JSON schema:
+```
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "The title of the plan, describing its theme or purpose."
+    },
+    "description": {
+      "type": "string",
+      "description": "A brief overview or summary of the plan's content and goals."
+    },
+    "days": {
+      "type": "array",
+      "description": "An array of daily reading plans, each defining a day of the schedule.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "day_number": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "The day number in the reading plan, starting from 1."
+          },
+          "outline": {
+            "type": "string",
+            "description": "A brief description or summary of the day's focus."
+          },
+          "readings": {
+            "type": "array",
+            "description": "An array of readings for the day, specifying the chapters and verses to read.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "book": {
+                  "type": "string",
+                  "description": "The name of the book in the Bible, e.g., 'Genesis' or 'John'."
+                },
+                "chapter": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "The chapter number within the book."
+                },
+                "verse_range": {
+                  "type": "string",
+                  "description": "Optional. Specifies the range of verses to read within the chapter, e.g., '1-10'. If omitted, the whole chapter is read."
+                },
+                "why_selected": {
+                  "type": "string",
+                  "description": "A description of why this passage was chosen and how it relates to the day's outline."
+                }
+              },
+              "required": ["book", "chapter", "why_selected"],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": ["day_number", "outline", "readings"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["title", "description", "days"],
+  "additionalProperties": false
+}
+```
+I want you to give me a {length}-day bible reading plan about "{topic}", following the above schema. Provide roughly a chapter worth of content in each day, and making sure to give a title and description for the plan overall. Respond only in JSON.

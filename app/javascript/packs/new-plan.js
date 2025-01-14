@@ -1,7 +1,5 @@
 import { parse } from 'best-effort-json-parser';
 
-console.log(parse('{"name": "John", x: '));
-
 document.getElementById('plan-length').addEventListener('change', function() {
   var customLengthGroup = document.getElementById('custom-length-group');
   if (this.value === 'custom') {
@@ -23,7 +21,9 @@ document.getElementById('custom-length').addEventListener('input', function() {
   }
 });
 
-document.getElementById('generate-plan').addEventListener('click', function(event) {
+const generatePlanButton = document.getElementById('generate-plan');
+
+generatePlanButton.addEventListener('click', function(event) {
   event.preventDefault();
 
   var topic = document.getElementById('plan-topic').value;
@@ -31,6 +31,8 @@ document.getElementById('generate-plan').addEventListener('click', function(even
   if (length === 'custom') {
     length = document.getElementById('custom-length').value;
   }
+
+  generatePlanButton.disabled = true;
 
   // Make an API request to generate the plan
   fetch('/api/generate_plan', {
@@ -45,6 +47,7 @@ document.getElementById('generate-plan').addEventListener('click', function(even
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let result = '';
+    let completion = '';
 
     function read() {
       reader.read().then(({ done, value }) => {
@@ -58,13 +61,25 @@ document.getElementById('generate-plan').addEventListener('click', function(even
         result = lines.pop(); // Keep the last incomplete line
 
         lines.forEach(line => {
+          // trim whitespace from start of line
+          line = line.replace(/^\s+/, '');
           if (line.startsWith('data: ')) {
             const data = line.slice(6);
             if (data === '[DONE]') {
               console.log('Stream complete');
+              generatePlanButton.disabled = false;
+              console.log(completion);
             } else {
-              console.log(data); // Handle the streamed data here
+              completion += data;
+              try {
+                console.log(parse(completion)); // Handle the streamed data here
+              } catch (e) {
+                console.error(e);
+              }
             }
+          } else {
+            completion += line;
+            console.log(parse(completion)); // Handle the streamed data here
           }
         });
 
@@ -76,41 +91,42 @@ document.getElementById('generate-plan').addEventListener('click', function(even
   })
   .catch(error => {
     console.error('Error:', error);
+    generatePlanButton.disabled = false;
   });
 });
 
 // Cycle through suggestions for the topic input
 const suggestions = shuffle([
-"God in hard times",
-"Bible on joy",
-"Jesus' parables",
-"Prayers in the Bible",
-"Loving others",
-"God's power in people",
-"Rest and peace",
-"Wisdom for today",
-"Trusting God",
-"God's plan for the world",
-"Hope in Scripture",
-"Faith during trials",
-"Walking with Jesus",
-"God's promises",
-"Healing in the Bible",
-"Forgiveness in Scripture",
-"Overcoming fear",
-"Courage from God",
-"God's love for nations",
-"Justice and mercy",
-"Strength in weakness",
-"The Holy Spirit",
-"Living by faith",
-"Peace in chaos",
-"Light in darkness",
-"God's faithfulness",
-"Jesus' miracles",
-"Bible on humility",
-"God's creation",
-"The heart of worship"
+  "God in hard times",
+  "Bible on joy",
+  "Jesus' parables",
+  "Prayers in the Bible",
+  "Loving others",
+  "God's power in people",
+  "Rest and peace",
+  "Wisdom for today",
+  "Trusting God",
+  "God's plan for the world",
+  "Hope in Scripture",
+  "Faith during trials",
+  "Walking with Jesus",
+  "God's promises",
+  "Healing in the Bible",
+  "Forgiveness in Scripture",
+  "Overcoming fear",
+  "Courage from God",
+  "God's love for nations",
+  "Justice and mercy",
+  "Strength in weakness",
+  "The Holy Spirit",
+  "Living by faith",
+  "Peace in chaos",
+  "Light in darkness",
+  "God's faithfulness",
+  "Jesus' miracles",
+  "Bible on humility",
+  "God's creation",
+  "The heart of worship"
 ]
 );
 let suggestionIndex = 0;
