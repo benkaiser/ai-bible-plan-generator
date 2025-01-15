@@ -12,6 +12,7 @@
     "postcss": "^8.4.47",
     "postcss-cli": "^11.0.0",
     "preact": "^10.25.4",
+    "react-hint": "^3.2.1",
     "sass": "^1.80.6",
     "typescript": "^5.7.3"
   },
