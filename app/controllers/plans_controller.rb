@@ -6,7 +6,7 @@ class PlansController < ApplicationController
   PLAN_GENERATION_PROMPT = File.read(Rails.root.join('app', 'prompts', 'plan_generation.txt'))
 
   def index
-    @plans = Plan.all
+    @plans = current_user.plans
   end
 
   def new
@@ -14,9 +14,11 @@ class PlansController < ApplicationController
   end
 
   def create
-    @plan = Plan.new(plan_params)
+    @plan = current_user.plans.build(plan_params)
+    @plan.days = JSON.parse(plan_params[:days]) if plan_params[:days].is_a?(String)
+
     if @plan.save
-      redirect_to @plan, notice: 'Plan was successfully created.'
+      redirect_to plans_path, notice: 'Plan was successfully created.'
     else
       render :new
     end
@@ -58,6 +60,6 @@ class PlansController < ApplicationController
   private
 
   def plan_params
-    params.require(:plan).permit(:name, :description, :cover_photo, days: [:description, readings: [:book, :chapter, :verse_range, :whole_chapter]])
+    params.require(:plan).permit(:name, :description, :cover_photo, :days)
   end
 end

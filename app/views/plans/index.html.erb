@@ -7,24 +7,17 @@
 <div class="mb-5">
   <h2>My Plans</h2>
   <div class="row">
-    <div class="col-md-4">
-      <div class="card mb-4">
-        <div class="card-body">
-          <h5 class="card-title">Plan 1</h5>
-          <p class="card-text">Description of Plan 1.</p>
-          <%= link_to 'View Plan', plan_path(1), class: 'btn btn-primary' %>
+    <% @plans.each do |plan| %>
+      <div class="col-md-4">
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5 class="card-title"><%= plan.name %></h5>
+            <p class="card-text"><%= plan.description %></p>
+            <%= link_to 'View Plan', plan_path(plan), class: 'btn btn-primary' %>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card mb-4">
-        <div class="card-body">
-          <h5 class="card-title">Plan 2</h5>
-          <p class="card-text">Description of Plan 2.</p>
-          <%= link_to 'View Plan', plan_path(2), class: 'btn btn-primary' %>
-        </div>
-      </div>
-    </div>
+    <% end %>
   </div>
 </div>
 

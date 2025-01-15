@@ -1,9 +1,10 @@
 class Plan < ApplicationRecord
+  belongs_to :user
   serialize :days, coder: JSON
 
   validates :name, presence: true
   validates :description, presence: true
-  validates :cover_photo, presence: true
+  validates :cover_photo, presence: true, allow_blank: true
   validate :validate_days_structure
 
   private
@@ -17,8 +18,8 @@ class Plan < ApplicationRecord
     end
 
     days.each do |day|
-      unless day.is_a?(Hash) && day.key?('description') && day.key?('readings')
-        errors.add(:days, 'each day must be a hash with description and readings keys')
+      unless day.is_a?(Hash) && day.key?('outline') && day.key?('readings')
+        errors.add(:days, 'each day must be a hash with outline and readings keys')
         return
       end
 

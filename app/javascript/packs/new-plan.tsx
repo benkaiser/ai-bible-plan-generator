@@ -75,7 +75,7 @@ function PlanActions(props: IPlanActionsProps) {
     descriptionField.value = props.plan.description;
     const daysField = document.getElementById('plan-days') as HTMLInputElement;
     daysField.value = JSON.stringify(props.plan.days);
-    const form = document.getElementById('new_plan') as HTMLFormElement;
+    const form = document.getElementById('plan-form') as HTMLFormElement;
     form.submit();
   };
   return (
