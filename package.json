@@ -5,15 +5,15 @@
     "@popperjs/core": "^2.11.8",
     "autoprefixer": "^10.4.20",
     "best-effort-json-parser": "^1.1.2",
-    "bootstrap": "5",
+    "bootstrap": "^5.3.3",
     "bootstrap-icons": "^1.11.3",
     "esbuild": "^0.24.2",
     "nodemon": "^3.1.7",
     "postcss": "^8.4.47",
     "postcss-cli": "^11.0.0",
     "preact": "^10.25.4",
-    "react-hint": "^3.2.1",
     "sass": "^1.80.6",
+    "tiny-glob": "^0.2.9",
     "typescript": "^5.7.3"
   },
   "scripts": {
@@ -26,5 +26,6 @@
   },
   "browserslist": [
     "defaults"
-  ]
+  ],
+  "version": "0.0.0"
 }
