@@ -2,11 +2,12 @@
 
 import path from 'path';
 import { context } from 'esbuild';
+import glob from 'tiny-glob';
 
 const watch = process.argv.includes('--watch');
 
 const escontext = await context({
-  entryPoints: ['app/javascript/packs/new-plan.tsx'],
+  entryPoints: await glob("./app/javascript/packs/*.ts*"),
   bundle: true,
   outdir: path.join(process.cwd(), 'app/assets/builds'),
   loader: { '.js': 'jsx', '.ts': 'ts', '.tsx': 'tsx' },

@@ -2,10 +2,7 @@ import { parse } from 'best-effort-json-parser';
 import { render, h, Component, Fragment, createRef } from 'preact';
 import PlanForm from './components/PlanForm';
 import { IPlan, IPlanDay, IPlanRequest, IReading } from './interfaces/IPlan';
-import ReactHintFactory from 'react-hint'
-import 'react-hint/css/index.css'
 
-const ReactHint = ReactHintFactory({createElement: h, Component, createRef})
 const planContainer = document.getElementById('plan-container');
 
 function Plan({ plan }: { plan: IPlan }) {
@@ -30,15 +27,14 @@ function PlanDay({ day }: { day: IPlanDay }) {
   }
   return (
     <div className="card">
-      <div className="card-body">
-        <h3>Day {day.day_number}</h3>
-        <p>{day.outline}</p>
-        <ul className="list-group list-group-flush">
-          {day.readings.map(reading => (
-            <PlanReading reading={reading} />
-          ))}
-          </ul>
+      <div className="card-header">
+        Day {day.day_number}: {day.outline}
       </div>
+      <ul className="list-group list-group-flush">
+        {day.readings.map(reading => (
+          <PlanReading reading={reading} />
+        ))}
+      </ul>
     </div>
   );
 }
@@ -57,7 +53,7 @@ function PlanReading({ reading }: { reading: IReading }) {
     <li key={reading.book + reading.chapter} className="list-group-item">
       {reading.book} {reading.chapter}{reading.verse_range && `:${reading.verse_range}`}
 
-      <a className="ps-2" data-rh={reading.why_selected}><InfoIcon /></a>
+      <a className="ps-2" data-bs-toggle="tooltip" data-bs-original-title={reading.why_selected} title={reading.why_selected}><InfoIcon /></a>
     </li>
   );
 }
@@ -112,8 +108,6 @@ class PlanManager extends Component<{}, IPlanManagerState> {
         <Plan plan={this.state.plan} />
         { (this.state.isGenerating || this.state.generationCompleted) &&
           <PlanActions plan={this.state.plan} completed={this.state.generationCompleted} /> }
-
-        <ReactHint events={{hover: true}} />
       </Fragment>
     );
   }

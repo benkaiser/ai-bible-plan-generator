@@ -1,2 +1,11 @@
-@import 'bootstrap/scss/bootstrap';
-@import 'bootstrap-icons/font/bootstrap-icons';
+@use 'bootstrap/scss/bootstrap' as *;
+@use 'bootstrap-icons/font/bootstrap-icons' as *;
+
+
+.card-header {
+  text-wrap-mode: wrap;
+}
+
+.container {
+  margin-top: 20px;
+}

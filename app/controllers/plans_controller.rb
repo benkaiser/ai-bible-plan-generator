@@ -13,6 +13,10 @@ class PlansController < ApplicationController
     @plan = Plan.new
   end
 
+  def show
+    @plan = Plan.find(params[:id])
+  end
+
   def create
     @plan = current_user.plans.build(plan_params)
     @plan.days = JSON.parse(plan_params[:days]) if plan_params[:days].is_a?(String)

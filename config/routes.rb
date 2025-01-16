@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   devise_for :users
   root 'home#index'
 
-  resources :plans, only: [:index, :new, :create, :show]
+  resources :plans, only: [:index, :show, :new, :create, :show]
 
   # API routes
   post 'api/generate_plan', to: 'plans#generate_plan'
