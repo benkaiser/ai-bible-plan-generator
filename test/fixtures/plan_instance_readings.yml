@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  plan_instance: one
+  day_number: 1
+  reading_index: 1
+  completed: false
+
+two:
+  plan_instance: two
+  day_number: 1
+  reading_index: 1
+  completed: false

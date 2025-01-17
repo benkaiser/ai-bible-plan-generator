@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  plan_instance: one
+  user: one
+  approved: false
+  creator: false
+  completed: false
+
+two:
+  plan_instance: two
+  user: two
+  approved: false
+  creator: false
+  completed: false
