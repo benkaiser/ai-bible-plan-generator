@@ -13,7 +13,14 @@
           <div class="card-body">
             <h5 class="card-title"><%= plan.name %></h5>
             <p class="card-text"><%= plan.description %></p>
-            <%= link_to 'View Plan', plan_path(plan), class: 'btn btn-primary' %>
+            <% plan_instance_user = current_user.plan_instance_users.joins(:plan_instance).find_by(plan_instances: { plan_id: plan.id }, completed: false) %>
+            <% if plan_instance_user %>
+              <%= link_to 'Continue Plan', plan_instance_path(plan_instance_user.plan_instance), class: 'btn btn-primary' %>
+              <%= link_to 'View Plan Info', plan_path(plan), class: 'btn btn-secondary' %>
+            <% else %>
+              <%= link_to 'Start Plan', plan_instances_path(plan_id: plan.id), method: :post, class: 'btn btn-primary' %>
+              <%= link_to 'View Plan Info', plan_path(plan), class: 'btn btn-secondary' %>
+            <% end %>
           </div>
         </div>
       </div>

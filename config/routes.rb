@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   root 'home#index'
 
   resources :plans, only: [:index, :show, :new, :create, :show]
+  resources :plan_instances, only: [:create, :show]
 
   # API routes
   post 'api/generate_plan', to: 'plans#generate_plan'

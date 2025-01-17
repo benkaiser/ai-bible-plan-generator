@@ -1,14 +1,13 @@
-<h1><%= @plan.name %></h1>
-<p><%= @plan.description %></p>
-<p><%= @plan.cover_photo %></p>
+<h1><%= @plan_instance.plan.name %></h1>
+<p><%= @plan_instance.plan.description %></p>
+<p><%= @plan_instance.plan.cover_photo %></p>
 
 <div class="container">
-  <%= button_to 'Start Plan', plan_instances_path(plan_id: @plan.id), method: :post, class: 'btn btn-primary mb-3' %>
-
-  <% @plan.days.each do |day| %>
+  <% @plan_instance.plan.days.each do |day| %>
     <div class="card mb-3">
       <div class="card-header">
         Day <%= day["day_number"] %>: <%= day["outline"] %>
+        <span class="badge bg-secondary"><%= (@plan_instance.start_date + (day["day_number"] - 1).days).strftime("%b %d") %></span>
       </div>
       <ul class="list-group list-group-flush">
         <% day["readings"].each do |reading| %>
