@@ -7,4 +7,12 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
+
+  def active_plan_instances
+    plan_instances.joins(:plan_instance_users).where(plan_instance_users: { user_id: id, completed: false, approved: true, removed: false })
+  end
+
+  def completed_plan_instances
+    plan_instances.joins(:plan_instance_users).where(plan_instance_users: { user_id: id, completed: true, approved: true, removed: false })
+  end
 end

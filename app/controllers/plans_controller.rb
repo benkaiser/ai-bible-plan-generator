@@ -6,7 +6,8 @@ class PlansController < ApplicationController
   PLAN_GENERATION_PROMPT = File.read(Rails.root.join('app', 'prompts', 'plan_generation.txt'))
 
   def index
-    @plans = current_user.plans
+    @created_plans = current_user.plans
+    @active_plan_instances = current_user.active_plan_instances
   end
 
   def new

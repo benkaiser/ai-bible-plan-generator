@@ -1,5 +1,6 @@
 class Plan < ApplicationRecord
   belongs_to :user
+  has_many :plan_instances
   serialize :days, coder: JSON
 
   validates :name, presence: true

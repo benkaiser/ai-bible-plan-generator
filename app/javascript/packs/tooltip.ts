@@ -1,5 +1,5 @@
 import { createPopper } from '@popperjs/core';
-import { Tooltip } from 'bootstrap';
+import { Tooltip, Dropdown } from 'bootstrap';
 
 declare global {
   interface Window {
@@ -12,7 +12,12 @@ window.createPopper = createPopper;
 var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
 tooltipTriggerList.map(function (tooltipTriggerEl) {
   return new Tooltip(tooltipTriggerEl)
-})
+});
+
+var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'))
+dropdownElementList.map(function (dropdownToggleEl) {
+  return new Dropdown(dropdownToggleEl)
+});
 
 // MutationObserver to handle dynamically added elements
 const observer = new MutationObserver(function (mutationsList) {
