@@ -1,5 +1,6 @@
 import { h, render } from 'preact';
 import { useState } from 'preact/hooks';
+import ReactBible from './components/bible/ReactBible';
 
 interface IPlanReading {
   book: string;
@@ -129,7 +130,7 @@ function PlanInstance({ plan, planInstance }: { plan: IPlan, planInstance: IPlan
                 <i className="bi bi-arrow-left"></i> Back
               </button>
               <h2>{`${selectedReading.book} ${selectedReading.chapter}:${selectedReading.verse_range}`}</h2>
-              <p>{ /* TODO: request and render bible chapter from https://bible.helloao.org/api/BSB/1JN/1.json */}</p>
+              <ReactBible book={selectedReading.book} chapter={selectedReading.chapter} verseRange={selectedReading.verse_range} />
             </div>
           ) : selectedDay ? (
             <div>
