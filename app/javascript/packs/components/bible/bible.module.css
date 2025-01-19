@@ -1,0 +1,17 @@
+.bibleContainer p {
+  display: inline;
+}
+
+.bibleContainer sup {
+  font-size: 0.8em;
+  padding: 0 0.2em;
+  filter: opacity(0.8);
+}
+
+.lineBreak {
+  width: 100%;
+  height: 10px;
+  margin: 0;
+  padding: 0;
+  clear: both;
+}

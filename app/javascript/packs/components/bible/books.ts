@@ -1,16 +1,8 @@
-export interface IBibleBook {
-  id: string;
-  name: string;
-  otherNames?: string[];
-  order: number;
-  numberOfChapters: number;
-  totalNumberOfVerses: number;
-}
-
-const books: IBibleBook[] = [
+const books = [
   {
     id: "GEN",
     name: "Genesis",
+    otherNames: ["genesis", "gen"],
     order: 1,
     numberOfChapters: 50,
     totalNumberOfVerses: 1533,
@@ -18,6 +10,7 @@ const books: IBibleBook[] = [
   {
     id: "EXO",
     name: "Exodus",
+    otherNames: ["exodus", "exo", "ex"],
     order: 2,
     numberOfChapters: 40,
     totalNumberOfVerses: 1213,
@@ -25,6 +18,7 @@ const books: IBibleBook[] = [
   {
     id: "LEV",
     name: "Leviticus",
+    otherNames: ["leviticus", "lev", "le", "lv"],
     order: 3,
     numberOfChapters: 27,
     totalNumberOfVerses: 859,
@@ -32,6 +26,7 @@ const books: IBibleBook[] = [
   {
     id: "NUM",
     name: "Numbers",
+    otherNames: ["numbers", "num", "nu"],
     order: 4,
     numberOfChapters: 36,
     totalNumberOfVerses: 1288,
@@ -39,6 +34,7 @@ const books: IBibleBook[] = [
   {
     id: "DEU",
     name: "Deuteronomy",
+    otherNames: ["deuteronomy", "deu", "dt", "deut"],
     order: 5,
     numberOfChapters: 34,
     totalNumberOfVerses: 959,
@@ -46,6 +42,7 @@ const books: IBibleBook[] = [
   {
     id: "JOS",
     name: "Joshua",
+    otherNames: ["joshua", "jos", "jo", "josh"],
     order: 6,
     numberOfChapters: 24,
     totalNumberOfVerses: 658,
@@ -53,6 +50,7 @@ const books: IBibleBook[] = [
   {
     id: "JDG",
     name: "Judges",
+    otherNames: ["judges", "jdg", "ju"],
     order: 7,
     numberOfChapters: 21,
     totalNumberOfVerses: 618,
@@ -60,6 +58,7 @@ const books: IBibleBook[] = [
   {
     id: "RUT",
     name: "Ruth",
+    otherNames: ["ruth", "rut", "ru"],
     order: 8,
     numberOfChapters: 4,
     totalNumberOfVerses: 85,
@@ -67,6 +66,7 @@ const books: IBibleBook[] = [
   {
     id: "1SA",
     name: "1 Samuel",
+    otherNames: ["1 samuel", "1 sam", "1sa", "first samuel", "first sam"],
     order: 9,
     numberOfChapters: 31,
     totalNumberOfVerses: 810,
@@ -74,6 +74,7 @@ const books: IBibleBook[] = [
   {
     id: "2SA",
     name: "2 Samuel",
+    otherNames: ["2 samuel", "2 sam", "2sa", "second samuel", "second sam"],
     order: 10,
     numberOfChapters: 24,
     totalNumberOfVerses: 695,
@@ -81,6 +82,7 @@ const books: IBibleBook[] = [
   {
     id: "1KI",
     name: "1 Kings",
+    otherNames: ["1 kings", "1 kin", "1ki", "first kings", "first kin"],
     order: 11,
     numberOfChapters: 22,
     totalNumberOfVerses: 816,
@@ -88,6 +90,7 @@ const books: IBibleBook[] = [
   {
     id: "2KI",
     name: "2 Kings",
+    otherNames: ["2 kings", "2 kin", "2ki", "second kings", "second kin"],
     order: 12,
     numberOfChapters: 25,
     totalNumberOfVerses: 719,
@@ -95,6 +98,7 @@ const books: IBibleBook[] = [
   {
     id: "1CH",
     name: "1 Chronicles",
+    otherNames: ["1 chronicles", "1 chr", "1ch", "first chronicles", "first chr"],
     order: 13,
     numberOfChapters: 29,
     totalNumberOfVerses: 942,
@@ -102,6 +106,7 @@ const books: IBibleBook[] = [
   {
     id: "2CH",
     name: "2 Chronicles",
+    otherNames: ["2 chronicles", "2 chr", "2ch", "second chronicles", "second chr"],
     order: 14,
     numberOfChapters: 36,
     totalNumberOfVerses: 822,
@@ -109,6 +114,7 @@ const books: IBibleBook[] = [
   {
     id: "EZR",
     name: "Ezra",
+    otherNames: ["ezra", "ez"],
     order: 15,
     numberOfChapters: 10,
     totalNumberOfVerses: 280,
@@ -116,6 +122,7 @@ const books: IBibleBook[] = [
   {
     id: "NEH",
     name: "Nehemiah",
+    otherNames: ["nehemiah", "neh", "ne"],
     order: 16,
     numberOfChapters: 13,
     totalNumberOfVerses: 406,
@@ -123,6 +130,7 @@ const books: IBibleBook[] = [
   {
     id: "EST",
     name: "Esther",
+    otherNames: ["esther", "est", "es"],
     order: 17,
     numberOfChapters: 10,
     totalNumberOfVerses: 167,
@@ -130,6 +138,7 @@ const books: IBibleBook[] = [
   {
     id: "JOB",
     name: "Job",
+    otherNames: ["job", "jb"],
     order: 18,
     numberOfChapters: 42,
     totalNumberOfVerses: 1070,
@@ -137,7 +146,7 @@ const books: IBibleBook[] = [
   {
     id: "PSA",
     name: "Psalms",
-    otherNames: ["Psalms", "Psalm", "Psa", "Psm"],
+    otherNames: ["psalms", "psalm", "ps", "psa", "pslm"],
     order: 19,
     numberOfChapters: 150,
     totalNumberOfVerses: 2461,
@@ -145,6 +154,7 @@ const books: IBibleBook[] = [
   {
     id: "PRO",
     name: "Proverbs",
+    otherNames: ["proverbs", "prov", "pr"],
     order: 20,
     numberOfChapters: 31,
     totalNumberOfVerses: 915,
@@ -152,13 +162,15 @@ const books: IBibleBook[] = [
   {
     id: "ECC",
     name: "Ecclesiastes",
+    otherNames: ["ecclesiastes", "ecc", "ec"],
     order: 21,
     numberOfChapters: 12,
     totalNumberOfVerses: 222,
   },
   {
     id: "SNG",
-    name: "Song",
+    name: "Song of Solomon",
+    otherNames: ["song of solomon", "sos", "song of songs", "song", "song of sol", "so"],
     order: 22,
     numberOfChapters: 8,
     totalNumberOfVerses: 117,
@@ -166,6 +178,7 @@ const books: IBibleBook[] = [
   {
     id: "ISA",
     name: "Isaiah",
+    otherNames: ["isaiah", "isa", "is"],
     order: 23,
     numberOfChapters: 66,
     totalNumberOfVerses: 1292,
@@ -173,6 +186,7 @@ const books: IBibleBook[] = [
   {
     id: "JER",
     name: "Jeremiah",
+    otherNames: ["jeremiah", "jer", "je"],
     order: 24,
     numberOfChapters: 52,
     totalNumberOfVerses: 1364,
@@ -180,6 +194,7 @@ const books: IBibleBook[] = [
   {
     id: "LAM",
     name: "Lamentations",
+    otherNames: ["lamentations", "lam", "la"],
     order: 25,
     numberOfChapters: 5,
     totalNumberOfVerses: 154,
@@ -187,6 +202,7 @@ const books: IBibleBook[] = [
   {
     id: "EZK",
     name: "Ezekiel",
+    otherNames: ["ezekiel", "ezk", "ez"],
     order: 26,
     numberOfChapters: 48,
     totalNumberOfVerses: 1273,
@@ -194,6 +210,7 @@ const books: IBibleBook[] = [
   {
     id: "DAN",
     name: "Daniel",
+    otherNames: ["daniel", "dan", "da"],
     order: 27,
     numberOfChapters: 12,
     totalNumberOfVerses: 357,
@@ -201,6 +218,7 @@ const books: IBibleBook[] = [
   {
     id: "HOS",
     name: "Hosea",
+    otherNames: ["hosea", "hos", "ho"],
     order: 28,
     numberOfChapters: 14,
     totalNumberOfVerses: 197,
@@ -208,6 +226,7 @@ const books: IBibleBook[] = [
   {
     id: "JOL",
     name: "Joel",
+    otherNames: ["joel", "jol", "jl"],
     order: 29,
     numberOfChapters: 3,
     totalNumberOfVerses: 73,
@@ -215,6 +234,7 @@ const books: IBibleBook[] = [
   {
     id: "AMO",
     name: "Amos",
+    otherNames: ["amos", "amo", "am"],
     order: 30,
     numberOfChapters: 9,
     totalNumberOfVerses: 146,
@@ -222,6 +242,7 @@ const books: IBibleBook[] = [
   {
     id: "OBA",
     name: "Obadiah",
+    otherNames: ["obadiah", "oba", "ob"],
     order: 31,
     numberOfChapters: 1,
     totalNumberOfVerses: 21,
@@ -229,6 +250,7 @@ const books: IBibleBook[] = [
   {
     id: "JON",
     name: "Jonah",
+    otherNames: ["jonah", "jon", "jn"],
     order: 32,
     numberOfChapters: 4,
     totalNumberOfVerses: 48,
@@ -236,6 +258,7 @@ const books: IBibleBook[] = [
   {
     id: "MIC",
     name: "Micah",
+    otherNames: ["micah", "mic", "mi"],
     order: 33,
     numberOfChapters: 7,
     totalNumberOfVerses: 105,
@@ -243,6 +266,7 @@ const books: IBibleBook[] = [
   {
     id: "NAM",
     name: "Nahum",
+    otherNames: ["nahum", "nam", "na"],
     order: 34,
     numberOfChapters: 3,
     totalNumberOfVerses: 47,
@@ -250,6 +274,7 @@ const books: IBibleBook[] = [
   {
     id: "HAB",
     name: "Habakkuk",
+    otherNames: ["habakkuk", "hab", "hb"],
     order: 35,
     numberOfChapters: 3,
     totalNumberOfVerses: 56,
@@ -257,6 +282,7 @@ const books: IBibleBook[] = [
   {
     id: "ZEP",
     name: "Zephaniah",
+    otherNames: ["zephaniah", "zep", "zp"],
     order: 36,
     numberOfChapters: 3,
     totalNumberOfVerses: 53,
@@ -264,6 +290,7 @@ const books: IBibleBook[] = [
   {
     id: "HAG",
     name: "Haggai",
+    otherNames: ["haggai", "hag", "hg"],
     order: 37,
     numberOfChapters: 2,
     totalNumberOfVerses: 38,
@@ -271,6 +298,7 @@ const books: IBibleBook[] = [
   {
     id: "ZEC",
     name: "Zechariah",
+    otherNames: ["zechariah", "zec", "zc"],
     order: 38,
     numberOfChapters: 14,
     totalNumberOfVerses: 211,
@@ -278,6 +306,7 @@ const books: IBibleBook[] = [
   {
     id: "MAL",
     name: "Malachi",
+    otherNames: ["malachi", "mal", "ma"],
     order: 39,
     numberOfChapters: 4,
     totalNumberOfVerses: 55,
@@ -285,6 +314,7 @@ const books: IBibleBook[] = [
   {
     id: "MAT",
     name: "Matthew",
+    otherNames: ["matthew", "matt", "mat", "mt"],
     order: 40,
     numberOfChapters: 28,
     totalNumberOfVerses: 1068,
@@ -292,6 +322,7 @@ const books: IBibleBook[] = [
   {
     id: "MRK",
     name: "Mark",
+    otherNames: ["mark", "mrk", "mk"],
     order: 41,
     numberOfChapters: 16,
     totalNumberOfVerses: 673,
@@ -299,6 +330,7 @@ const books: IBibleBook[] = [
   {
     id: "LUK",
     name: "Luke",
+    otherNames: ["luke", "luk", "lk"],
     order: 42,
     numberOfChapters: 24,
     totalNumberOfVerses: 1149,
@@ -306,6 +338,7 @@ const books: IBibleBook[] = [
   {
     id: "JHN",
     name: "John",
+    otherNames: ["john", "jhn", "jn"],
     order: 43,
     numberOfChapters: 21,
     totalNumberOfVerses: 878,
@@ -313,6 +346,7 @@ const books: IBibleBook[] = [
   {
     id: "ACT",
     name: "Acts",
+    otherNames: ["acts", "act", "ac"],
     order: 44,
     numberOfChapters: 28,
     totalNumberOfVerses: 1003,
@@ -320,6 +354,7 @@ const books: IBibleBook[] = [
   {
     id: "ROM",
     name: "Romans",
+    otherNames: ["romans", "rom", "ro"],
     order: 45,
     numberOfChapters: 16,
     totalNumberOfVerses: 432,
@@ -327,6 +362,7 @@ const books: IBibleBook[] = [
   {
     id: "1CO",
     name: "1 Corinthians",
+    otherNames: ["1 corinthians", "1 cor", "1co", "first corinthians", "first cor"],
     order: 46,
     numberOfChapters: 16,
     totalNumberOfVerses: 437,
@@ -334,6 +370,7 @@ const books: IBibleBook[] = [
   {
     id: "2CO",
     name: "2 Corinthians",
+    otherNames: ["2 corinthians", "2 cor", "2co", "second corinthians", "second cor"],
     order: 47,
     numberOfChapters: 13,
     totalNumberOfVerses: 257,
@@ -341,6 +378,7 @@ const books: IBibleBook[] = [
   {
     id: "GAL",
     name: "Galatians",
+    otherNames: ["galatians", "gal", "ga"],
     order: 48,
     numberOfChapters: 6,
     totalNumberOfVerses: 149,
@@ -348,6 +386,7 @@ const books: IBibleBook[] = [
   {
     id: "EPH",
     name: "Ephesians",
+    otherNames: ["ephesians", "eph", "ep"],
     order: 49,
     numberOfChapters: 6,
     totalNumberOfVerses: 155,
@@ -355,6 +394,7 @@ const books: IBibleBook[] = [
   {
     id: "PHP",
     name: "Philippians",
+    otherNames: ["philippians", "php", "phi"],
     order: 50,
     numberOfChapters: 4,
     totalNumberOfVerses: 104,
@@ -362,6 +402,7 @@ const books: IBibleBook[] = [
   {
     id: "COL",
     name: "Colossians",
+    otherNames: ["colossians", "col", "co"],
     order: 51,
     numberOfChapters: 4,
     totalNumberOfVerses: 95,
@@ -369,6 +410,7 @@ const books: IBibleBook[] = [
   {
     id: "1TH",
     name: "1 Thessalonians",
+    otherNames: ["1 thessalonians", "1 thess", "1th", "first thessalonians", "first thess"],
     order: 52,
     numberOfChapters: 5,
     totalNumberOfVerses: 89,
@@ -376,6 +418,7 @@ const books: IBibleBook[] = [
   {
     id: "2TH",
     name: "2 Thessalonians",
+    otherNames: ["2 thessalonians", "2 thess", "2th", "second thessalonians", "second thess"],
     order: 53,
     numberOfChapters: 3,
     totalNumberOfVerses: 47,
@@ -383,6 +426,7 @@ const books: IBibleBook[] = [
   {
     id: "1TI",
     name: "1 Timothy",
+    otherNames: ["1 timothy", "1 tim", "1ti", "first timothy", "first tim"],
     order: 54,
     numberOfChapters: 6,
     totalNumberOfVerses: 113,
@@ -390,6 +434,7 @@ const books: IBibleBook[] = [
   {
     id: "2TI",
     name: "2 Timothy",
+    otherNames: ["2 timothy", "2 tim", "2ti", "second timothy", "second tim"],
     order: 55,
     numberOfChapters: 4,
     totalNumberOfVerses: 83,
@@ -397,6 +442,7 @@ const books: IBibleBook[] = [
   {
     id: "TIT",
     name: "Titus",
+    otherNames: ["titus"],
     order: 56,
     numberOfChapters: 3,
     totalNumberOfVerses: 46,
@@ -404,6 +450,7 @@ const books: IBibleBook[] = [
   {
     id: "PHM",
     name: "Philemon",
+    otherNames: ["philemon", "phm", "ph"],
     order: 57,
     numberOfChapters: 1,
     totalNumberOfVerses: 25,
@@ -411,6 +458,7 @@ const books: IBibleBook[] = [
   {
     id: "HEB",
     name: "Hebrews",
+    otherNames: ["hebrews", "heb", "he"],
     order: 58,
     numberOfChapters: 13,
     totalNumberOfVerses: 303,
@@ -418,6 +466,7 @@ const books: IBibleBook[] = [
   {
     id: "JAS",
     name: "James",
+    otherNames: ["james", "jas", "jm"],
     order: 59,
     numberOfChapters: 5,
     totalNumberOfVerses: 108,
@@ -425,6 +474,7 @@ const books: IBibleBook[] = [
   {
     id: "1PE",
     name: "1 Peter",
+    otherNames: ["1 peter", "1 pet", "1pe", "first peter", "first pet"],
     order: 60,
     numberOfChapters: 5,
     totalNumberOfVerses: 105,
@@ -432,6 +482,7 @@ const books: IBibleBook[] = [
   {
     id: "2PE",
     name: "2 Peter",
+    otherNames: ["2 peter", "2 pet", "2pe", "second peter", "second pet"],
     order: 61,
     numberOfChapters: 3,
     totalNumberOfVerses: 61,
@@ -439,6 +490,7 @@ const books: IBibleBook[] = [
   {
     id: "1JN",
     name: "1 John",
+    otherNames: ["1 john", "1 jn", "first john", "first jn"],
     order: 62,
     numberOfChapters: 5,
     totalNumberOfVerses: 105,
@@ -446,6 +498,7 @@ const books: IBibleBook[] = [
   {
     id: "2JN",
     name: "2 John",
+    otherNames: ["2 john", "2 jn", "second john", "second jn"],
     order: 63,
     numberOfChapters: 1,
     totalNumberOfVerses: 13,
@@ -453,6 +506,7 @@ const books: IBibleBook[] = [
   {
     id: "3JN",
     name: "3 John",
+    otherNames: ["3 john", "3 jn", "third john", "third jn"],
     order: 64,
     numberOfChapters: 1,
     totalNumberOfVerses: 14,
@@ -460,6 +514,7 @@ const books: IBibleBook[] = [
   {
     id: "JUD",
     name: "Jude",
+    otherNames: ["jude"],
     order: 65,
     numberOfChapters: 1,
     totalNumberOfVerses: 25,
@@ -467,6 +522,7 @@ const books: IBibleBook[] = [
   {
     id: "REV",
     name: "Revelation",
+    otherNames: ["revelation", "rev", "re"],
     order: 66,
     numberOfChapters: 22,
     totalNumberOfVerses: 404,

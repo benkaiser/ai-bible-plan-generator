@@ -6,6 +6,7 @@
 import { h, Component } from 'preact';
 import { ensureBookShortName } from './utilities';
 import { ChapterContent, ChapterVerse, TranslationBookChapter } from './APIInterfaces';
+import { bibleContainer, lineBreak } from './bible.module.css';
 
 interface IBibleProps {
   book?: string;
@@ -15,6 +16,7 @@ interface IBibleProps {
 }
 
 interface IBibleState {
+  isLoading?: boolean;
   contents?: TranslationBookChapter;
   renderedVerses?: ChapterContent[];
 }
@@ -23,6 +25,7 @@ export default class ReactBible extends Component<IBibleProps, IBibleState> {
   constructor(props: IBibleProps) {
     super(props);
     this.state = {
+      isLoading: true
     };
   }
 
@@ -35,16 +38,28 @@ export default class ReactBible extends Component<IBibleProps, IBibleState> {
     this.fetchChapter(bookId, chapter);
   }
 
+  async componentDidUpdate(prevProps: IBibleProps) {
+    if (prevProps.lookup !== this.props.lookup || prevProps.book !== this.props.book || prevProps.chapter !== this.props.chapter || prevProps.verseRange !== this.props.verseRange) {
+      let { book, chapter, verseRange, lookup } = this.props;
+      if (lookup) {
+        [book, chapter, verseRange] = lookup.split(' ');
+      }
+      const bookId: string = ensureBookShortName(book);
+      this.fetchChapter(bookId, chapter);
+    }
+  }
+
   async fetchChapter(book: string, chapter: string | number) {
+    this.setState({ isLoading: true });
     const response = await fetch(`https://bible.helloao.org/api/BSB/${book}/${chapter}.json`);
     const contents = await response.json();
     const renderedVerses = this.filterToRenderedVerses(contents.chapter.content, this.props.verseRange);
-    this.setState({ contents, renderedVerses });
+    this.setState({ contents, renderedVerses, isLoading: false });
   }
 
   render() {
-    const { contents, renderedVerses } = this.state;
-    if (!contents) {
+    const { contents, renderedVerses, isLoading } = this.state;
+    if (!contents || isLoading) {
       return (
         <div class="spinner-border" role="status">
           <span class="visually-hidden">Loading...</span>
@@ -52,14 +67,13 @@ export default class ReactBible extends Component<IBibleProps, IBibleState> {
       );
     }
     return (
-      <div>
-        <h2>{`${contents.book.name} ${contents.chapter.number}`}</h2>
+      <div className={bibleContainer}>
         {renderedVerses.map((content, index) => {
           switch (content.type) {
             case 'heading':
               return <h3 key={index}>{content.content.join(' ')}</h3>;
             case 'line_break':
-              return <br key={index} />;
+              return <div key={index} className={lineBreak}></div>;
             case 'verse':
               return (
                 <p key={index}>
@@ -76,10 +90,11 @@ export default class ReactBible extends Component<IBibleProps, IBibleState> {
                     } else if ('heading' in item) {
                       return <strong key={subIndex}>{item.heading}</strong>;
                     } else if ('lineBreak' in item) {
-                      return <br key={subIndex} />;
-                    } else if ('noteId' in item) {
-                      return <sup key={subIndex}>{item.noteId}</sup>;
+                      return <div key={subIndex} className={lineBreak}></div>;
                     }
+                    // else if ('noteId' in item) {
+                    //   return <sup key={subIndex}>{item.noteId}</sup>;
+                    // }
                     return null;
                   })}
                 </p>
@@ -96,9 +111,10 @@ export default class ReactBible extends Component<IBibleProps, IBibleState> {
                           {item.text}
                         </span>
                       );
-                    } else if ('noteId' in item) {
-                      return <sup key={subIndex}>{item.noteId}</sup>;
                     }
+                    // else if ('noteId' in item) {
+                    //   return <sup key={subIndex}>{item.noteId}</sup>;
+                    // }
                     return null;
                   })}
                 </p>
@@ -125,9 +141,12 @@ export default class ReactBible extends Component<IBibleProps, IBibleState> {
       const verse = content[i];
       if (verse.type === 'verse' && verse.number >= start && verse.number <= end) {
         filteredContents.push(verse);
+        if (verse.number === end) {
+          break;
+        }
       } else if (verse.type === 'verse' && verse.number < start) {
         filteredContents = [];
-      } else if (verse.type === 'heading' || verse.type === 'line_break' || verse.type === 'hebrew_subtitle') {
+      } else if (verse.type === 'heading' || verse.type === 'line_break' || verse.type === 'hebrew_subtitle' ) {
         filteredContents.push(verse);
       }
     }
