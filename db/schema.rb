@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_18_045247) do
+ActiveRecord::Schema[8.0].define(version: 2025_01_19_043053) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -26,13 +26,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_18_045247) do
   end
 
   create_table "plan_instance_readings", force: :cascade do |t|
-    t.bigint "plan_instance_id", null: false
     t.integer "day_number"
     t.integer "reading_index"
     t.boolean "completed"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["plan_instance_id"], name: "index_plan_instance_readings_on_plan_instance_id"
+    t.bigint "plan_instance_user_id", null: false
+    t.index ["plan_instance_user_id"], name: "index_plan_instance_readings_on_plan_instance_user_id"
   end
 
   create_table "plan_instance_users", force: :cascade do |t|
@@ -81,7 +81,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_01_18_045247) do
 
   add_foreign_key "plan_instance_comments", "plan_instances"
   add_foreign_key "plan_instance_comments", "users"
-  add_foreign_key "plan_instance_readings", "plan_instances"
+  add_foreign_key "plan_instance_readings", "plan_instance_users"
   add_foreign_key "plan_instance_users", "plan_instances"
   add_foreign_key "plan_instance_users", "users"
   add_foreign_key "plan_instances", "plans"
