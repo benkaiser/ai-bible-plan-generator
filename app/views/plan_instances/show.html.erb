@@ -4,6 +4,7 @@
 <script>
   window.planData = <%= @plan_instance.plan.to_json.html_safe %>;
   window.planInstanceData = <%= @plan_instance.to_json.html_safe %>;
+  window.planReadingData = <%= @plan_instance_user.plan_instance_readings.to_json.html_safe %>;
 </script>
 <%= stylesheet_link_tag "plan-instance", "data-turbo-track": "reload" %>
 <%= javascript_include_tag "plan-instance", "data-turbo-track": "reload" %>

@@ -15,6 +15,7 @@ class PlanInstancesController < ApplicationController
 
   def show
     @plan_instance = PlanInstance.find(params[:id])
+    @plan_instance_user = PlanInstanceUser.find_by(plan_instance: @plan_instance, user: current_user)
   end
 
   def destroy

@@ -1,5 +1,5 @@
 import { h, render } from 'preact';
-import { useState } from 'preact/hooks';
+import { useMemo, useState } from 'preact/hooks';
 import ReactBible from './components/bible/ReactBible';
 
 interface IPlanReading {
@@ -34,22 +34,51 @@ interface IPlanInstance {
   updated_at: string;
 }
 
+interface IPlanUserReading {
+  day_number: number;
+  reading_index: number;
+  completed: boolean;
+}
+
 interface IWindow extends Window {
   planData: IPlan;
   planInstanceData: IPlanInstance;
+  planReadingData: IPlanUserReading[];
 }
 
 declare let window: IWindow;
 
-function PlanReading({ reading, onClick }: { reading: IPlanReading, onClick: () => void }) {
+interface IPlanReadingProps {
+  reading: IPlanReading | 'overview';
+  isReadingCompleted?: boolean;
+  onClick: () => void;
+  onCheckboxChange: (isChecked: boolean) => void;
+}
+
+function PlanReading({ reading, isReadingCompleted, onCheckboxChange, onClick }: IPlanReadingProps) {
   return (
-    <li className="list-group-item d-flex justify-content-between align-items-center" onClick={onClick}>
-      <span>{`${reading.book} ${reading.chapter}:${reading.verse_range}`}</span>
+    <li className="list-group-item d-flex justify-content-between align-items-center" onClick={(event: MouseEvent) => {
+      if (event.target instanceof HTMLInputElement) {
+        return;
+      }
+      onClick();
+    }}>
+      { reading === 'overview' ? 'Overview' : `${reading.book} ${reading.chapter}:${reading.verse_range}` }
+      <input type="checkbox" class="form-check-input" checked={isReadingCompleted} onChange={(event: Event) => onCheckboxChange((event.target as HTMLInputElement).checked)} />
     </li>
   );
 }
 
-function PlanDay({ day, startDate, onReadingClick, onOverviewClick }: { day: IPlanDay, startDate: string, onReadingClick: (reading: IPlanReading) => void, onOverviewClick: () => void }) {
+interface IPlanDayProps {
+  day: IPlanDay;
+  startDate: string;
+  onReadingClick: (reading: IPlanReading) => void;
+  onOverviewClick: () => void;
+  getReadingCompleted: (dayNumber: number, readingIndex: number) => boolean;
+  onChangeCompletion: (isChecked: boolean, dayNumber: number, readingIndex: number) => void;
+}
+
+function PlanDay({ day, startDate, onReadingClick, onOverviewClick, getReadingCompleted, onChangeCompletion }: IPlanDayProps) {
   const dayDate = new Date(startDate);
   dayDate.setDate(dayDate.getDate() + day.day_number - 1);
   const today = new Date();
@@ -61,36 +90,89 @@ function PlanDay({ day, startDate, onReadingClick, onOverviewClick }: { day: IPl
       <div className="card-header">
         Day {day.day_number}: {day.outline}
         <span className={`badge ${badgeClass} ms-2`}>{dayDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
-        <button className="btn btn-link float-end d-md-none" type="button" onClick={onOverviewClick}>
-          <i className="bi bi-caret-right"></i>
-        </button>
       </div>
       <ul className="list-group list-group-flush">
-        <li className="list-group-item d-flex justify-content-between align-items-center" onClick={onOverviewClick}>
-          <span>Overview</span>
-        </li>
+        <PlanReading
+          reading='overview'
+          isReadingCompleted={getReadingCompleted(day.day_number, 0)}
+          key={0}
+          onClick={onOverviewClick}
+          onCheckboxChange={(isChecked: boolean) => onChangeCompletion(isChecked, day.day_number, 0)}
+        />
         {day.readings.map((reading, index) => (
-          <PlanReading reading={reading} key={index} onClick={() => onReadingClick(reading)} />
+          <PlanReading
+          reading={reading}
+          isReadingCompleted={getReadingCompleted(day.day_number, index + 1)}
+          key={index + 1}
+          onClick={() => onReadingClick(reading)}
+          onCheckboxChange={(isChecked: boolean) => onChangeCompletion(isChecked, day.day_number, index + 1)}
+        />
         ))}
       </ul>
     </div>
   );
 }
 
-function PlanSidebar({ plan, startDate, onReadingClick, onOverviewClick }: { plan: IPlan, startDate: string, onReadingClick: (reading: IPlanReading) => void, onOverviewClick: (day: IPlanDay) => void }) {
+interface IPlanSidebarProps {
+  plan: IPlan;
+  startDate: string;
+  onReadingClick: (reading: IPlanReading) => void;
+  onOverviewClick: (day: IPlanDay) => void;
+  getReadingCompleted: (dayNumber: number, readingIndex: number) => boolean;
+  onChangeCompletion: (isChecked: boolean, dayNumber: number, readingIndex: number) => void;
+}
+
+function PlanSidebar({
+  plan,
+  startDate,
+  onReadingClick,
+  onOverviewClick,
+  getReadingCompleted,
+  onChangeCompletion
+}: IPlanSidebarProps) {
   return (
     <div>
       {plan.days.map(day => (
-        <PlanDay day={day} key={day.day_number} startDate={startDate} onReadingClick={onReadingClick} onOverviewClick={() => onOverviewClick(day)} />
+        <PlanDay
+          day={day}
+          key={day.day_number}
+          startDate={startDate}
+          onReadingClick={onReadingClick}
+          onOverviewClick={() => onOverviewClick(day)}
+          getReadingCompleted={getReadingCompleted}
+          onChangeCompletion={onChangeCompletion}
+        />
       ))}
     </div>
   );
 }
 
-function PlanInstance({ plan, planInstance }: { plan: IPlan, planInstance: IPlanInstance }) {
+interface IPlanInstanceProps {
+  plan: IPlan;
+  planInstance: IPlanInstance;
+  planReadingData: IPlanUserReading[];
+}
+
+interface IPlanReadingMap {
+  [day: number]: {
+    [reading: number]: boolean;
+  };
+}
+
+function PlanInstance({ plan, planInstance, planReadingData }: IPlanInstanceProps) {
   const [selectedReading, setSelectedReading] = useState<IPlanReading | null>(null);
   const [selectedDay, setSelectedDay] = useState<IPlanDay | null>(null);
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
+  const [planReadingMap, setPlanReadingMap] = useState<IPlanReadingMap>(() => {
+    const map: IPlanReadingMap = {};
+    planReadingData.forEach(reading => {
+      if (!map[reading.day_number]) {
+        map[reading.day_number] = {};
+      }
+      map[reading.day_number][reading.reading_index] = reading.completed;
+    });
+    return map;
+  });
 
   const isMobile = window.matchMedia('(max-width: 767px)').matches;
 
@@ -115,12 +197,28 @@ function PlanInstance({ plan, planInstance }: { plan: IPlan, planInstance: IPlan
     setIsSidebarVisible(true);
   };
 
+  const getReadingCompleted = (dayNumber: number, readingIndex: number) => {
+    return planReadingMap[dayNumber]?.[readingIndex] ?? false;
+  };
+
+  const onChangeCompletion = (isChecked: boolean, dayNumber: number, readingIndex: number) => {
+    setPlanReadingMap(prevMap => {
+      const newMap = { ...prevMap };
+      if (!newMap[dayNumber]) {
+        newMap[dayNumber] = {};
+      }
+      newMap[dayNumber][readingIndex] = isChecked;
+      return newMap;
+    });
+    // TODO make API call to update reading completion server-side
+  };
+
   return (
     <div className="container">
       <div className="row">
         {isSidebarVisible && (
           <div className="col-12 col-md-3" id="plan-sidebar">
-            <PlanSidebar plan={plan} startDate={planInstance.start_date} onReadingClick={showReadingDetails} onOverviewClick={showOverviewDetails} />
+            <PlanSidebar plan={plan} startDate={planInstance.start_date} onReadingClick={showReadingDetails} onOverviewClick={showOverviewDetails} getReadingCompleted={getReadingCompleted} onChangeCompletion={onChangeCompletion} />
           </div>
         )}
         <div className={`col-12 ${isSidebarVisible ? 'col-md-9' : ''}`} id="right-section">
@@ -152,5 +250,6 @@ function PlanInstance({ plan, planInstance }: { plan: IPlan, planInstance: IPlan
 document.addEventListener('DOMContentLoaded', () => {
   const planData = window.planData;
   const planInstanceData = window.planInstanceData;
-  render(<PlanInstance plan={planData} planInstance={planInstanceData} />, document.getElementById('plan-instance-root'));
+  const planReadingData = window.planReadingData;
+  render(<PlanInstance plan={planData} planInstance={planInstanceData} planReadingData={planReadingData} />, document.getElementById('plan-instance-root'));
 });
