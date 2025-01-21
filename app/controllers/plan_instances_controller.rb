@@ -24,4 +24,21 @@ class PlanInstancesController < ApplicationController
     plan_instance_user.update(removed: true)
     redirect_to plans_path, notice: 'Plan stopped.'
   end
+
+  def update_reading_status
+    plan_instance_user = PlanInstanceUser.find_by(id: params[:plan_instance_user_id], user: current_user)
+
+    if plan_instance_user
+      plan_instance_reading = PlanInstanceReading.find_or_initialize_by(
+        plan_instance_user: plan_instance_user,
+        day_number: params[:day_number],
+        reading_index: params[:reading_index]
+      )
+      plan_instance_reading.completed = params[:completed]
+      plan_instance_reading.save!
+      render json: { success: true }
+    else
+      render json: { success: false, error: 'Plan instance user not found or not authorized' }, status: :not_found
+    end
+  end
 end

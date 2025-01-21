@@ -40,9 +40,22 @@ interface IPlanUserReading {
   completed: boolean;
 }
 
+interface IPlanInstanceUser {
+  id: number;
+  plan_instance_id: number;
+  user_id: number;
+  completed: boolean;
+  creator: boolean;
+  removed: boolean;
+  approved: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 interface IWindow extends Window {
   planData: IPlan;
   planInstanceData: IPlanInstance;
+  planInstanceUser: IPlanInstanceUser;
   planReadingData: IPlanUserReading[];
 }
 
@@ -151,6 +164,7 @@ interface IPlanInstanceProps {
   plan: IPlan;
   planInstance: IPlanInstance;
   planReadingData: IPlanUserReading[];
+  planInstanceUser: IPlanInstanceUser;
 }
 
 interface IPlanReadingMap {
@@ -159,7 +173,7 @@ interface IPlanReadingMap {
   };
 }
 
-function PlanInstance({ plan, planInstance, planReadingData }: IPlanInstanceProps) {
+function PlanInstance({ plan, planInstance, planReadingData, planInstanceUser }: IPlanInstanceProps) {
   const [selectedReading, setSelectedReading] = useState<IPlanReading | null>(null);
   const [selectedDay, setSelectedDay] = useState<IPlanDay | null>(null);
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
@@ -201,7 +215,7 @@ function PlanInstance({ plan, planInstance, planReadingData }: IPlanInstanceProp
     return planReadingMap[dayNumber]?.[readingIndex] ?? false;
   };
 
-  const onChangeCompletion = (isChecked: boolean, dayNumber: number, readingIndex: number) => {
+  const onChangeCompletion = async (isChecked: boolean, dayNumber: number, readingIndex: number) => {
     setPlanReadingMap(prevMap => {
       const newMap = { ...prevMap };
       if (!newMap[dayNumber]) {
@@ -210,7 +224,22 @@ function PlanInstance({ plan, planInstance, planReadingData }: IPlanInstanceProp
       newMap[dayNumber][readingIndex] = isChecked;
       return newMap;
     });
-    // TODO make API call to update reading completion server-side
+    const response = await fetch(`/plan_instances/${planInstance.id}/update_reading_status`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      },
+      body: JSON.stringify({
+        plan_instance_user_id: planInstanceUser.id,
+        day_number: dayNumber,
+        reading_index: readingIndex,
+        completed: isChecked
+      })
+    });
+    if (!response.ok) {
+      alert('Unable to update reading completion status');
+    }
   };
 
   return (
@@ -247,9 +276,8 @@ function PlanInstance({ plan, planInstance, planReadingData }: IPlanInstanceProp
   );
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const planData = window.planData;
-  const planInstanceData = window.planInstanceData;
-  const planReadingData = window.planReadingData;
-  render(<PlanInstance plan={planData} planInstance={planInstanceData} planReadingData={planReadingData} />, document.getElementById('plan-instance-root'));
-});
+const planData = window.planData;
+const planInstanceData = window.planInstanceData;
+const planInstanceUser = window.planInstanceUser;
+const planReadingData = window.planReadingData;
+render(<PlanInstance plan={planData} planInstance={planInstanceData} planReadingData={planReadingData} planInstanceUser={planInstanceUser} />, document.getElementById('plan-instance-root'));
