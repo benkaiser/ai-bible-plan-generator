@@ -7,7 +7,7 @@ class PlansController < ApplicationController
 
   def index
     @created_plans = current_user.plans
-    @active_plan_instances = current_user.active_plan_instances
+    @active_plan_instance_users = current_user.active_plan_instance_users
   end
 
   def new

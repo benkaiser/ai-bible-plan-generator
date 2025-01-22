@@ -1,5 +1,5 @@
 import { h, render } from 'preact';
-import { useMemo, useState } from 'preact/hooks';
+import { useCallback, useMemo, useState } from 'preact/hooks';
 import ReactBible from './components/bible/ReactBible';
 
 interface IPlanReading {
@@ -76,7 +76,7 @@ function PlanReading({ reading, isReadingCompleted, onCheckboxChange, onClick }:
       }
       onClick();
     }}>
-      { reading === 'overview' ? 'Overview' : `${reading.book} ${reading.chapter}:${reading.verse_range}` }
+      { reading === 'overview' ? 'Overview' : `${reading.book} ${reading.chapter}${reading.verse_range ? ':' : ''}${reading.verse_range}` }
       <input type="checkbox" class="form-check-input" checked={isReadingCompleted} onChange={(event: Event) => onCheckboxChange((event.target as HTMLInputElement).checked)} />
     </li>
   );
@@ -177,6 +177,7 @@ function PlanInstance({ plan, planInstance, planReadingData, planInstanceUser }:
   const [selectedReading, setSelectedReading] = useState<IPlanReading | null>(null);
   const [selectedDay, setSelectedDay] = useState<IPlanDay | null>(null);
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
+  const [isReadingCompleted, setIsReadingCompleted] = useState(planInstanceUser.completed);
   const [planReadingMap, setPlanReadingMap] = useState<IPlanReadingMap>(() => {
     const map: IPlanReadingMap = {};
     planReadingData.forEach(reading => {
@@ -215,7 +216,7 @@ function PlanInstance({ plan, planInstance, planReadingData, planInstanceUser }:
     return planReadingMap[dayNumber]?.[readingIndex] ?? false;
   };
 
-  const onChangeCompletion = async (isChecked: boolean, dayNumber: number, readingIndex: number) => {
+  const onChangeCompletion = useCallback(async (isChecked: boolean, dayNumber: number, readingIndex: number) => {
     setPlanReadingMap(prevMap => {
       const newMap = { ...prevMap };
       if (!newMap[dayNumber]) {
@@ -240,7 +241,31 @@ function PlanInstance({ plan, planInstance, planReadingData, planInstanceUser }:
     if (!response.ok) {
       alert('Unable to update reading completion status');
     }
-  };
+    // if all readings are completed, mark the plan_user_instance as completed
+    const allReadingsCompleted = plan.days.every(day => {
+      if (day.readings.length === 0) {
+        return true;
+      }
+      return getReadingCompleted(day.day_number, 0) && day.readings.every((reading, index) => getReadingCompleted(day.day_number, index + 1));
+    });
+    if (isReadingCompleted !== allReadingsCompleted) {
+      setIsReadingCompleted(allReadingsCompleted);
+      const response = await fetch(`/plan_instances/${planInstance.id}/update_plan_status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({
+          plan_instance_user_id: planInstanceUser.id,
+          completed: allReadingsCompleted
+        })
+      });
+      if (!response.ok) {
+        alert('Unable to update plan completion status');
+      }
+    }
+  }, [planInstance.id, planInstanceUser.id, plan.days, getReadingCompleted, isReadingCompleted]);
 
   return (
     <div className="container">

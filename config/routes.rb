@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   resources :plan_instances, only: [:create, :show, :destroy] do
     member do
       patch :update_reading_status
+      patch :update_plan_status
     end
   end
 

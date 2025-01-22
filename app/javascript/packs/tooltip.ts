@@ -29,6 +29,9 @@ const observer = new MutationObserver(function (mutationsList) {
           if (element.matches('[data-bs-toggle="tooltip"]')) {
             new Tooltip(element);
           }
+          if (element.matches('.dropdown-toggle')) {
+            new Dropdown(element);
+          }
           element.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((tooltipElement) => {
             new Tooltip(tooltipElement as Element);
           });
