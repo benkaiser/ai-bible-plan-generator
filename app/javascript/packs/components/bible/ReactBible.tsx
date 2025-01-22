@@ -3,7 +3,7 @@
 // <Bible book="1JN" chapter="1" verseRange="1-2" />
 // it also accepts books as full names, e.g. <Bible book="1 John" chapter="1" verseRange="1-2" />
 // it also supports a "lookup" which includes all 3 props, e.g. <Bible lookup="1JN 1:1-2" />
-import { h, Component } from 'preact';
+import { h, Component, Fragment } from 'preact';
 import { ensureBookShortName } from './utilities';
 import { ChapterContent, ChapterVerse, TranslationBookChapter } from './APIInterfaces';
 import { bibleContainer, lineBreak } from './bible.module.css';
@@ -75,17 +75,28 @@ export default class ReactBible extends Component<IBibleProps, IBibleState> {
             case 'line_break':
               return <div key={index} className={lineBreak}></div>;
             case 'verse':
+              const startsWithPoem = content.content.length > 0 && typeof content.content[0] !== 'string' && 'text' in content.content[0] && content.content[0].poem !== undefined;
+
               return (
                 <p key={index}>
+                  {startsWithPoem && content.number !== 1 && <br />}
                   <sup>{content.number}</sup>
                   {content.content.map((item, subIndex) => {
                     if (typeof item === 'string') {
                       return item;
                     } else if ('text' in item) {
+                      const isPoem = item.poem !== undefined;
+                      const isEvenPoem = isPoem && item.poem % 2 !== 1;
                       return (
-                        <span key={subIndex} className={item.wordsOfJesus ? 'words-of-jesus' : ''}>
-                          {item.text}
-                        </span>
+                        <Fragment key={subIndex}>
+                          {isPoem && subIndex !== 0 && <br />}
+                          <span
+                            className={item.wordsOfJesus ? 'words-of-jesus' : ''}
+                            style={{ marginLeft: isEvenPoem ? '20px' : '0' }}
+                          >
+                            {item.text}
+                          </span>
+                        </Fragment>
                       );
                     } else if ('heading' in item) {
                       return <strong key={subIndex}>{item.heading}</strong>;
