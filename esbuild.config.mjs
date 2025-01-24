@@ -1,5 +1,3 @@
-// esbuild.config.js
-
 import path from 'path';
 import { context } from 'esbuild';
 import glob from 'tiny-glob';
@@ -11,12 +9,15 @@ const escontext = await context({
   bundle: true,
   outdir: path.join(process.cwd(), 'app/assets/builds'),
   loader: { '.js': 'jsx', '.ts': 'ts', '.tsx': 'tsx' },
-  logLevel: watch ? 'info' : 'default',
+  logLevel: watch ? 'info' : 'debug',
   sourcemap: process.env.RAILS_ENV === 'development',
   minify: process.env.RAILS_ENV === 'production',
   jsxFactory: 'h',
   jsxFragment: 'Fragment'
-}).catch(() => process.exit(1));
+}).catch((e) => {
+  console.error(e);
+  process.exit(1)
+});
 
 if (!watch) {
   await escontext.rebuild();
