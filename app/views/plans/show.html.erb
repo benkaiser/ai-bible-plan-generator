@@ -3,7 +3,7 @@
 <p><%= @plan.cover_photo %></p>
 
 <div class="container">
-  <%= button_to 'Start Plan', plan_instances_path(plan_id: @plan.id), method: :post, class: 'btn btn-primary mb-3' %>
+  <%= button_to 'Start Plan', plan_instances_path(plan_id: @plan.id), method: :post, id: 'plan-link', class: 'btn btn-primary mb-3' %>
 
   <% @plan.days.each do |day| %>
     <div class="card mb-3">
@@ -26,5 +26,16 @@
     </div>
   <% end %>
 </div>
+<script>
+  var planLink = document.getElementById("plan-link");
+  const formAction = planLink.parentElement.action;
+  var currentDate = new Date();
+  var formattedDate = currentDate.getFullYear() + '-' +
+                      ('0' + (currentDate.getMonth() + 1)).slice(-2) + '-' +
+                      ('0' + currentDate.getDate()).slice(-2);
+  var url = new URL(formAction);
+  url.searchParams.append('current_date', formattedDate);
+  planLink.parentElement.action = url.toString();
+</script>
 
 <%= javascript_include_tag "tooltip", "data-turbo-track": "reload", async: true %>

@@ -64,5 +64,6 @@
       <% end %>
       <%= yield %>
     </div>
+    <%= javascript_include_tag "tooltip", "data-turbo-track": "reload", async: true %>
   </body>
 </html>

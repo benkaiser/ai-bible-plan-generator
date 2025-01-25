@@ -2,6 +2,7 @@ class PlanInstancesController < ApplicationController
   before_action :authenticate_user!
 
   def create
+    current_date = params[:current_date].present? ? Date.parse(params[:current_date]) : Date.today
     @plan = Plan.find(params[:plan_id])
     @plan_instance = PlanInstance.new(plan: @plan, start_date: Date.today)
 
