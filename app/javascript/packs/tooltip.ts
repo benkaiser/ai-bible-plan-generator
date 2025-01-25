@@ -11,12 +11,18 @@ window.createPopper = createPopper;
 
 var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
 tooltipTriggerList.map(function (tooltipTriggerEl) {
-  return new Tooltip(tooltipTriggerEl)
+  if (!tooltipTriggerEl.hasAttribute('data-processed')) {
+    new Tooltip(tooltipTriggerEl);
+    tooltipTriggerEl.setAttribute('data-processed', 'true');
+  }
 });
 
-var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'))
+var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
 dropdownElementList.map(function (dropdownToggleEl) {
-  return new Dropdown(dropdownToggleEl)
+  if (!dropdownToggleEl.hasAttribute('data-processed')) {
+    new Dropdown(dropdownToggleEl);
+    dropdownToggleEl.setAttribute('data-processed', 'true');
+  }
 });
 
 // MutationObserver to handle dynamically added elements
@@ -26,20 +32,19 @@ const observer = new MutationObserver(function (mutationsList) {
       mutation.addedNodes.forEach((node) => {
         if (node.nodeType === Node.ELEMENT_NODE) {
           const element = node as Element;
-          if (element.matches('[data-bs-toggle="tooltip"]')) {
+          if (element.matches('[data-bs-toggle="tooltip"]') && !element.hasAttribute('data-processed')) {
             new Tooltip(element);
+            element.setAttribute('data-processed', 'true');
           }
-          if (element.matches('.dropdown-toggle')) {
+          if (element.matches('.dropdown-toggle') && !element.hasAttribute('data-processed')) {
             new Dropdown(element);
+            element.setAttribute('data-processed', 'true');
           }
-          element.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((tooltipElement) => {
-            new Tooltip(tooltipElement as Element);
-          });
         }
       });
     }
   }
 });
 
-// Start observing the document body for added nodes
+// Start observing the document for dynamically added elements
 observer.observe(document.body, { childList: true, subtree: true });
