@@ -30,6 +30,18 @@
     </div>
   </div>
 
+  <%= f.hidden_field :timezone, id: "user_timezone" %>
+  <script>
+    var timezoneField = document.getElementById("user_timezone");
+    if (timezoneField) {
+      try {
+        timezoneField.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      } catch (e) {
+        timezoneField.value = "UTC";
+      }
+    }
+  </script>
+
   <div class="mb-3">
     <%= f.submit "Sign up", class: "btn btn-primary" %>
   </div>
