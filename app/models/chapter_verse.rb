@@ -1,0 +1,2 @@
+class ChapterVerse < ApplicationRecord
+end

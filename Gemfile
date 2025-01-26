@@ -47,6 +47,8 @@ gem "thruster", require: false
 gem 'devise'
 gem "ruby-openai"
 gem 'esbuild-rails'
+gem 'csv'
+gem 'activerecord-import'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

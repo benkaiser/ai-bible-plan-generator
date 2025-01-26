@@ -10,9 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_01_25_122241) do
+ActiveRecord::Schema[8.0].define(version: 2025_01_26_063229) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "chapter_verses", force: :cascade do |t|
+    t.integer "number"
+    t.integer "chapterNumber"
+    t.string "bookId"
+    t.text "text"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "plan_instance_comments", force: :cascade do |t|
     t.bigint "plan_instance_id", null: false

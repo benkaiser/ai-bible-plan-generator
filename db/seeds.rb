@@ -7,3 +7,23 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+require 'csv'
+require 'activerecord-import/base'
+
+headers = ['number', 'chapterNumber', 'bookId', 'text']
+
+if ChapterVerse.count == 0
+  chapter_verses = []
+
+  CSV.foreach(Rails.root.join('db/seeds/verses_only.csv'), headers: headers) do |row|
+    chapter_verses << ChapterVerse.new(
+      number: row['number'],
+      chapterNumber: row['chapterNumber'],
+      bookId: row['bookId'],
+      text: row['text']
+    )
+  end
+
+  ChapterVerse.import(chapter_verses)
+end
