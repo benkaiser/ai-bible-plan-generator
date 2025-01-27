@@ -1,4 +1,6 @@
 module BibleHelper
+  include BibleBooks
+
   def ensure_book_short_name(bookname)
     lookup = bookname.downcase
     book = BibleBooks::BOOKS.find do |b|
