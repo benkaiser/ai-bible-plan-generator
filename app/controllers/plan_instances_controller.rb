@@ -1,5 +1,9 @@
 class PlanInstancesController < ApplicationController
+  include ActionController::Live
+  include BibleHelper
   before_action :authenticate_user!
+
+  OVERVIEW_GENERATION_PROMPT = File.read(Rails.root.join('app', 'prompts', 'overview_generation_generic.txt'))
 
   def create
     current_date = params[:current_date].present? ? Date.parse(params[:current_date]) : Date.today
@@ -24,6 +28,87 @@ class PlanInstancesController < ApplicationController
     plan_instance_user = PlanInstanceUser.find_by(plan_instance: @plan_instance, user: current_user)
     plan_instance_user.update(removed: true)
     redirect_to plans_path, notice: 'Plan stopped.'
+  end
+
+  # Post request to generate an AI generated overview for a given day
+  # this endpoint generates the overview and caches it in the database.
+  def day_overview
+    @plan_instance = PlanInstance.find(params[:id])
+    @plan_instance_user = PlanInstanceUser.find_by(plan_instance: @plan_instance, user: current_user)
+    @day_number = params[:day_number].to_i
+    # extract day from plan_instance
+    @day = @plan_instance.plan.days[@day_number - 1]
+    # return an error if @day.day_number == @day_number
+    if @day.nil? || @day['day_number'] != @day_number
+      render json: { success: false, error: 'Day not found' }, status: :not_found
+      return
+    end
+    # for each of the readings, extract the book chapter and verse_range from them. Use them to pull out the
+    # bible verses from the ChapterVerse model.
+    scriptures = ""
+    @readings = @day['readings'].map do |reading|
+      book = ensure_book_short_name(reading['book'])
+      chapter = reading['chapter']
+      verse_range = reading['verse_range']
+
+      verses = ChapterVerse.where(bookId: book, chapterNumber: chapter).order(:number)
+
+      if verse_range.present?
+        range_parts = verse_range.split('-').map(&:to_i)
+        if range_parts.size == 1
+          verses = verses.where(number: range_parts[0])
+        elsif range_parts.size == 2
+          verses = verses.where("number >= ? AND number <= ?", range_parts[0], range_parts[1])
+        end
+      end
+
+      verses
+      verse_reference = if verse_range.present?
+        ":#{verse_range}"
+      else
+        ""
+      end
+      scriptures += "#{short_name_to_long_name(book)} #{chapter}#{verse_reference}\n#{verses.map(&:text).join(' ')}\n"
+    end
+
+    # now actually make the API calls and stream the response
+    response.headers['Content-Type'] = 'text/event-stream'
+
+    client = OpenAI::Client.new()
+
+    # prompt looks like this
+    # This is a bible plan reading application. Here are the Bible verses the user will be reading today:
+    # {scriptures}
+
+    # The bible plan we are reading is titled "{title}". The outline for today is "{outline}", it is day {day} out of {total_days} for this plan.
+    # Your task is to give the user an overview of todays readings within the context of both the plan and todays outline.
+    # You do not need to provide any contents of the verses as they are provided separately to the user, but feel free to reference them.
+    # Repond only in markdown.
+    prompt = OVERVIEW_GENERATION_PROMPT.gsub("{scriptures}", scriptures.to_s).gsub("{title}", @plan_instance.plan.name).gsub("{outline}", @day['outline']).gsub("{day}", @day['day_number'].to_s).gsub("{total_days}", @plan_instance.plan.days.size.to_s)
+
+    # print to rails console
+    puts prompt
+
+    client.chat(
+      parameters: {
+        model: "accounts/fireworks/models/llama-v3p1-8b-instruct", # Required.
+        messages: [
+          {
+            role: "user",
+            content: prompt
+          }], # Required.
+        temperature: 0.5,
+        stream: proc do |chunk, _bytesize|
+          response.stream.write "data: #{chunk.to_json.gsub("\n", "\\n")}\n\n"
+        end
+      }
+    )
+
+    response.stream.write "data: [DONE]\n\n"
+  rescue => e
+    response.stream.write "data: Error: #{e.message}\n\n"
+  ensure
+    response.stream.close
   end
 
   def update_reading_status

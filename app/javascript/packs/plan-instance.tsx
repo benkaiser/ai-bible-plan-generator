@@ -1,6 +1,7 @@
 import { h, render } from 'preact';
 import { useCallback, useMemo, useState } from 'preact/hooks';
 import ReactBible from './components/bible/ReactBible';
+import DayOverview from './components/DayOverview';
 
 interface IPlanReading {
   book: string;
@@ -290,7 +291,7 @@ function PlanInstance({ plan, planInstance, planReadingData, planInstanceUser }:
                 <i className="bi bi-arrow-left"></i> Back
               </button>
               <h2>Day {selectedDay.day_number}: {selectedDay.outline}</h2>
-              <p>Overview of the day.</p>
+              <DayOverview day={selectedDay.day_number} planInstance={planInstance} />
             </div>
           ) : (
             <div>Select a reading or overview to see details</div>

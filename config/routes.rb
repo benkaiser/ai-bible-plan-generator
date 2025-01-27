@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     member do
       patch :update_reading_status
       patch :update_plan_status
+      post :day_overview
     end
   end
 

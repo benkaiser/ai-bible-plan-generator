@@ -13,7 +13,13 @@ const escontext = await context({
   sourcemap: process.env.RAILS_ENV === 'development',
   minify: process.env.RAILS_ENV === 'production',
   jsxFactory: 'h',
-  jsxFragment: 'Fragment'
+  jsxFragment: 'Fragment',
+  jsxImportSource: 'preact',
+  jsx: 'automatic',
+  alias: {
+    'react': 'preact/compat',
+    'react-dom': 'preact/compat',
+  },
 }).catch((e) => {
   console.error(e);
   process.exit(1)
