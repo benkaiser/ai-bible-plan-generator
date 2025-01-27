@@ -1,1 +1,0 @@
-require Rails.root.join('lib/books.rb')

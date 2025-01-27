@@ -3,7 +3,7 @@ module BibleHelper
 
   def ensure_book_short_name(bookname)
     lookup = bookname.downcase
-    book = BibleBooks::BOOKS.find do |b|
+    book = BOOKS.find do |b|
       b[:name].downcase == lookup || (b[:other_names]&.map(&:downcase)&.include?(lookup))
     end
 
@@ -15,11 +15,11 @@ module BibleHelper
   end
 
   def short_name_to_long_name(short_name)
-    book = BibleBooks::BOOKS.find { |b| b[:id] == short_name }
+    book = BOOKS.find { |b| b[:id] == short_name }
     book[:name]
   end
 
   def all_books
-    BibleBooks::BOOKS
+    BOOKS
   end
 end
