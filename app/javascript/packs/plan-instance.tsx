@@ -1,7 +1,8 @@
 import { h, render } from 'preact';
-import { useCallback, useMemo, useState } from 'preact/hooks';
+import { useCallback, useEffect, useState } from 'preact/hooks';
 import ReactBible from './components/bible/ReactBible';
 import DayOverview from './components/DayOverview';
+import Collapse from 'react-bootstrap/Collapse';
 
 interface IPlanReading {
   book: string;
@@ -71,7 +72,7 @@ interface IPlanReadingProps {
 
 function PlanReading({ reading, isReadingCompleted, onCheckboxChange, onClick }: IPlanReadingProps) {
   return (
-    <li className="list-group-item d-flex justify-content-between align-items-center" onClick={(event: MouseEvent) => {
+    <li className={`list-group-item d-flex justify-content-between align-items-center ${isReadingCompleted ? 'list-group-item-success' : ''}`} onClick={(event: MouseEvent) => {
       if (event.target instanceof HTMLInputElement) {
         return;
       }
@@ -90,17 +91,19 @@ interface IPlanDayProps {
   onOverviewClick: () => void;
   getReadingCompleted: (dayNumber: number, readingIndex: number) => boolean;
   onChangeCompletion: (isChecked: boolean, dayNumber: number, readingIndex: number) => void;
+  getDayCompleted: (dayNumber: number) => boolean;
 }
 
-function PlanDay({ day, startDate, onReadingClick, onOverviewClick, getReadingCompleted, onChangeCompletion }: IPlanDayProps) {
+function PlanDay({ day, startDate, onReadingClick, onOverviewClick, getReadingCompleted, getDayCompleted, onChangeCompletion }: IPlanDayProps) {
   const dayDate = new Date(startDate);
   dayDate.setDate(dayDate.getDate() + day.day_number - 1);
   const today = new Date();
   const isToday = dayDate.toDateString() === today.toDateString();
   const badgeClass = isToday ? 'bg-primary' : 'bg-secondary';
+  const isCompleted = getDayCompleted(day.day_number);
 
   return (
-    <div className="card mb-3">
+    <div className={`card mb-3 ${isCompleted ? 'bg-success text-white' : ''}`}>
       <div className="card-header">
         Day {day.day_number}: {day.outline}
         <span className={`badge ${badgeClass} ms-2`}>{dayDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
@@ -133,6 +136,7 @@ interface IPlanSidebarProps {
   onReadingClick: (reading: IPlanReading) => void;
   onOverviewClick: (day: IPlanDay) => void;
   getReadingCompleted: (dayNumber: number, readingIndex: number) => boolean;
+  getDayCompleted: (dayNumber: number) => boolean;
   onChangeCompletion: (isChecked: boolean, dayNumber: number, readingIndex: number) => void;
 }
 
@@ -142,11 +146,46 @@ function PlanSidebar({
   onReadingClick,
   onOverviewClick,
   getReadingCompleted,
+  getDayCompleted,
   onChangeCompletion
 }: IPlanSidebarProps) {
+  const [completedDays, setCompletedDays] = useState<IPlanDay[]>([]);
+  const [showCompleted, setShowCompleted] = useState(false);
+
+  useEffect(() => {
+    const completed = plan.days.filter(day => getDayCompleted(day.day_number));
+    setCompletedDays(completed);
+  }, []);
+
   return (
     <div>
-      {plan.days.map(day => (
+      {completedDays.length > 0 && (
+        <button
+          onClick={() => setShowCompleted(!showCompleted)}
+          aria-controls="completedDaysCollapse"
+          aria-expanded={showCompleted}
+          className="btn btn-outline-secondary mb-3"
+        >
+          {showCompleted ? 'Hide Completed Days' : 'Show Completed Days'}
+        </button>
+      )}
+      <Collapse in={showCompleted}>
+        <div id="completedDaysCollapse">
+          {completedDays.map(day => (
+            <PlanDay
+              day={day}
+              key={day.day_number}
+              startDate={startDate}
+              onReadingClick={onReadingClick}
+              onOverviewClick={() => onOverviewClick(day)}
+              getReadingCompleted={getReadingCompleted}
+              getDayCompleted={getDayCompleted}
+              onChangeCompletion={onChangeCompletion}
+            />
+          ))}
+        </div>
+      </Collapse>
+      {plan.days.filter(day => !completedDays.includes(day)).map(day => (
         <PlanDay
           day={day}
           key={day.day_number}
@@ -154,6 +193,7 @@ function PlanSidebar({
           onReadingClick={onReadingClick}
           onOverviewClick={() => onOverviewClick(day)}
           getReadingCompleted={getReadingCompleted}
+          getDayCompleted={getDayCompleted}
           onChangeCompletion={onChangeCompletion}
         />
       ))}
@@ -217,6 +257,17 @@ function PlanInstance({ plan, planInstance, planReadingData, planInstanceUser }:
     return planReadingMap[dayNumber]?.[readingIndex] ?? false;
   };
 
+  const getDayCompleted = (dayNumber: number) => {
+    const day = plan.days.find(day => day.day_number === dayNumber);
+    if (!day) {
+      return false;
+    }
+    if (day.readings.length === 0) {
+      return true;
+    }
+    return getReadingCompleted(dayNumber, 0) && day.readings.every((reading, index) => getReadingCompleted(dayNumber, index + 1));
+  }
+
   const onChangeCompletion = useCallback(async (isChecked: boolean, dayNumber: number, readingIndex: number) => {
     setPlanReadingMap(prevMap => {
       const newMap = { ...prevMap };
@@ -273,7 +324,7 @@ function PlanInstance({ plan, planInstance, planReadingData, planInstanceUser }:
       <div className="row">
         {isSidebarVisible && (
           <div className="col-12 col-md-3" id="plan-sidebar">
-            <PlanSidebar plan={plan} startDate={planInstance.start_date} onReadingClick={showReadingDetails} onOverviewClick={showOverviewDetails} getReadingCompleted={getReadingCompleted} onChangeCompletion={onChangeCompletion} />
+            <PlanSidebar plan={plan} startDate={planInstance.start_date} onReadingClick={showReadingDetails} onOverviewClick={showOverviewDetails} getReadingCompleted={getReadingCompleted} getDayCompleted={getDayCompleted} onChangeCompletion={onChangeCompletion} />
           </div>
         )}
         <div className={`col-12 ${isSidebarVisible ? 'col-md-9' : ''}`} id="right-section">
