@@ -2,9 +2,9 @@ This application is attempting to generate bible reading plans. Previously we ge
 ```
 {day}
 ```
-However, one of the readings present in the day was not found in the bible translation. This is the reading:
+However, one of the readings present in the day was not found in the bible translation, either the formatting was incorrect (e.g. chapter in book name, chapter in verse range) or it is a verse that is excluded in modern translations. This is the invalid reading:
 ```
 {reading}
 ```
-Please fix the reading, and provide the entire fixed day as a JSON object.
+Please fix the reading so that it is valid, and provide the entire fixed day as a JSON object.
 Respond only in JSON format.
