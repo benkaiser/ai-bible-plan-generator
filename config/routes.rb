@@ -13,6 +13,7 @@ Rails.application.routes.draw do
 
   # API routes
   post 'api/generate_plan', to: 'plans#generate_plan'
+  post 'api/fix_reading', to: 'plans#fix_reading'
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

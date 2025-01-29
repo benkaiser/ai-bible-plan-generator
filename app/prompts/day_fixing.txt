@@ -1,0 +1,10 @@
+This application is attempting to generate bible reading plans. Previously we generated a day of the plan as this JSON:
+```
+{day}
+```
+However, one of the readings present in the day was not found in the bible translation. This is the reading:
+```
+{reading}
+```
+Please fix the reading, and provide the entire fixed day as a JSON object.
+Respond only in JSON format.

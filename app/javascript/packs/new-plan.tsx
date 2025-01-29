@@ -2,6 +2,8 @@ import { parse } from 'best-effort-json-parser';
 import { render, h, Component, Fragment, createRef } from 'preact';
 import PlanForm from './components/PlanForm';
 import { IPlan, IPlanDay, IPlanRequest, IReading } from './interfaces/IPlan';
+import { checkScriptureRangeValidBSB } from './utilities/checkScriptureExistsBSB';
+import { ensureBookShortName } from './components/bible/utilities';
 
 const planContainer = document.getElementById('plan-container');
 
@@ -61,9 +63,42 @@ function PlanReading({ reading }: { reading: IReading }) {
 interface IPlanActionsProps {
   plan: IPlan;
   completed: boolean;
+  generating: boolean;
+  isValidating: boolean;
+  isValid: boolean;
 }
 
 function PlanActions(props: IPlanActionsProps) {
+  if (props.generating) {
+    // show a boostrap 5 spinner and say "Generating..."
+    return (
+      <div className="d-flex">
+        <div className="spinner-border text-primary" role="status">
+        </div>
+        <div className="ms-2">Generating...</div>
+      </div>
+    );
+  }
+  if (props.isValidating) {
+    // show a boostrap 5 spinner and say "Validating..."
+    return (
+      <div className="d-flex">
+        <div className="spinner-border text-primary" role="status">
+        </div>
+        <div className="ms-2">Validating...</div>
+      </div>
+    );
+  }
+  if (!props.isValid) {
+    // show an info section explaining that the plan is invalid and they should try with a different prompt
+    return (
+      <div className="alert alert-danger" role="alert">
+        <h4 className="alert-heading">Invalid Plan</h4>
+        <p>The AI generated a plan with scriptures we could not find. Please try a different prompt.</p>
+      </div>
+    )
+  }
+
   const onSubmit = () => {
     const nameField = document.getElementById('plan-name') as HTMLInputElement;
     nameField.value = props.plan.title;
@@ -83,6 +118,8 @@ function PlanActions(props: IPlanActionsProps) {
 
 interface IPlanManagerState {
   isGenerating: boolean;
+  isValidating: boolean;
+  isValid: boolean;
   generationCompleted: boolean;
   plan: IPlan | null;
 }
@@ -90,15 +127,79 @@ interface IPlanManagerState {
 class PlanManager extends Component<{}, IPlanManagerState> {
   constructor(props) {
     super(props);
-    this.state = { plan: null, isGenerating: false, generationCompleted: false };
+    this.state = { plan: null, isGenerating: false, isValid: false, isValidating: false, generationCompleted: false };
   }
 
   setPlan(plan: IPlan) {
     this.setState({ plan });
   }
 
-  onStreamComplete() {
-    this.setState({ isGenerating: false, generationCompleted: true });
+  onStreamComplete(latestPlan: IPlan) {
+    this.setState({ generationCompleted: true, isGenerating: false, isValidating: true });
+    this.validatePlan(latestPlan).then((valid: boolean) => {
+      this.setState({ isValidating: false, isValid: valid });
+    });
+  }
+
+  validatePlan(latestPlan: IPlan) {
+    let fixingFunctions = [];
+    let totalReadings = 0;
+    let invalidReadings = 0;
+
+    latestPlan?.days.forEach(day => {
+      day.readings.forEach(reading => {
+        totalReadings++;
+        let isValid = true;
+        try {
+          const bookId: string = ensureBookShortName(reading.book);
+          isValid = checkScriptureRangeValidBSB(bookId, reading.chapter, reading.verse_range);
+        } catch (e) {
+          // book is not valid
+          isValid = false;
+        }
+        if (!isValid) {
+          invalidReadings++;
+          fixingFunctions.push(() => this.fixReading(day, reading));
+        }
+      });
+    });
+    if (totalReadings === 0 || invalidReadings / totalReadings > 0.1) {
+      return Promise.resolve(false);
+    } else if (fixingFunctions.length === 0) {
+      return Promise.resolve(true);
+    } else {
+      return Promise.all(fixingFunctions.map(fn => fn())).then(() => {
+        return true;
+      }).catch(() => {
+        return false;
+      });
+    }
+  }
+
+  async fixReading(day: IPlanDay, reading: IReading) {
+    const response = await fetch('/api/fix_reading', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')!.getAttribute('content') as string
+      },
+      body: JSON.stringify({ day: day, reading: reading })
+    });
+    const newDay = await response.json();
+    // check if each of the readings are now valid, if not, throw an error
+    newDay.readings.forEach(newReading => {
+      const bookId: string = ensureBookShortName(newReading.book);
+      if (!checkScriptureRangeValidBSB(bookId, newReading.chapter, newReading.verse_range)) {
+        throw new Error('Invalid reading: ' + newReading.book + ' ' + newReading.chapter + ':' + newReading.verse_range);
+      }
+    });
+    // If all readings are valid, replace that specific day in the plan with the new day, making sure to not mutate the original plan
+    this.setState({
+      plan: {
+        ...this.state.plan,
+        days: this.state.plan.days.map(day => day.day_number === newDay.day_number ? newDay : day)
+      }
+    });
   }
 
   render() {
@@ -107,7 +208,7 @@ class PlanManager extends Component<{}, IPlanManagerState> {
         <PlanForm allowSubmit={!this.state.isGenerating} onSubmit={this.onSubmit} />
         <Plan plan={this.state.plan} />
         { (this.state.isGenerating || this.state.generationCompleted) &&
-          <PlanActions plan={this.state.plan} completed={this.state.generationCompleted} /> }
+          <PlanActions plan={this.state.plan} isValidating={this.state.isValidating} isValid={this.state.isValid} generating={this.state.isGenerating} completed={this.state.generationCompleted} /> }
       </Fragment>
     );
   }
@@ -150,8 +251,7 @@ class PlanManager extends Component<{}, IPlanManagerState> {
               const data = line.slice(6);
               if (data === '[DONE]') {
                 console.log('Stream complete');
-                this.onStreamComplete();
-                console.log(completion);
+                this.onStreamComplete(parse(completion));
               } else {
                 completion += data;
                 try {
