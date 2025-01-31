@@ -33,12 +33,9 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-              <%= link_to 'Home', root_path, class: "nav-link #{'active' if current_page?(root_path)}" %>
-            </li>
             <% if user_signed_in? %>
               <li class="nav-item">
-                <%= link_to 'My Plans', plans_path, class: "nav-link #{'active' if current_page?(plans_path)}" %>
+                <%= link_to 'Home', plans_path, class: "nav-link #{'active' if current_page?(plans_path)}" %>
               </li>
               <li class="nav-item">
                 <%= link_to 'Account', edit_user_registration_path, class: "nav-link #{'active' if current_page?(edit_user_registration_path)}" %>
@@ -47,6 +44,9 @@
                 <%= link_to 'Logout', destroy_user_session_path, class: "nav-link", data: { "turbo-method": :delete } %>
               </li>
             <% else %>
+              <li class="nav-item">
+                <%= link_to 'Home', root_path, class: "nav-link #{'active' if current_page?(root_path)}" %>
+              </li>
               <li class="nav-item">
                 <%= link_to 'Login', new_user_session_path, class: "nav-link #{'active' if current_page?(new_user_session_path)}" %>
               </li>
