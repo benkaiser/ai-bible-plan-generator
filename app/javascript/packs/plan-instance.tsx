@@ -317,7 +317,7 @@ function PlanInstance({ plan, planInstance, planReadingData, planInstanceUser }:
   }, [planInstance.id, planInstanceUser.id, plan.days, getReadingCompleted, isReadingCompleted]);
 
   return (
-    <div className="container">
+    <div>
       <div className="row">
         {isSidebarVisible && (
           <div className="col-12 col-md-3" id="plan-sidebar">

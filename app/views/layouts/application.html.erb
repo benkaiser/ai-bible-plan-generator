@@ -51,6 +51,11 @@
                 <%= link_to 'Login', new_user_session_path, class: "nav-link #{'active' if current_page?(new_user_session_path)}" %>
               </li>
             <% end %>
+            <li class="nav-item">
+              <button id="theme-toggle" class="nav-link">
+                <i id="theme-icon" class="bi"></i>
+              </button>
+            </li>
           </ul>
         </div>
       </div>
