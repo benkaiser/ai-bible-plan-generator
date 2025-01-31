@@ -12,7 +12,7 @@ function Plan({ plan }: { plan: IPlan }) {
     return null;
   }
   return (
-    <section className="border rounded my-4 p-4 bg-light bg-gradient">
+    <section className="border border-primary rounded my-4 p-4">
       <h2>{plan.title}</h2>
       <p>{plan.description}</p>
       <div className="plan-container py-2">
