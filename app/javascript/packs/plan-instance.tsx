@@ -1,5 +1,5 @@
 import { h, render } from 'preact';
-import { useCallback, useEffect, useState } from 'preact/hooks';
+import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
 import ReactBible from './components/bible/ReactBible';
 import DayOverview from './components/DayOverview';
 import Collapse from 'react-bootstrap/Collapse';
@@ -99,7 +99,7 @@ function PlanDay({ day, startDate, onReadingClick, onOverviewClick, getReadingCo
   dayDate.setDate(dayDate.getDate() + day.day_number - 1);
   const today = new Date();
   const isToday = dayDate.toDateString() === today.toDateString();
-  const badgeClass = isToday ? 'bg-primary' : 'bg-secondary';
+  const badgeClass = isToday ? 'bg-primary' : 'bg-light border border-primary';
   const isCompleted = getDayCompleted(day.day_number);
 
   return (
@@ -149,13 +149,10 @@ function PlanSidebar({
   getDayCompleted,
   onChangeCompletion
 }: IPlanSidebarProps) {
-  const [completedDays, setCompletedDays] = useState<IPlanDay[]>([]);
-  const [showCompleted, setShowCompleted] = useState(false);
-
-  useEffect(() => {
-    const completed = plan.days.filter(day => getDayCompleted(day.day_number));
-    setCompletedDays(completed);
+  const completedDays = useMemo<IPlanDay[]>(() => {
+    return plan.days.filter(day => getDayCompleted(day.day_number));
   }, []);
+  const [showCompleted, setShowCompleted] = useState(false);
 
   return (
     <div>
@@ -164,7 +161,7 @@ function PlanSidebar({
           onClick={() => setShowCompleted(!showCompleted)}
           aria-controls="completedDaysCollapse"
           aria-expanded={showCompleted}
-          className="btn btn-outline-secondary mb-3"
+          className="btn btn-outline-info mb-3"
         >
           {showCompleted ? 'Hide Completed Days' : 'Show Completed Days'}
         </button>
