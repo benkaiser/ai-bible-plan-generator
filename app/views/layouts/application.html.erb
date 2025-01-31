@@ -36,10 +36,10 @@
             <li class="nav-item">
               <%= link_to 'Home', root_path, class: "nav-link #{'active' if current_page?(root_path)}" %>
             </li>
-            <li class="nav-item">
-              <%= link_to 'My Plans', plans_path, class: "nav-link #{'active' if current_page?(plans_path)}" %>
-            </li>
             <% if user_signed_in? %>
+              <li class="nav-item">
+                <%= link_to 'My Plans', plans_path, class: "nav-link #{'active' if current_page?(plans_path)}" %>
+              </li>
               <li class="nav-item">
                 <%= link_to 'Account', edit_user_registration_path, class: "nav-link #{'active' if current_page?(edit_user_registration_path)}" %>
               </li>

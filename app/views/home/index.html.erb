@@ -1,2 +1,28 @@
-<h1>Home#index changes</h1>
-<p>Find me more</p>
+<div class="jumbotron text-center my-5">
+  <h1 class="display-4">Welcome to AI Bible Plan Generator</h1>
+  <p class="lead">Generate personalized Bible reading plans with AI insights for each day.</p>
+  <hr class="my-4">
+  <p class="col-6 mx-auto mb-4">Input a prompt and let our AI create a customized Bible reading plan for you. Each day, receive an AI-generated overview to help you understand the meaning of the passages you are reading.</p>
+  <% if user_signed_in? %>
+    <a class="btn btn-primary btn-lg" href="<%= plans_path %>" role="button">Get Started</a>
+  <% else %>
+    <a class="btn btn-primary btn-lg" href="<%= new_user_registration_path %>" role="button">Sign Up</a>
+  <% end %>
+</div>
+<div class="row">
+  <div class="col-md-4">
+    <h2>Personalized Plans</h2>
+    <p>Create Bible reading plans based to help you where you are at in your life.
+    </p>
+  </div>
+  <div class="col-md-4">
+    <h2>Daily Overview</h2>
+    <p>
+      Each day of your plans has an AI generated overview to help guide you through the plan and understand the passages you are reading.
+    </p>
+  </div>
+  <div class="col-md-4">
+    <h2>Easy to Use</h2>
+    <p>Simply input a prompt and let our AI do the rest. It's that easy!</p>
+  </div>
+</div>
