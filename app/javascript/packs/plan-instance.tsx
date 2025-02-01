@@ -7,7 +7,7 @@ import Collapse from 'react-bootstrap/Collapse';
 interface IPlanReading {
   book: string;
   chapter: number;
-  verse_range: string;
+  verse_range?: string;
   why_selected: string;
 }
 
@@ -78,7 +78,7 @@ function PlanReading({ reading, isReadingCompleted, onCheckboxChange, onClick }:
       }
       onClick();
     }}>
-      { reading === 'overview' ? 'Overview' : `${reading.book} ${reading.chapter}${reading.verse_range ? ':' : ''}${reading.verse_range}` }
+      { reading === 'overview' ? 'Overview' : `${reading.book} ${reading.chapter}${reading.verse_range ? ':' + reading.verse_range : ''}` }
       <input type="checkbox" class="form-check-input" checked={isReadingCompleted} onChange={(event: Event) => onCheckboxChange((event.target as HTMLInputElement).checked)} />
     </li>
   );
@@ -330,7 +330,7 @@ function PlanInstance({ plan, planInstance, planReadingData, planInstanceUser }:
               <button className="btn btn-link d-md-none" type="button" onClick={showSidebar}>
                 <i className="bi bi-arrow-left"></i> Back
               </button>
-              <h2>{`${selectedReading.book} ${selectedReading.chapter}:${selectedReading.verse_range}`}</h2>
+              <h2>{`${selectedReading.book} ${selectedReading.chapter}${selectedReading.verse_range ? ':' + selectedReading.verse_range : ''}`}</h2>
               <ReactBible book={selectedReading.book} chapter={selectedReading.chapter} verseRange={selectedReading.verse_range} />
             </div>
           ) : selectedDay ? (

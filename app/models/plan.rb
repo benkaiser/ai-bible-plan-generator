@@ -30,8 +30,8 @@ class Plan < ApplicationRecord
       end
 
       day['readings'].each do |reading|
-        unless reading.is_a?(Hash) && reading.key?('book') && reading.key?('chapter') && (reading.key?('verse_range') || reading.key?('whole_chapter'))
-          errors.add(:days, 'each reading must be a hash with book, chapter, and either verse_range or whole_chapter keys')
+        unless reading.is_a?(Hash) && reading.key?('book') && reading.key?('chapter')
+          errors.add(:days, 'each reading must be a hash with book, chapter')
         end
       end
     end

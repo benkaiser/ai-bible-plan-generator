@@ -26,7 +26,8 @@ class PlansController < ApplicationController
     if @plan.save
       redirect_to plans_path, notice: 'Plan was successfully created.'
     else
-      render :new
+      logger.error "Failed to create plan: #{@plan.errors.full_messages.join(', ')}"
+      render :new, status: :unprocessable_entity, alert: 'Failed to create plan.'
     end
   end
 

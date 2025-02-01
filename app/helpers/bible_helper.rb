@@ -4,7 +4,7 @@ module BibleHelper
   def ensure_book_short_name(bookname)
     lookup = bookname.downcase
     book = BOOKS.find do |b|
-      b[:name].downcase == lookup || (b[:other_names]&.map(&:downcase)&.include?(lookup))
+      b[:name].downcase == lookup || (b[:otherNames]&.map(&:downcase)&.include?(lookup))
     end
 
     if book

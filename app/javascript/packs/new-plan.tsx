@@ -159,6 +159,7 @@ class PlanManager extends Component<{}, IPlanManagerState> {
         }
         if (!isValid) {
           invalidReadings++;
+          console.log('Invalid reading:', reading);
           fixingFunctions.push(() => this.fixReading(day, reading));
         }
       });

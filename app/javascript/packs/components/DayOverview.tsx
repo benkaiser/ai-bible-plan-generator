@@ -43,6 +43,9 @@ class DayOverview extends Component<IDayOverviewProps, IDayOverviewState> {
         let stream = events(response);
         let completion = '';
         for await (let event of stream) {
+          if (event.data === '[DONE]') {
+            break;
+          }
           const pieceOfData = JSON.parse(event.data);
           completion += pieceOfData.choices[0]?.delta?.content || '';
           this.setState({ dayOverview: completion });
@@ -50,6 +53,7 @@ class DayOverview extends Component<IDayOverviewProps, IDayOverviewState> {
       }
     })
     .catch(error => {
+      this.setState({ dayOverview: 'Unable to generate plan overview. Please try again later.' });
       console.error('Error:', error);
     });
   }
