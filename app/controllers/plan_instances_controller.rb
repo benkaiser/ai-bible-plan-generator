@@ -8,7 +8,7 @@ class PlanInstancesController < ApplicationController
   def create
     current_date = params[:current_date].present? ? Date.parse(params[:current_date]) : Date.today
     @plan = Plan.find(params[:plan_id])
-    @plan_instance = PlanInstance.new(plan: @plan, start_date: Date.today)
+    @plan_instance = PlanInstance.new(plan: @plan, start_date: current_date)
 
     if @plan_instance.save
       PlanInstanceUser.create(plan_instance: @plan_instance, user: current_user, approved: true, creator: true, completed: false, removed: false)
