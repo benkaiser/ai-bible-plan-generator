@@ -23,6 +23,8 @@ services:
       - db
   migrate:
     build: .
+    env_file:
+      - .env
     environment:
       RAILS_ENV: development
       SECRET_KEY_BASE: ${SECRET_KEY_BASE:-$(ruby -e "require 'securerandom'; puts SecureRandom.hex(64)")}

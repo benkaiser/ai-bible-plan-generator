@@ -5,8 +5,8 @@
 // it also supports a "lookup" which includes all 3 props, e.g. <Bible lookup="1JN 1:1-2" />
 import { h, Component, Fragment, RefObject } from 'preact';
 import { ensureBookShortName } from './utilities';
-import { ChapterContent, ChapterVerse, TranslationBookChapter } from './APIInterfaces';
-import { bibleContainer, lineBreak, fadeIn } from './bible.module.css';
+import { ChapterContent, ChapterVerse, FormattedText, InlineHeading, InlineLineBreak, TranslationBookChapter, VerseFootnoteReference } from './APIInterfaces';
+import { bibleContainer, lineBreak, fadeIn, firstPoemClass, oddPoemClass, evenPoemClass } from './bible.module.css';
 
 interface IBibleProps {
   book?: string;
@@ -120,6 +120,8 @@ export default class ReactBible extends Component<IBibleProps, IBibleState> {
     return (
       <div className={bibleContainer}>
         {renderedVerses.map((content, index) => {
+          let lastPoemNumber: number = 0;
+          let lastVerseItem: (string | FormattedText | InlineHeading | InlineLineBreak | VerseFootnoteReference);
           switch (content.type) {
             case 'heading':
               return <h3 key={index} className={fadeIn}>{content.content.join(' ')}</h3>;
@@ -129,21 +131,34 @@ export default class ReactBible extends Component<IBibleProps, IBibleState> {
               const startsWithPoem = content.content.length > 0 && typeof content.content[0] !== 'string' && 'text' in content.content[0] && content.content[0].poem !== undefined;
               return (
                 <p key={index} className={fadeIn} ref={el => this._verseRefs[content.number] = el}>
-                  {startsWithPoem && content.number !== 1 && <br />}
-                  <sup>{content.number}</sup>
+                  { !startsWithPoem && <sup>{content.number}</sup> }
                   {content.content.map((item, subIndex) => {
                     if (typeof item === 'string') {
                       return item;
                     } else if ('text' in item) {
                       const isPoem = item.poem !== undefined;
-                      const isEvenPoem = isPoem && item.poem % 2 !== 1;
+                      const isLineBreak = isPoem && lastPoemNumber !== item.poem && subIndex !== 0;
+                      let poemClassName = '';
+                      if (isPoem) {
+                        if (lastPoemNumber === 0) {
+                          poemClassName = firstPoemClass;
+                        } else if (lastPoemNumber === item.poem && lastVerseItem && (lastVerseItem as VerseFootnoteReference).noteId !== undefined) {
+                          poemClassName = '';
+                        } else if (item.poem % 2 == 1) {
+                          poemClassName = oddPoemClass;
+                        } else {
+                          poemClassName = evenPoemClass;
+                        }
+                      }
+                      lastPoemNumber = item.poem || 0;
+                      lastVerseItem = item;
                       return (
                         <Fragment key={subIndex}>
-                          {isPoem && subIndex !== 0 && <br />}
+                          {isLineBreak && <br />}
                           <span
-                            className={item.wordsOfJesus ? 'words-of-jesus' : ''}
-                            style={{ marginLeft: isEvenPoem ? '20px' : '0' }}
+                            className={`${item.wordsOfJesus ? 'words-of-jesus' : ''} ${poemClassName}`}
                           >
+                            { poemClassName === firstPoemClass && startsWithPoem && <sup>{content.number}</sup> }
                             {item.text}
                           </span>
                         </Fragment>
@@ -152,11 +167,11 @@ export default class ReactBible extends Component<IBibleProps, IBibleState> {
                       return <strong key={subIndex}>{item.heading}</strong>;
                     } else if ('lineBreak' in item) {
                       return <div key={subIndex} className={lineBreak}></div>;
+                    } else if ('noteId' in item) {
+                      lastVerseItem = item;
+                      //   return <sup key={subIndex}>{item.noteId}</sup>;
+                      return null;
                     }
-                    // else if ('noteId' in item) {
-                    //   return <sup key={subIndex}>{item.noteId}</sup>;
-                    // }
-                    return null;
                   })}
                 </p>
               );

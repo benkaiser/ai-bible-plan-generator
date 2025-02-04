@@ -8,6 +8,12 @@
   filter: opacity(0.8);
 }
 
+.bibleContainer h3 {
+  font-size: 1.1em;
+  font-weight: 700;
+  margin-top: 16px;
+}
+
 .lineBreak {
   width: 100%;
   height: 10px;
@@ -28,4 +34,17 @@
   to {
     opacity: 1;
   }
+}
+
+.firstPoemClass {
+  margin-top: 20px;
+  margin-left: 30px;;
+}
+
+.evenPoemClass {
+  margin-left: 60px;
+}
+
+.oddPoemClass {
+  margin-left: 30px;
 }
