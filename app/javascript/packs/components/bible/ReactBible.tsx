@@ -3,30 +3,35 @@
 // <Bible book="1JN" chapter="1" verseRange="1-2" />
 // it also accepts books as full names, e.g. <Bible book="1 John" chapter="1" verseRange="1-2" />
 // it also supports a "lookup" which includes all 3 props, e.g. <Bible lookup="1JN 1:1-2" />
-import { h, Component, Fragment } from 'preact';
+import { h, Component, Fragment, RefObject } from 'preact';
 import { ensureBookShortName } from './utilities';
 import { ChapterContent, ChapterVerse, TranslationBookChapter } from './APIInterfaces';
-import { bibleContainer, lineBreak } from './bible.module.css';
+import { bibleContainer, lineBreak, fadeIn } from './bible.module.css';
 
 interface IBibleProps {
   book?: string;
   chapter?: number | string;
   verseRange?: string;
   lookup?: string;
+  isReadingExapandable?: boolean;
 }
 
 interface IBibleState {
   isLoading?: boolean;
+  showFullChapter?: boolean;
+  firstVerse?: number;
   contents?: TranslationBookChapter;
   renderedVerses?: ChapterContent[];
 }
 
 export default class ReactBible extends Component<IBibleProps, IBibleState> {
+  private _verseRefs: HTMLParagraphElement[];
   constructor(props: IBibleProps) {
     super(props);
     this.state = {
       isLoading: true
     };
+    this._verseRefs = [];
   }
 
   async componentDidMount() {
@@ -40,6 +45,7 @@ export default class ReactBible extends Component<IBibleProps, IBibleState> {
 
   async componentDidUpdate(prevProps: IBibleProps) {
     if (prevProps.lookup !== this.props.lookup || prevProps.book !== this.props.book || prevProps.chapter !== this.props.chapter || prevProps.verseRange !== this.props.verseRange) {
+      this.setState({ isLoading: true, showFullChapter: false });
       let { book, chapter, verseRange, lookup } = this.props;
       if (lookup) {
         [book, chapter, verseRange] = lookup.split(' ');
@@ -57,8 +63,34 @@ export default class ReactBible extends Component<IBibleProps, IBibleState> {
     this.setState({ contents, renderedVerses, isLoading: false });
   }
 
+  private _verseRangeParts(): number[] {
+    let { verseRange, lookup } = this.props;
+    if (lookup) {
+      verseRange = lookup.split(' ')[2];
+    }
+    if (verseRange && verseRange.length > 0) {
+      const parts = verseRange.split('-').map(Number);
+      if (parts.length === 2) {
+        return parts;
+      } else {
+        return [parts[0], parts[0]];
+      }
+    } else {
+      const numberOfVerses = this.state.contents.numberOfVerses;
+      return [1, numberOfVerses];
+    }
+  }
+
+  private _verseRangeStart(): number {
+    return this._verseRangeParts()[0];
+  }
+
+  private _verseRangeEnd(): number {
+    return this._verseRangeParts()[1];
+  }
+
   render() {
-    const { contents, renderedVerses, isLoading } = this.state;
+    const { contents, renderedVerses, isLoading, showFullChapter } = this.state;
     if (!contents || isLoading) {
       return (
         <div class="spinner-border" role="status">
@@ -66,19 +98,37 @@ export default class ReactBible extends Component<IBibleProps, IBibleState> {
         </div>
       );
     }
+
+    const handleShowFullChapter = () => {
+      console.log(this._verseRefs);
+      this.setState({ renderedVerses: contents.chapter.content, showFullChapter: true }, () => {
+        const startVerse = this._verseRangeStart();
+        if (this._verseRefs[startVerse]) {
+          this._verseRefs[startVerse]?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+            inline: 'center'
+          });
+        }
+      });
+    };
+
+    const totalVerses = this.state.contents.numberOfVerses;
+    const showTopButton = this._verseRangeStart() > 1;
+    const showBottomButton = this._verseRangeEnd() < totalVerses;
+
     return (
       <div className={bibleContainer}>
         {renderedVerses.map((content, index) => {
           switch (content.type) {
             case 'heading':
-              return <h3 key={index}>{content.content.join(' ')}</h3>;
+              return <h3 key={index} className={fadeIn}>{content.content.join(' ')}</h3>;
             case 'line_break':
-              return <div key={index} className={lineBreak}></div>;
+              return <div key={index} className={`${fadeIn} ${lineBreak}`}></div>;
             case 'verse':
               const startsWithPoem = content.content.length > 0 && typeof content.content[0] !== 'string' && 'text' in content.content[0] && content.content[0].poem !== undefined;
-
               return (
-                <p key={index}>
+                <p key={index} className={fadeIn} ref={el => this._verseRefs[content.number] = el}>
                   {startsWithPoem && content.number !== 1 && <br />}
                   <sup>{content.number}</sup>
                   {content.content.map((item, subIndex) => {
@@ -112,7 +162,7 @@ export default class ReactBible extends Component<IBibleProps, IBibleState> {
               );
             case 'hebrew_subtitle':
               return (
-                <p key={index} className="hebrew-subtitle">
+                <p key={index} className={`${fadeIn} hebrew-subtitle`}>
                   {content.content.map((item, subIndex) => {
                     if (typeof item === 'string') {
                       return item;
@@ -134,6 +184,13 @@ export default class ReactBible extends Component<IBibleProps, IBibleState> {
               return null;
           }
         })}
+        {this.props.isReadingExapandable && renderedVerses && !showFullChapter && (showBottomButton || showTopButton) && (
+          <div>
+            <button className="btn btn-link" onClick={handleShowFullChapter}>
+              Show full chapter
+            </button>
+          </div>
+        )}
       </div>
     );
   }

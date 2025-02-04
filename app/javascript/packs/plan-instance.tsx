@@ -361,7 +361,7 @@ function PlanInstance({ plan, planInstance, planReadingData, planInstanceUser }:
             {selectedReading ? (
               <div>
                 <h2>{`${selectedReading.book} ${selectedReading.chapter}${selectedReading.verse_range ? ':' + selectedReading.verse_range : ''}`}</h2>
-                <ReactBible book={selectedReading.book} chapter={selectedReading.chapter} verseRange={selectedReading.verse_range} />
+                <ReactBible isReadingExapandable={true} book={selectedReading.book} chapter={selectedReading.chapter} verseRange={selectedReading.verse_range} />
                 <ReadingControls isLastReadingForDay={selectedReading === selectedDay?.readings[selectedDay.readings.length - 1]} onBack={showSidebar} onNext={onNextReading} />
               </div>
             ) : selectedDay ? (
