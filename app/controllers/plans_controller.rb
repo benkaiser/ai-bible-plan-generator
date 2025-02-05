@@ -1,3 +1,5 @@
+require 'json'
+
 class PlansController < ApplicationController
   include ActionController::Live
   before_action :authenticate_user!, only: [:generate_plan, :new, :create]
@@ -72,20 +74,21 @@ class PlansController < ApplicationController
     permitted_params = params.permit(reading: {}, day: {})
     prompt = DAY_FIXING_PROMPT.gsub("{reading}", permitted_params[:reading].to_json).gsub("{day}", permitted_params[:day].to_json)
 
-    response = client.chat(
-      parameters: {
-        model: "accounts/fireworks/models/deepseek-v3", # this model seems to perform better at fixing mistakes, even though it is slower.
-        messages: [
-          {
-            role: "user",
-            content: prompt
-          }],
-        response_format: { type: "json_object" },
-        temperature: 0.5
-      }
+    cache_service = PromptCacheService.new(
+      prompt: prompt,
+      messages: [
+        {
+          role: "user",
+          content: prompt
+        }
+      ],
+      response_format: { type: "json_object" },
+      model: "accounts/fireworks/models/deepseek-v3", # this model seems to perform better at fixing mistakes, even though it is slower.
+      temperature: 0.5
     )
+    response = cache_service.fetch_or_generate
 
-    render json: response.dig("choices", 0, "message", "content")
+    render json: JSON.parse(response).dig("choices", 0, "message", "content")
   rescue => e
     render json: { error: e.message }, status: :internal_server_error
   end

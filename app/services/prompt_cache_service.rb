@@ -14,10 +14,12 @@ class PromptCacheService
     cached_response = PromptCache.find_by(key: cache_key)
 
     if cached_response
-      block.call(cached_response.response)
+      block.call(cached_response.response) if block_given?
+      return cached_response.response
     else
       response = generate_response(&block)
       PromptCache.create(key: cache_key, response: response)
+      return response
     end
   end
 
@@ -30,18 +32,21 @@ class PromptCacheService
   def generate_response
     client = OpenAI::Client.new()
     response_chunks = []
-    client.chat(
-      parameters: {
-        response_format: @response_format,
-        model: @model,
-        messages: @messages,
-        temperature: @temperature,
-        stream: proc do |chunk, _bytesize|
-          response_chunks << chunk
-          yield chunk.to_json if block_given?
-        end
-      }
-    )
-    response_chunks.to_json
+    parameters = {
+      response_format: @response_format,
+      model: @model,
+      messages: @messages,
+      temperature: @temperature
+    }
+
+    if block_given?
+      parameters[:stream] = proc do |chunk, _bytesize|
+        response_chunks << chunk
+        yield chunk.to_json if block_given?
+      end
+    end
+
+    response = client.chat(parameters: parameters)
+    response_chunks.empty? ? response.to_json : response_chunks.to_json
   end
 end
