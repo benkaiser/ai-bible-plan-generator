@@ -2,6 +2,7 @@
 import { Component, h } from 'preact';
 import Markdown from 'react-markdown'
 import { events } from 'fetch-event-stream';
+import { fakeStream } from '../utilities/fakeStream';
 
 interface IDayOverviewProps {
   day: number;
@@ -47,8 +48,15 @@ class DayOverview extends Component<IDayOverviewProps, IDayOverviewState> {
             break;
           }
           const pieceOfData = JSON.parse(event.data);
-          completion += pieceOfData.choices[0]?.delta?.content || '';
-          this.setState({ dayOverview: completion });
+          if (Array.isArray(pieceOfData)) {
+            fakeStream(pieceOfData, (chunk) => {
+              completion += chunk;
+              this.setState({ dayOverview: completion });
+            }, 20, 60);
+          } else {
+            completion += pieceOfData.choices[0]?.delta?.content || '';
+            this.setState({ dayOverview: completion });
+          }
         }
       }
     })

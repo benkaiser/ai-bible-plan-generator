@@ -74,36 +74,26 @@ class PlanInstancesController < ApplicationController
     # now actually make the API calls and stream the response
     response.headers['Content-Type'] = 'text/event-stream'
 
-    client = OpenAI::Client.new()
-
-    # prompt looks like this
-    # This is a bible plan reading application. Here are the Bible verses the user will be reading today:
-    # {scriptures}
-
-    # The bible plan we are reading is titled "{title}". The outline for today is "{outline}", it is day {day} out of {total_days} for this plan.
-    # Your task is to give the user an overview of todays readings within the context of both the plan and todays outline.
-    # You do not need to provide any contents of the verses as they are provided separately to the user, but feel free to reference them.
-    # Repond only in markdown.
-    prompt = OVERVIEW_GENERATION_PROMPT.gsub("{scriptures}", scriptures.to_s).gsub("{title}", @plan_instance.plan.name).gsub("{outline}", @day['outline']).gsub("{day}", @day['day_number'].to_s).gsub("{total_days}", @plan_instance.plan.days.size.to_s)
-
-    # print to rails console
-    puts prompt
-
-    client.chat(
-      parameters: {
-        model: "accounts/fireworks/models/llama-v3p1-8b-instruct", # Required.
-        messages: [
-          {
-            role: "user",
-            content: prompt
-          }], # Required.
-        temperature: 0.5,
-        stream: proc do |chunk, _bytesize|
-          response.stream.write "data: #{chunk.to_json.gsub("\n", "\\n")}\n\n"
-        end
-      }
+    prompt = OVERVIEW_GENERATION_PROMPT.gsub("{scriptures}", scriptures.to_s)
+                                      .gsub("{title}", @plan_instance.plan.name)
+                                      .gsub("{outline}", @day['outline'])
+                                      .gsub("{day}", @day['day_number'].to_s)
+                                      .gsub("{total_days}", @plan_instance.plan.days.size.to_s)
+    cache_service = PromptCacheService.new(
+      prompt: prompt,
+      messages: [
+        {
+          role: "user",
+          content: prompt
+        }
+      ],
+      model: "accounts/fireworks/models/llama-v3p1-8b-instruct",
+      temperature: 0.5
     )
 
+    cache_service.fetch_or_generate do |chunk|
+      response.stream.write "data: #{chunk.gsub("\n", "\\n")}\n\n"
+    end
     response.stream.write "data: [DONE]\n\n"
   rescue => e
     response.stream.write "data: Error: #{e.message}\n\n"

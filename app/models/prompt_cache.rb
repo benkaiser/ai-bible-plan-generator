@@ -1,0 +1,2 @@
+class PromptCache < ApplicationRecord
+end

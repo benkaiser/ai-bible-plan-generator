@@ -1,9 +1,11 @@
 import { parse } from 'best-effort-json-parser';
 import { render, h, Component, Fragment, createRef } from 'preact';
+import { events } from 'fetch-event-stream';
 import PlanForm from './components/PlanForm';
 import { IPlan, IPlanDay, IPlanRequest, IReading } from './interfaces/IPlan';
 import { checkScriptureRangeValidBSB } from './utilities/checkScriptureExistsBSB';
 import { ensureBookShortName } from './components/bible/utilities';
+import { fakeStream } from './utilities/fakeStream';
 
 const planContainer = document.getElementById('plan-container');
 
@@ -225,52 +227,46 @@ class PlanManager extends Component<{}, IPlanManagerState> {
       },
       body: JSON.stringify({ topic: request.topic, length: request.length })
     })
-    .then(response => {
-      const reader = response.body?.getReader();
-      const decoder = new TextDecoder();
-      let result = '';
-      let completion = '';
-
-      const read = () => {
-        if (!reader) {
-          return;
-        }
-        reader.read().then(({ done, value }) => {
-          if (done) {
+    .then(async (response) => {
+      if (response.ok) {
+        let stream = events(response);
+        let completion = '';
+        let isUsingFakeStream = false;
+        for await (let event of stream) {
+          if (event.data === '[DONE]') {
             console.log('Stream complete');
-            return;
-          }
-
-          result += decoder.decode(value, { stream: true });
-          const lines = result.split('\n\n');
-          result = lines.pop(); // Keep the last incomplete line
-
-          lines.forEach(line => {
-            // trim whitespace from start of line
-            line = line.replace(/^\s+/, '');
-            if (line.startsWith('data: ')) {
-              const data = line.slice(6);
-              if (data === '[DONE]') {
-                console.log('Stream complete');
-                this.onStreamComplete(parse(completion));
-              } else {
-                completion += data;
-                try {
-                  const plan = parse(completion);
-                  console.log(plan);
-                  this.setPlan(plan);
-                } catch (e) {
-                  console.error(e);
-                }
-              }
+            if (!isUsingFakeStream) {
+              this.onStreamComplete(parse(completion));
             }
-          });
-
-          read();
-        });
+            break;
+          }
+          const pieceOfData = JSON.parse(event.data);
+          if (Array.isArray(pieceOfData)) {
+            isUsingFakeStream = true;
+            fakeStream(pieceOfData, (chunk) => {
+              completion += chunk;
+              try {
+                const plan = parse(completion);
+                console.log(plan);
+                this.setPlan(plan);
+              } catch (e) {
+                console.error(e);
+              }
+            }, 5, 10).then(() => {
+              this.onStreamComplete(parse(completion));
+            })
+          } else {
+            completion += pieceOfData.choices[0]?.delta?.content || '';
+            try {
+              const plan = parse(completion);
+              console.log(plan);
+              this.setPlan(plan);
+            } catch (e) {
+              console.error(e);
+            }
+          }
+        }
       }
-
-      read();
     })
     .catch(error => {
       console.error('Error:', error);

@@ -37,26 +37,24 @@ class PlansController < ApplicationController
 
     response.headers['Content-Type'] = 'text/event-stream'
 
-    client = OpenAI::Client.new()
-
     prompt = PLAN_GENERATION_PROMPT.gsub("{length}", length.to_s).gsub("{topic}", topic)
 
-    client.chat(
-      parameters: {
-        model: "accounts/fireworks/models/llama-v3p1-8b-instruct", # This model is perfectly sufficient for plan generation.
-        messages: [
-          {
-            role: "user",
-            content: prompt
-          }],
-        response_format: { type: "json_object" },
-        temperature: 0.5,
-        stream: proc do |chunk, _bytesize|
-          response.stream.write "data: #{chunk.dig('choices', 0, 'delta', 'content')}\n\n"
-        end
-      }
+    cache_service = PromptCacheService.new(
+      prompt: prompt,
+      messages: [
+        {
+          role: "user",
+          content: prompt
+        }
+      ],
+      response_format: { type: "json_object" },
+      model: "accounts/fireworks/models/llama-v3p1-8b-instruct",
+      temperature: 0.5
     )
 
+    cache_service.fetch_or_generate do |chunk|
+      response.stream.write "data: #{chunk.gsub("\n", "\\n")}\n\n"
+    end
     response.stream.write "data: [DONE]\n\n"
   rescue => e
     response.stream.write "data: Error: #{e.message}\n\n"
