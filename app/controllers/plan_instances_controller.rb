@@ -1,7 +1,6 @@
 class PlanInstancesController < ApplicationController
   include ActionController::Live
   include BibleHelper
-  before_action :authenticate_user!
 
   OVERVIEW_GENERATION_PROMPT = File.read(Rails.root.join('app', 'prompts', 'overview_generation_generic.txt'))
 

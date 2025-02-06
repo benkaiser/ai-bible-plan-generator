@@ -2,7 +2,6 @@ require 'json'
 
 class PlansController < ApplicationController
   include ActionController::Live
-  before_action :authenticate_user!, only: [:generate_plan, :new, :create]
   protect_from_forgery with: :null_session
 
   PLAN_GENERATION_PROMPT = File.read(Rails.root.join('app', 'prompts', 'plan_generation.txt'))

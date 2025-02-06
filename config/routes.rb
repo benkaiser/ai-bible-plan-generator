@@ -2,18 +2,21 @@ Rails.application.routes.draw do
   devise_for :users
   root 'home#index'
 
-  resources :plans, only: [:index, :show, :new, :create, :show, :edit, :update]
-  resources :plan_instances, only: [:create, :show, :destroy] do
-    member do
-      patch :update_reading_status
-      patch :update_plan_status
-      post :day_overview
+  authenticate do
+    resources :plans, only: [:index, :show, :new, :create, :show, :edit, :update]
+    resources :plan_instances, only: [:create, :show, :destroy] do
+      member do
+        patch :update_reading_status
+        patch :update_plan_status
+        post :day_overview
+      end
     end
+
+    # API routes
+    post 'api/generate_plan', to: 'plans#generate_plan'
+    post 'api/fix_reading', to: 'plans#fix_reading'
   end
 
-  # API routes
-  post 'api/generate_plan', to: 'plans#generate_plan'
-  post 'api/fix_reading', to: 'plans#fix_reading'
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
