@@ -35,7 +35,7 @@ Given the below JSON schema:
               "properties": {
                 "book": {
                   "type": "string",
-                  "description": "The name of the book in the Bible, e.g., 'Genesis' or 'John'."
+                  "description": "The name of the book in the Bible, e.g., 'Genesis' or 'John'. Never include chapter number in the book name."
                 },
                 "chapter": {
                   "type": "integer",

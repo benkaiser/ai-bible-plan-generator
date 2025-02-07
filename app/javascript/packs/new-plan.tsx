@@ -64,6 +64,7 @@ function PlanReading({ reading }: { reading: IReading }) {
 
 interface IPlanActionsProps {
   plan: IPlan;
+  cover: string;
   completed: boolean;
   generating: boolean;
   isValidating: boolean;
@@ -109,6 +110,8 @@ function PlanActions(props: IPlanActionsProps) {
     const daysField = document.getElementById('plan-days') as HTMLInputElement;
     daysField.value = JSON.stringify(props.plan.days);
     const form = document.getElementById('plan-form') as HTMLFormElement;
+    const coverPhotoField = document.getElementById('plan-cover-photo') as HTMLInputElement;
+    coverPhotoField.value = props.cover;
     form.submit();
   };
   return (
@@ -122,6 +125,7 @@ interface IPlanManagerState {
   isGenerating: boolean;
   isValidating: boolean;
   isValid: boolean;
+  planCover: string;
   generationCompleted: boolean;
   plan: IPlan | null;
 }
@@ -129,7 +133,7 @@ interface IPlanManagerState {
 class PlanManager extends Component<{}, IPlanManagerState> {
   constructor(props) {
     super(props);
-    this.state = { plan: null, isGenerating: false, isValid: false, isValidating: false, generationCompleted: false };
+    this.state = { plan: null, planCover: '', isGenerating: false, isValid: false, isValidating: false, generationCompleted: false };
   }
 
   setPlan(plan: IPlan) {
@@ -211,13 +215,13 @@ class PlanManager extends Component<{}, IPlanManagerState> {
         <PlanForm allowSubmit={!this.state.isGenerating} onSubmit={this.onSubmit} />
         <Plan plan={this.state.plan} />
         { (this.state.isGenerating || this.state.generationCompleted) &&
-          <PlanActions plan={this.state.plan} isValidating={this.state.isValidating} isValid={this.state.isValid} generating={this.state.isGenerating} completed={this.state.generationCompleted} /> }
+          <PlanActions cover={this.state.planCover} plan={this.state.plan} isValidating={this.state.isValidating} isValid={this.state.isValid} generating={this.state.isGenerating} completed={this.state.generationCompleted} /> }
       </Fragment>
     );
   }
 
   onSubmit = (request: IPlanRequest) => {
-    this.setState({ isGenerating: true });
+    this.setState({ isGenerating: true, planCover: request.cover });
     // Make an API request to generate the plan
     fetch('/api/generate_plan', {
       method: 'POST',
