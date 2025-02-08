@@ -1,6 +1,8 @@
 <h1><%= @plan.name %></h1>
 <p><%= @plan.description %></p>
-<p><%= @plan.cover_photo %></p>
+<p>
+  <img src="<%= @plan.cover_photo %>/400/200" class="img-thumbnail" alt="Plan cover photo" />
+</p>
 
 <div class="container">
   <%= button_to 'Start Plan', plan_instances_path(plan_id: @plan.id), method: :post, id: 'plan-link', class: 'btn btn-primary mb-3' %>

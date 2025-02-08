@@ -8,8 +8,8 @@ class PlansController < ApplicationController
   DAY_FIXING_PROMPT = File.read(Rails.root.join('app', 'prompts', 'day_fixing.txt'))
 
   def index
-    @created_plans = current_user.plans
-    @active_plan_instance_users = current_user.active_plan_instance_users
+    @created_plans = current_user.plans.order(created_at: :desc)
+    @active_plan_instance_users = current_user.active_plan_instance_users.order(created_at: :desc)
   end
 
   def new

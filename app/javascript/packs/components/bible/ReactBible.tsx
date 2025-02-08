@@ -169,8 +169,8 @@ export default class ReactBible extends Component<IBibleProps, IBibleState> {
                       return <div key={subIndex} className={lineBreak}></div>;
                     } else if ('noteId' in item) {
                       lastVerseItem = item;
-                      //   return <sup key={subIndex}>{item.noteId}</sup>;
-                      return null;
+                      return " ";
+                      // return <sup key={subIndex}>{item.noteId}</sup>;
                     }
                   })}
                 </p>
@@ -187,10 +187,10 @@ export default class ReactBible extends Component<IBibleProps, IBibleState> {
                           {item.text}
                         </span>
                       );
+                    } else if ('noteId' in item) {
+                      return " ";
+                      // return <sup key={subIndex}>{item.noteId}</sup>;
                     }
-                    // else if ('noteId' in item) {
-                    //   return <sup key={subIndex}>{item.noteId}</sup>;
-                    // }
                     return null;
                   })}
                 </p>
