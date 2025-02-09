@@ -21,11 +21,21 @@ class PlansController < ApplicationController
   end
 
   def create
-    @plan = current_user.plans.build(plan_params)
+    @plan = current_user.plans.build(plan_params.except(:action))
     @plan.days = JSON.parse(plan_params[:days]) if plan_params[:days].is_a?(String)
 
     if @plan.save
-      redirect_to plans_path, notice: 'Plan was successfully created.'
+      if plan_params[:action] == "start"
+        current_date = Time.now.in_time_zone(current_user.timezone).to_date rescue Date.today
+        @plan_instance = PlanInstance.new(plan: @plan, start_date: current_date)
+
+        if @plan_instance.save
+          PlanInstanceUser.create(plan_instance: @plan_instance, user: current_user, approved: true, creator: true, completed: false, removed: false)
+          redirect_to @plan_instance, notice: 'Plan saved and started.'
+        end
+      else
+        redirect_to plans_path, notice: 'Plan was created.'
+      end
     else
       logger.error "Failed to create plan: #{@plan.errors.full_messages.join(', ')}"
       render :new, status: :unprocessable_entity, alert: 'Failed to create plan.'
@@ -96,7 +106,7 @@ class PlansController < ApplicationController
   private
 
   def plan_params
-    params.require(:plan).permit(:name, :description, :cover_photo, :days)
+    params.require(:plan).permit(:name, :description, :cover_photo, :days, :action)
   end
 
   def fix_reading_params

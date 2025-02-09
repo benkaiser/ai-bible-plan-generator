@@ -102,7 +102,7 @@ function PlanActions(props: IPlanActionsProps) {
     )
   }
 
-  const onSubmit = () => {
+  const onSubmit = (action: string) => {
     const nameField = document.getElementById('plan-name') as HTMLInputElement;
     nameField.value = props.plan.title;
     const descriptionField = document.getElementById('plan-description') as HTMLInputElement;
@@ -112,11 +112,14 @@ function PlanActions(props: IPlanActionsProps) {
     const form = document.getElementById('plan-form') as HTMLFormElement;
     const coverPhotoField = document.getElementById('plan-cover-photo') as HTMLInputElement;
     coverPhotoField.value = props.cover;
+    const actionField = document.getElementById('plan-action') as HTMLInputElement;
+    actionField.value = action;
     form.submit();
   };
   return (
-    <div className="d-flex">
-      <button className="btn btn-primary" onClick={onSubmit} disabled={!props.completed}>Save Plan</button>
+    <div className="d-flex gap-2">
+      <button className="btn btn-primary" onClick={() => onSubmit('start')} disabled={!props.completed}>Save and Start Plan Today</button>
+      <button className="btn btn-info" onClick={() => onSubmit('default')} disabled={!props.completed}>Save Plan</button>
     </div>
   );
 }
