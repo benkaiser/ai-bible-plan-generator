@@ -80,10 +80,16 @@ export default class ReactBible extends Component<IBibleProps, IBibleState> {
   async fetchChapter(book: string, chapter: string | number, verseRange?: string) {
     const start: number | undefined = verseRange ? this._verseRangeStart(verseRange) : undefined;
     const end: number | undefined = verseRange ? this._verseRangeEnd(verseRange) : undefined;
-    const isFullChapter = this.state.showFullChapter || !verseRange;
+    const isFullChapter = !verseRange;
     const chapterAsNumber: number = parseInt(chapter as string, 10);
-    const contents = isFullChapter ? await getPassage(book, chapterAsNumber) : await getPassage(book, chapterAsNumber, start, end);
-    this.setState({ contents: contents, isLoading: false });
+    const wholeChapter = await getPassage(book, chapterAsNumber);
+    if (isFullChapter) {
+      this.setState({ contents: wholeChapter, isLoading: false, showFullChapter: true });
+      return;
+    } else {
+      const contents = await getPassage(book, chapterAsNumber, start, end);
+      this.setState({ contents: contents, isLoading: false, showFullChapter: wholeChapter === contents });
+    }
   }
 
   private _verseRangeStart(verseRange: string): number {
@@ -114,7 +120,7 @@ export default class ReactBible extends Component<IBibleProps, IBibleState> {
         if (lookup) {
           [book, chapter] = lookup.split(' ');
         }
-        this.fetchChapter(book, chapter);
+        this.fetchChapter(ensureBookShortName(book), chapter);
       });
     };
 
