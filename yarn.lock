@@ -134,6 +134,18 @@
   resolved "https://registry.yarnpkg.com/@esbuild/win32-x64/-/win32-x64-0.24.2.tgz#34aa0b52d0fbb1a654b596acfa595f0c7b77a77b"
   integrity sha512-7VTgWzgMGvup6aSqDPLiW5zHaxYJGTO4OokMjIlrCtf+VpEL+cXKtCvg723iguPYI5oaUNdS+/V7OU2gvXVWEg==
 
+"@gracious.tech/bible-references@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@gracious.tech/bible-references/-/bible-references-0.1.1.tgz#4108f42f8261b064574223033a0b75570e0d936e"
+  integrity sha512-gTIXHb20FWbLUdSU3wvNWOt7LEMuFizGcA8knZHA05BgsX9iEjldzufiXzjpnoxxNo1l/e8vMknqtF3FVNY1SA==
+
+"@gracious.tech/fetch-client@^0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@gracious.tech/fetch-client/-/fetch-client-0.9.0.tgz#fa216299a1c4c87c33bf99ae4e2ca594dda1d836"
+  integrity sha512-RDLBvIEjck72zX9yDQsQzWkSxBS1MbemXKNIZZfKuErC8e0IWCr20gf+rmeIrxVOt1OfOs7NrQ+cYU9d9lBTkQ==
+  dependencies:
+    "@gracious.tech/bible-references" "^0.1.1"
+
 "@hotwired/turbo-rails@^8.0.12":
   version "8.0.12"
   resolved "https://registry.npmjs.org/@hotwired/turbo-rails/-/turbo-rails-8.0.12.tgz"

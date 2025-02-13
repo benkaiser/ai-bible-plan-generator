@@ -2,6 +2,7 @@
   "name": "app",
   "private": "true",
   "dependencies": {
+    "@gracious.tech/fetch-client": "^0.9.0",
     "@hotwired/turbo-rails": "^8.0.12",
     "@popperjs/core": "^2.11.8",
     "autoprefixer": "^10.4.20",

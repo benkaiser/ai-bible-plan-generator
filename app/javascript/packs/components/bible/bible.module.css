@@ -1,51 +1,5 @@
-.bibleContainer p {
-  display: inline;
-  font-size: 1.1em;
-}
-
-.bibleContainer sup {
-  font-size: 0.8em;
-  padding: 0 0.2em;
-  filter: opacity(0.8);
-}
-
-.bibleContainer h3 {
-  font-size: 1.2em;
-  font-weight: 700;
-  margin-top: 16px;
-}
-
-.lineBreak {
-  width: 100%;
-  height: 10px;
-  margin: 0;
-  padding: 0;
-  clear: both;
-}
-
-.fadeIn {
-  opacity: 0;
-  animation: fadeIn 1s forwards;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
+:global {
+  .fetch-bible:not(.fb-plain) h3[data-c] {
+    display: none;
   }
-  to {
-    opacity: 1;
-  }
-}
-
-.firstPoemClass {
-  margin-top: 20px;
-  margin-left: 30px;;
-}
-
-.evenPoemClass {
-  margin-left: 60px;
-}
-
-.oddPoemClass {
-  margin-left: 30px;
 }
