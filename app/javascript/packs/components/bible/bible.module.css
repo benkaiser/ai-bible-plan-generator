@@ -1,5 +1,6 @@
 .bibleContainer p {
   display: inline;
+  font-size: 1.1em;
 }
 
 .bibleContainer sup {
@@ -9,7 +10,7 @@
 }
 
 .bibleContainer h3 {
-  font-size: 1.1em;
+  font-size: 1.2em;
   font-weight: 700;
   margin-top: 16px;
 }

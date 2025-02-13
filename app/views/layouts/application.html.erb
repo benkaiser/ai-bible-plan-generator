@@ -33,9 +33,12 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <%= link_to 'Bible', bible_path, class: "nav-link #{'active' if current_page?(bible_path)}" %>
+            </lI>
             <% if user_signed_in? %>
               <li class="nav-item">
-                <%= link_to 'Home', plans_path, class: "nav-link #{'active' if current_page?(plans_path)}" %>
+                <%= link_to 'Plans', plans_path, class: "nav-link #{'active' if current_page?(plans_path)}" %>
               </li>
               <li class="nav-item">
                 <%= link_to 'Account', edit_user_registration_path, class: "nav-link #{'active' if current_page?(edit_user_registration_path)}" %>

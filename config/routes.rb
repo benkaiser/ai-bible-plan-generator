@@ -2,6 +2,8 @@ Rails.application.routes.draw do
   devise_for :users
   root 'home#index'
 
+  get 'bible(/:book(/:chapter))', to: 'bible#show', as: 'bible'
+
   authenticate do
     resources :plans, only: [:index, :show, :new, :create, :show, :edit, :update]
     resources :plan_instances, only: [:create, :show, :destroy] do
