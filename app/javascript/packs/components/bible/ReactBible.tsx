@@ -71,7 +71,7 @@ export default class ReactBible extends Component<IBibleProps, IBibleState> {
       if (lookup) {
         [book, chapter, verseRange] = lookup.split(' ');
       }
-      this.setState({ isLoading: true, showFullChapter: !!verseRange });
+      this.setState({ isLoading: true, showFullChapter: !verseRange });
       const bookId: string = ensureBookShortName(book);
       this.fetchChapter(bookId, chapter, verseRange);
     }
