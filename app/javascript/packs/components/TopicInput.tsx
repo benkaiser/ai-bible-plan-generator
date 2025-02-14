@@ -122,7 +122,7 @@ class TopicInput extends Component<{ inputRef: RefObject<HTMLInputElement> }, IT
 
   render() {
     return (
-      <input type="text" id="plan-topic" className="form-control my-2" ref={this.props.inputRef} />
+      <input type="text" id="plan-topic" className="form-control d-inline-block my-2" ref={this.props.inputRef} />
     );
   }
 }

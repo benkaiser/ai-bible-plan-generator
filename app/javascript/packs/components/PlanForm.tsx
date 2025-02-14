@@ -58,44 +58,38 @@ const PlanForm = (props: IPlanFormProps) => {
       <div className="row">
         <div className="col-md-6 mb-2 mb-md-0">
           <div className="form-group mt-2">
-            <label htmlFor="plan-topic">What do you want your bible plan to be about?</label>
-            <TopicInput inputRef={topicInputRef} />
-          </div>
-
-          <div className="form-group d-flex align-items-center mt-2">
-            <div className="me-2">
-              <label htmlFor="plan-length">How long do you want the plan to be?</label>
-            </div>
-            <div className="me-2">
-              <select
-                id="plan-length"
-                className="form-control"
-                style={{ width: 'auto' }}
-                value={length}
-                onChange={handleLengthChange}
-              >
-                <option value={7}>7 days</option>
-                <option value={30}>1 month</option>
-                <option value={90}>3 months</option>
-                <option value="custom">Custom</option>
-              </select>
-            </div>
+            <label htmlFor="plan-length">Create a</label>
+            <select
+              id="plan-length"
+              className="form-control d-inline-block mx-2"
+              style={{ width: 'auto' }}
+              value={length}
+              onChange={handleLengthChange}
+            >
+              <option value={7}>7 day</option>
+              <option value={30}>1 month</option>
+              <option value={90}>3 month</option>
+              <option value="custom">Custom Length</option>
+            </select>
             {showCustomLength && (
-              <div className="input-group" style={{ width: 'auto' }}>
+              <div className="input-group d-inline-block mx-2" style={{ width: 'fit-content' }}>
                 <input
                   type="number"
                   id="custom-length"
-                  className="form-control"
+                  style='min-width: 70px'
+                  className="form-control d-inline-block"
                   min={1}
-                  max={180}
+                  max={90}
                   value={customLength}
                   onInput={handleCustomLengthInput}
                 />
-                <div className="input-group-append">
-                  <span className="input-group-text">days</span>
+                <div className="input-group-append d-inline-block">
+                  <span className="input-group-text">day</span>
                 </div>
               </div>
             )}
+            <label htmlFor="plan-topic">Bible reading plan about</label>
+            <TopicInput inputRef={topicInputRef} />
           </div>
         </div>
         <div className="col-md-6">
