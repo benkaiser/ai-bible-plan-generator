@@ -60,7 +60,8 @@ class PlansController < ApplicationController
       ],
       response_format: { type: "json_object" },
       model: "accounts/fireworks/models/llama-v3p1-8b-instruct",
-      temperature: 0.5
+      max_tokens: 16384,
+      temperature: 0
     )
 
     cache_service.fetch_or_generate do |chunk|
@@ -93,7 +94,7 @@ class PlansController < ApplicationController
       ],
       response_format: { type: "json_object" },
       model: "accounts/fireworks/models/deepseek-v3", # this model seems to perform better at fixing mistakes, even though it is slower.
-      temperature: 0.5
+      temperature: 0
     )
     response = cache_service.fetch_or_generate
 

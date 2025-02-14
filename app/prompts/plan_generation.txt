@@ -33,6 +33,10 @@ Given the below JSON schema:
             "items": {
               "type": "object",
               "properties": {
+                "why_selected": {
+                  "type": "string",
+                  "description": "A description of why this passage was chosen and how it relates to the day's outline."
+                },
                 "book": {
                   "type": "string",
                   "description": "The name of the book in the Bible, e.g., 'Genesis' or 'John'. Never include chapter number in the book name."
@@ -45,10 +49,6 @@ Given the below JSON schema:
                 "verse_range": {
                   "type": "string",
                   "description": "Optional. Specifies the range of verses to read within the chapter, e.g., '1-10'. If omitted, the whole chapter is read."
-                },
-                "why_selected": {
-                  "type": "string",
-                  "description": "A description of why this passage was chosen and how it relates to the day's outline."
                 }
               },
               "required": ["book", "chapter", "why_selected"],
@@ -65,4 +65,4 @@ Given the below JSON schema:
   "additionalProperties": false
 }
 ```
-I want you to give me a {length}-day bible reading plan about "{topic}", following the above schema. Provide multiple readings in each day. Do not repeat readings in the same day. Make sure to give a title and description for the plan overall. Respond only in JSON.
+I want you to give me a bible reading plan exactly {length} days long about "{topic}", following the above schema. Provide multiple readings in each day. Do not repeat readings in the same day. Make sure to give a title and description for the plan overall. Respond only in JSON.

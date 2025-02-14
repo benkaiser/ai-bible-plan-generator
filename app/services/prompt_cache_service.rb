@@ -1,11 +1,12 @@
 require 'digest/md5'
 
 class PromptCacheService
-  def initialize(prompt:, messages:, model:, temperature:, response_format: nil)
+  def initialize(prompt:, messages:, model:, temperature:, max_tokens: 1000, response_format: nil)
     @prompt = prompt
     @messages = messages
     @model = model
     @temperature = temperature
+    @max_tokens = max_tokens
     @response_format = response_format
   end
 
@@ -26,7 +27,7 @@ class PromptCacheService
   private
 
   def generate_cache_key
-    Digest::MD5.hexdigest("#{@prompt}-#{@messages}-#{@model}-#{@temperature}")
+    Digest::MD5.hexdigest("#{@prompt}-#{@messages}-#{@model}-#{@temperature}-#{@max_tokens}")
   end
 
   def generate_response
@@ -36,7 +37,8 @@ class PromptCacheService
       response_format: @response_format,
       model: @model,
       messages: @messages,
-      temperature: @temperature
+      temperature: @temperature,
+      max_tokens: @max_tokens
     }
 
     if block_given?
