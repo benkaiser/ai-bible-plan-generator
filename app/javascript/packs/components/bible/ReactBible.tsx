@@ -83,14 +83,16 @@ export default class ReactBible extends Component<IBibleProps, IBibleState> {
     const isFullChapter = !verseRange;
     const chapterAsNumber: number = parseInt(chapter as string, 10);
     const wholeChapter = await getPassage(book, chapterAsNumber);
-    if (isFullChapter) {
-      this.setState({ contents: wholeChapter, isLoading: false, showFullChapter: true });
-      return;
-    } else {
-      const contents = await getPassage(book, chapterAsNumber, start, end);
-      this.setState({ contents: contents, isLoading: false, showFullChapter: wholeChapter === contents });
-    }
-  }
+    return new Promise<void>((resolve) => {
+        if (isFullChapter) {
+            this.setState({ contents: wholeChapter, isLoading: false, showFullChapter: true }, resolve);
+        } else {
+            getPassage(book, chapterAsNumber, start, end).then((contents) => {
+                this.setState({ contents: contents, isLoading: false, showFullChapter: wholeChapter === contents }, resolve);
+            });
+        }
+    });
+}
 
   private _verseRangeStart(verseRange: string): number {
     return parseInt(verseRange.split('-')[0], 10);
@@ -116,11 +118,21 @@ export default class ReactBible extends Component<IBibleProps, IBibleState> {
 
     const handleShowFullChapter = () => {
       this.setState({ showFullChapter: true }, () => {
-        let { book, chapter, lookup } = this.props;
+        let { book, chapter, verseRange, lookup } = this.props;
         if (lookup) {
-          [book, chapter] = lookup.split(' ');
+          [book, chapter, verseRange] = lookup.split(' ');
         }
-        this.fetchChapter(ensureBookShortName(book), chapter);
+        this.fetchChapter(ensureBookShortName(book), chapter).then(() => {
+          if (verseRange) {
+            const startVerse = this._verseRangeStart(verseRange);
+            const startVerseElement = document.querySelector(`[data-v="${chapter}:${startVerse}"]`);
+            startVerseElement?.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center',
+              inline: 'center'
+            });
+          }
+        });
       });
     };
 

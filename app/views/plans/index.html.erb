@@ -13,7 +13,7 @@
           <div class="card mb-4">
             <% unless plan_instance_user.plan_instance.plan.cover_photo.empty? %>
                 <img src="<%= plan_instance_user.plan_instance.plan.cover_photo %>/400/200"
-                  class="card-img-top"
+                  class="card-img-top bg-dark"
                   alt="Plan cover photo"
                 />
             <% end %>
@@ -52,7 +52,7 @@
           <div class="card mb-4">
             <% unless plan.cover_photo.empty? %>
               <img src="<%= plan.cover_photo %>/400/200"
-                class="card-img-top"
+                class="card-img-top bg-dark"
                 alt="Plan cover photo"
               />
             <% end %>
