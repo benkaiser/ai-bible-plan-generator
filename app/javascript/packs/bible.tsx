@@ -26,6 +26,21 @@ class BibleContainer extends Component<IBibleContainerProps, IBibleContainerStat
     };
   }
 
+  componentDidMount() {
+    window.addEventListener('popstate', this.handlePopState);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('popstate', this.handlePopState);
+  }
+
+  handlePopState = (event: PopStateEvent) => {
+    const urlParts = window.location.pathname.split('/');
+    const book = ensureBookShortName(urlParts[2] || 'GEN');
+    const chapter = parseInt(urlParts[3]) || 1;
+    this.setState({ book, chapter });
+  };
+
   render() {
     return (
       <Fragment>
@@ -44,17 +59,22 @@ class BibleContainer extends Component<IBibleContainerProps, IBibleContainerStat
 
   private onChangeChapter = (book: string, chapter: number) => {
     this.setState({ book: book, chapter: chapter });
+    this.updateURL(book, chapter);
   }
 
   private onNext = () => {
     const { book, chapter } = this.state;
     const bookInfo = this.bookInfo;
     if (chapter < bookInfo.numberOfChapters) {
-      this.setState({ chapter: chapter + 1 });
+      const newChapter = chapter + 1;
+      this.setState({ chapter: newChapter });
+      this.updateURL(book, newChapter);
     } else {
       const nextBookIndex = books.findIndex(b => b.id === book) + 1;
       if (nextBookIndex < books.length) {
-        this.setState({ book: books[nextBookIndex].id, chapter: 1 });
+        const newBook = books[nextBookIndex].id;
+        this.setState({ book: newBook, chapter: 1 });
+        this.updateURL(newBook, 1);
       }
     }
   }
@@ -62,14 +82,22 @@ class BibleContainer extends Component<IBibleContainerProps, IBibleContainerStat
   private onPrevious = () => {
     const { book, chapter } = this.state;
     if (chapter > 1) {
-      this.setState({ chapter: chapter - 1 });
+      const newChapter = chapter - 1;
+      this.setState({ chapter: newChapter });
+      this.updateURL(book, newChapter);
     } else {
       const previousBookIndex = books.findIndex(b => b.id === book) - 1;
       if (previousBookIndex >= 0) {
         const previousBook = books[previousBookIndex];
         this.setState({ book: previousBook.id, chapter: previousBook.numberOfChapters });
+        this.updateURL(previousBook.id, previousBook.numberOfChapters);
       }
     }
+  }
+
+  private updateURL = (book: string, chapter: number) => {
+    const newUrl = `/bible/${book}/${chapter}`;
+    window.history.pushState({ book, chapter }, '', newUrl);
   }
 
   private isNextAvailable = () => {

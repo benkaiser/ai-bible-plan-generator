@@ -5,7 +5,7 @@ import books from './books';
 // If the book is not found in the list of books, it throws an error.
 export function ensureBookShortName(bookname: string): string {
   const lookup = bookname.toLowerCase();
-  const book = books.find(b => b.name.toLowerCase() === lookup || b.otherNames?.includes(lookup));
+  const book = books.find(b => b.id.toLowerCase() === lookup || b.name.toLowerCase() === lookup || b.otherNames?.includes(lookup));
   if (book) {
     return book.id;
   } else {
