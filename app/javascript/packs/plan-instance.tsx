@@ -1,9 +1,26 @@
-import { h, render } from 'preact';
-import { useCallback, useEffect, useMemo, useState } from 'preact/hooks';
+import { createContext, h, render } from 'preact';
+import { HashRouter as Router, Routes, Route, useParams, useNavigate, RouteProps } from 'react-router-dom';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'preact/hooks';
 import ReactBible from './components/bible/ReactBible';
 import DayOverview from './components/DayOverview';
 import Collapse from 'react-bootstrap/Collapse';
 import { readingControls, readingSection } from './plan-instance.module.css';
+import isMobile from './utilities/isMobile';
+
+const PlanContext = createContext<{
+  plan: IPlan;
+  planInstance: IPlanInstance;
+  planInstanceUser: IPlanInstanceUser;
+  planReadingData: IPlanUserReading[];
+}>(null);
+
+const ControlContext = createContext<{
+  onNext: (currentDayIndex: number, currentReadingIndex: number) => void;
+  onBack: () => void;
+  getReadingCompleted: (dayNumber: number, readingIndex: number) => boolean;
+  getDayCompleted: (dayNumber: number) => boolean;
+  onChangeCompletion: (isChecked: boolean, dayNumber: number, readingIndex: number) => void;
+}>(null);
 
 interface IPlanReading {
   book: string;
@@ -87,16 +104,17 @@ function PlanReading({ reading, isReadingCompleted, onCheckboxChange, onClick }:
 
 interface IPlanDayProps {
   day: IPlanDay;
+  dayIndex: number;
   startDate: string;
-  onReadingClick: (day: IPlanDay, reading?: IPlanReading) => void;
+  onReadingClick: (dayIndex: number, readingIndex?: number) => void;
   getReadingCompleted: (dayNumber: number, readingIndex: number) => boolean;
   onChangeCompletion: (isChecked: boolean, dayNumber: number, readingIndex: number) => void;
   getDayCompleted: (dayNumber: number) => boolean;
 }
 
-function PlanDay({ day, startDate, onReadingClick, getReadingCompleted, getDayCompleted, onChangeCompletion }: IPlanDayProps) {
+function PlanDay({ day, dayIndex, startDate, onReadingClick, getReadingCompleted, getDayCompleted, onChangeCompletion }: IPlanDayProps) {
   const dayDate = new Date(startDate);
-  dayDate.setDate(dayDate.getDate() + day.day_number - 1);
+  dayDate.setDate(dayDate.getDate() + dayIndex);
   const today = new Date();
   const isToday = dayDate.toDateString() === today.toDateString();
   const badgeClass = isToday ? 'bg-primary' : 'bg-light border border-primary';
@@ -113,7 +131,7 @@ function PlanDay({ day, startDate, onReadingClick, getReadingCompleted, getDayCo
           reading='overview'
           isReadingCompleted={getReadingCompleted(day.day_number, 0)}
           key={0}
-          onClick={() => onReadingClick(day)}
+          onClick={() => onReadingClick(dayIndex)}
           onCheckboxChange={(isChecked: boolean) => onChangeCompletion(isChecked, day.day_number, 0)}
         />
         {day.readings.map((reading, index) => (
@@ -121,7 +139,7 @@ function PlanDay({ day, startDate, onReadingClick, getReadingCompleted, getDayCo
           reading={reading}
           isReadingCompleted={getReadingCompleted(day.day_number, index + 1)}
           key={index + 1}
-          onClick={() => onReadingClick(day, reading)}
+          onClick={() => onReadingClick(dayIndex, index + 1)}
           onCheckboxChange={(isChecked: boolean) => onChangeCompletion(isChecked, day.day_number, index + 1)}
         />
         ))}
@@ -133,7 +151,7 @@ function PlanDay({ day, startDate, onReadingClick, getReadingCompleted, getDayCo
 interface IPlanSidebarProps {
   plan: IPlan;
   startDate: string;
-  onReadingClick: (day: IPlanDay, reading?: IPlanReading) => void;
+  onReadingClick: (dayIndex: number, readingIndex?: number) => void;
   getReadingCompleted: (dayNumber: number, readingIndex: number) => boolean;
   getDayCompleted: (dayNumber: number) => boolean;
   onChangeCompletion: (isChecked: boolean, dayNumber: number, readingIndex: number) => void;
@@ -169,6 +187,7 @@ function PlanSidebar({
           {completedDays.map(day => (
             <PlanDay
               day={day}
+              dayIndex={plan.days.indexOf(day)}
               key={day.day_number}
               startDate={startDate}
               onReadingClick={onReadingClick}
@@ -182,6 +201,7 @@ function PlanSidebar({
       {plan.days.filter(day => !completedDays.includes(day)).map(day => (
         <PlanDay
           day={day}
+          dayIndex={plan.days.indexOf(day)}
           key={day.day_number}
           startDate={startDate}
           onReadingClick={onReadingClick}
@@ -201,11 +221,10 @@ interface IReadingControlsProps {
 }
 
 function ReadingControls({ isLastReadingForDay, onNext, onBack }: IReadingControlsProps) {
-  const isMobile = window.matchMedia('(max-width: 767px)').matches;
 
   return (
-    <div className={`d-flex justify-content-between ${isMobile ? readingControls : 'my-3'}`}>
-      { isMobile && (
+    <div className={`d-flex justify-content-between ${isMobile() ? readingControls : 'my-3'}`}>
+      { isMobile() && (
         <button className="btn btn-secondary d-md-none" type="button" onClick={onBack}>
           <i className="bi bi-arrow-left me-1"></i>
           Back
@@ -219,12 +238,7 @@ function ReadingControls({ isLastReadingForDay, onNext, onBack }: IReadingContro
   );
 }
 
-interface IPlanInstanceProps {
-  plan: IPlan;
-  planInstance: IPlanInstance;
-  planReadingData: IPlanUserReading[];
-  planInstanceUser: IPlanInstanceUser;
-}
+interface IPlanInstanceProps {}
 
 interface IPlanReadingMap {
   [day: number]: {
@@ -232,10 +246,8 @@ interface IPlanReadingMap {
   };
 }
 
-function PlanInstance({ plan, planInstance, planReadingData, planInstanceUser }: IPlanInstanceProps) {
-  const [selectedReading, setSelectedReading] = useState<IPlanReading | null>(null);
-  const [selectedDay, setSelectedDay] = useState<IPlanDay | null>(null);
-  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
+function PlanInstance({}: IPlanInstanceProps) {
+  const { plan, planInstance, planReadingData, planInstanceUser } = useContext(PlanContext);
   const [isReadingCompleted, setIsReadingCompleted] = useState(planInstanceUser.completed);
   const [planReadingMap, setPlanReadingMap] = useState<IPlanReadingMap>(() => {
     const map: IPlanReadingMap = {};
@@ -247,22 +259,7 @@ function PlanInstance({ plan, planInstance, planReadingData, planInstanceUser }:
     });
     return map;
   });
-
-  const isMobile = window.matchMedia('(max-width: 767px)').matches;
-
-  const showReadingDetails = (day: IPlanDay, reading?: IPlanReading) => {
-    setSelectedDay(day);
-    setSelectedReading(reading);
-    if (isMobile) {
-      setIsSidebarVisible(false);
-    }
-  };
-
-  const showSidebar = () => {
-    setSelectedReading(null);
-    setSelectedDay(null);
-    setIsSidebarVisible(true);
-  };
+  const navigate = useNavigate();
 
   const getReadingCompleted = (dayNumber: number, readingIndex: number) => {
     return planReadingMap[dayNumber]?.[readingIndex] ?? false;
@@ -330,59 +327,97 @@ function PlanInstance({ plan, planInstance, planReadingData, planInstanceUser }:
     }
   }, [planInstance.id, planInstanceUser.id, plan.days, getReadingCompleted, isReadingCompleted]);
 
-  const onNextReading = useCallback(() => {
-    if (!selectedDay) {
-      return;
-    }
-    let readingIndex = selectedDay.readings.findIndex(reading => reading === selectedReading);
-    onChangeCompletion(true, selectedDay.day_number, readingIndex + 1);
-    if (readingIndex < selectedDay.readings.length - 1) {
-      showReadingDetails(selectedDay, selectedDay.readings[readingIndex + 1]);
+  const onNextReading = useCallback((dayIndex: number, readingIndex: number) => {
+    const day = plan.days[dayIndex];
+    onChangeCompletion(true, day.day_number, readingIndex);
+    if (readingIndex < day.readings.length) {
+      navigate(`/day/${dayIndex}/reading/${readingIndex + 1}`);
+    } else if (dayIndex < plan.days.length - 1) {
+      navigate(`/day/${dayIndex + 1}/reading/0`);
     } else {
-      setSelectedReading(null);
-      setSelectedDay(null);
-      if (isMobile) {
-        setIsSidebarVisible(true);
-      }
+      navigate('/');
     }
     // TODO: if it's the last day, move the user back to the plan index page
-  }, [selectedReading, selectedDay, plan.days, onChangeCompletion]);
+  }, [plan.days, onChangeCompletion]);
 
   return (
-    <div>
+    <ControlContext.Provider value={{ onNext: onNextReading, onBack: () => navigate('/'), getReadingCompleted, getDayCompleted, onChangeCompletion }}>
       <div className="row">
-        {isSidebarVisible && (
-          <div className="col-12 col-md-3" id="plan-sidebar">
-            <PlanSidebar plan={plan} startDate={planInstance.start_date} onReadingClick={showReadingDetails} getReadingCompleted={getReadingCompleted} getDayCompleted={getDayCompleted} onChangeCompletion={onChangeCompletion} />
-          </div>
-        )}
-        { (!isMobile || !isSidebarVisible) && (
-          <div className={`col-12 ${isSidebarVisible ? 'col-md-9' : ''} ${readingSection}`} id="right-section">
-            {selectedReading ? (
+        <Routes>
+          <Route path={"*"} Component={SideBarRoute} />
+        </Routes>
+        <div className={`col-12 ${isMobile() ? '' : 'col-md-9'}`} id="right-section">
+          <Routes>
+            <Route path="/day/:dayIndex/reading/0" Component={DayOverviewRoute} />
+            <Route path="/day/:dayIndex/reading/:readingIndex" Component={ReadingDetailsRoute} />
+            <Route path="/" element={
+              ( !isMobile() && (
               <div>
-                <h2>{`${selectedReading.book} ${selectedReading.chapter}${selectedReading.verse_range ? ':' + selectedReading.verse_range : ''}`}</h2>
-                <ReactBible isReadingExapandable={true} book={selectedReading.book} chapter={selectedReading.chapter} verseRange={selectedReading.verse_range} />
-                <ReadingControls isLastReadingForDay={selectedReading === selectedDay?.readings[selectedDay.readings.length - 1]} onBack={showSidebar} onNext={onNextReading} />
+                <div className="alert alert-info">No reading selected. Please select one from the sidebar.</div>
               </div>
-            ) : selectedDay ? (
-              <div>
-                <h2>Day {selectedDay.day_number}: {selectedDay.outline}</h2>
-                <DayOverview day={selectedDay.day_number} planInstance={planInstance} />
-                <ReadingControls isLastReadingForDay={selectedDay.readings.length === 0}  onBack={showSidebar} onNext={onNextReading} />
-              </div>
-            ) : (
-              // put this in an alert
-              <div className="alert alert-info">No reading selected. Please select one from the sidebar.</div>
-            )}
-          </div>
-        )}
+              ) )
+            } />
+          </Routes>
+        </div>
       </div>
+    </ControlContext.Provider>
+  );
+}
+
+function SideBarRoute(_: RouteProps) {
+  const params = useParams();
+  const navigate = useNavigate();
+  const { plan, planInstance } = useContext(PlanContext);
+  const { getReadingCompleted, getDayCompleted, onChangeCompletion } = useContext(ControlContext);
+  return (
+    <div className={`col-12 col-md-3 ${params['*'] && isMobile() ? 'd-none' : ''}`} id="plan-sidebar">
+      <PlanSidebar
+        plan={plan}
+        startDate={planInstance.start_date}
+        onReadingClick={(dayIndex, readingIndex) => navigate(`/day/${dayIndex}/reading/${readingIndex || 0}`)}
+        getReadingCompleted={getReadingCompleted}
+        getDayCompleted={getDayCompleted}
+        onChangeCompletion={onChangeCompletion}
+      />
     </div>
   );
 }
 
-const planData = window.planData;
-const planInstanceData = window.planInstanceData;
-const planInstanceUser = window.planInstanceUser;
-const planReadingData = window.planReadingData;
-render(<PlanInstance plan={planData} planInstance={planInstanceData} planReadingData={planReadingData} planInstanceUser={planInstanceUser} />, document.getElementById('plan-instance-root'));
+function ReadingDetailsRoute(_: RouteProps) {
+  const { dayIndex, readingIndex } = useParams();
+  const { plan } = useContext(PlanContext);
+  const day = plan.days[parseInt(dayIndex, 10)];
+  const selectedReading = day.readings[parseInt(readingIndex, 10) - 1];
+  const { onBack, onNext } = useContext(ControlContext);
+
+  return (
+    <div>
+      <h2>{`${selectedReading.book} ${selectedReading.chapter}${selectedReading.verse_range ? ':' + selectedReading.verse_range : ''}`}</h2>
+      <ReactBible isReadingExapandable={true} book={selectedReading.book} chapter={selectedReading.chapter} verseRange={selectedReading.verse_range} />
+      <ReadingControls isLastReadingForDay={selectedReading === day?.readings[day.readings.length - 1]}  onBack={onBack} onNext={() => onNext(parseInt(dayIndex, 10), parseInt(readingIndex, 10))} />
+    </div>
+  );
+}
+
+function DayOverviewRoute(_: RouteProps) {
+  const { dayIndex } = useParams();
+  const { plan, planInstance } = useContext(PlanContext);
+  const day = plan.days[parseInt(dayIndex, 10)];
+  const { onBack, onNext } = useContext(ControlContext);
+
+  return (
+    <div>
+      <h2>Day {day.day_number}: {day.outline}</h2>
+      <DayOverview day={day.day_number} planInstance={planInstance} />
+      <ReadingControls isLastReadingForDay={day.readings.length === 0}  onBack={onBack} onNext={() => onNext(parseInt(dayIndex, 10), 0)} />
+    </div>
+  );
+}
+
+render((
+  <Router>
+    <PlanContext.Provider value={{ plan: window.planData, planInstance: window.planInstanceData, planInstanceUser: window.planInstanceUser, planReadingData: window.planReadingData }}>
+      <PlanInstance />
+    </PlanContext.Provider>
+  </Router>
+), document.getElementById('plan-instance-root'));
