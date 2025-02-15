@@ -16,7 +16,7 @@ const PlanContext = createContext<{
 
 const ControlContext = createContext<{
   onNext: (currentDayIndex: number, currentReadingIndex: number) => void;
-  onBack: () => void;
+  onPrevious: (currentDayIndex: number, currentReadingIndex: number) => void;
   getReadingCompleted: (dayNumber: number, readingIndex: number) => boolean;
   getDayCompleted: (dayNumber: number) => boolean;
   onChangeCompletion: (isChecked: boolean, dayNumber: number, readingIndex: number) => void;
@@ -217,19 +217,16 @@ function PlanSidebar({
 interface IReadingControlsProps {
   isLastReadingForDay: boolean;
   onNext: () => void;
-  onBack: () => void;
+  onPrevious?: () => void;
 }
 
-function ReadingControls({ isLastReadingForDay, onNext, onBack }: IReadingControlsProps) {
-
+function ReadingControls({ isLastReadingForDay, onNext, onPrevious }: IReadingControlsProps) {
   return (
     <div className={`d-flex justify-content-between ${isMobile() ? readingControls : 'my-3'}`}>
-      { isMobile() && (
-        <button className="btn btn-secondary d-md-none" type="button" onClick={onBack}>
-          <i className="bi bi-arrow-left me-1"></i>
-          Back
-        </button>
-      )}
+      <button className={`btn btn-secondary ${!onPrevious ? 'invisible' : ''}`} type="button" onClick={onPrevious}>
+        <i className="bi bi-arrow-left me-1"></i>
+        Previous reading
+      </button>
       <button className="btn btn-primary" type="button" onClick={onNext}>
         <i className={`bi ${isLastReadingForDay ? 'bi-check2' : 'bi-arrow-right'} me-1`}></i>
         { isLastReadingForDay ? 'Done' : 'Next reading' }
@@ -340,11 +337,20 @@ function PlanInstance({}: IPlanInstanceProps) {
     // TODO: if it's the last day, move the user back to the plan index page
   }, [plan.days, onChangeCompletion]);
 
+  const onPreviousReading = useCallback((currentDayIndex: number, currentReadingIndex: number) => {
+    if (currentReadingIndex > 0) {
+      navigate(`/day/${currentDayIndex}/reading/${currentReadingIndex - 1}`);
+    }
+    // only rendered on readings and not on overview, so no need to move to the previous day
+  }, [plan.days, onChangeCompletion]);
+
   return (
-    <ControlContext.Provider value={{ onNext: onNextReading, onBack: () => navigate('/'), getReadingCompleted, getDayCompleted, onChangeCompletion }}>
+    <ControlContext.Provider value={{ onNext: onNextReading, onPrevious: onPreviousReading, getReadingCompleted, getDayCompleted, onChangeCompletion }}>
+      <Routes><Route path="*" Component={PlanOverviewOnMobile} /></Routes>
+      <h1>{plan.name}</h1>
       <div className="row">
         <Routes>
-          <Route path={"*"} Component={SideBarRoute} />
+          <Route path="*" Component={SideBarRoute} />
         </Routes>
         <div className={`col-12 ${isMobile() ? '' : 'col-md-9'}`} id="right-section">
           <Routes>
@@ -361,6 +367,18 @@ function PlanInstance({}: IPlanInstanceProps) {
         </div>
       </div>
     </ControlContext.Provider>
+  );
+}
+
+function PlanOverviewOnMobile(_: RouteProps) {
+  const params = useParams();
+  const navigate = useNavigate();
+  if (!params['*']) {
+    return null;
+  }
+  // render a small bootstrap button saying "Back to overview" only on mobile
+  return (
+    <a onClick={() => navigate('/')} className="btn btn-outline-info d-block mb-2 btn-sm d-md-none">Back to overview</a>
   );
 }
 
@@ -388,13 +406,13 @@ function ReadingDetailsRoute(_: RouteProps) {
   const { plan } = useContext(PlanContext);
   const day = plan.days[parseInt(dayIndex, 10)];
   const selectedReading = day.readings[parseInt(readingIndex, 10) - 1];
-  const { onBack, onNext } = useContext(ControlContext);
+  const { onPrevious, onNext } = useContext(ControlContext);
 
   return (
     <div>
       <h2>{`${selectedReading.book} ${selectedReading.chapter}${selectedReading.verse_range ? ':' + selectedReading.verse_range : ''}`}</h2>
       <ReactBible isReadingExapandable={true} book={selectedReading.book} chapter={selectedReading.chapter} verseRange={selectedReading.verse_range} />
-      <ReadingControls isLastReadingForDay={selectedReading === day?.readings[day.readings.length - 1]}  onBack={onBack} onNext={() => onNext(parseInt(dayIndex, 10), parseInt(readingIndex, 10))} />
+      <ReadingControls isLastReadingForDay={selectedReading === day?.readings[day.readings.length - 1]}  onPrevious={() => onPrevious(parseInt(dayIndex, 10), parseInt(readingIndex, 10))} onNext={() => onNext(parseInt(dayIndex, 10), parseInt(readingIndex, 10))} />
     </div>
   );
 }
@@ -403,13 +421,13 @@ function DayOverviewRoute(_: RouteProps) {
   const { dayIndex } = useParams();
   const { plan, planInstance } = useContext(PlanContext);
   const day = plan.days[parseInt(dayIndex, 10)];
-  const { onBack, onNext } = useContext(ControlContext);
+  const { onPrevious, onNext } = useContext(ControlContext);
 
   return (
     <div>
       <h2>Day {day.day_number}: {day.outline}</h2>
       <DayOverview day={day.day_number} planInstance={planInstance} />
-      <ReadingControls isLastReadingForDay={day.readings.length === 0}  onBack={onBack} onNext={() => onNext(parseInt(dayIndex, 10), 0)} />
+      <ReadingControls isLastReadingForDay={day.readings.length === 0} onNext={() => onNext(parseInt(dayIndex, 10), 0)} />
     </div>
   );
 }
