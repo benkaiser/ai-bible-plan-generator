@@ -22,6 +22,7 @@
     <%= stylesheet_link_tag 'bootstrap.minty.min', 'data-turbo-track': 'reload' %>
     <%# <%= javascript_importmap_tags %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "tooltip", "data-turbo-track": "reload", async: true %>
   </head>
 
   <body>
@@ -72,6 +73,5 @@
       <% end %>
       <%= yield %>
     </div>
-    <%= javascript_include_tag "tooltip", "data-turbo-track": "reload", async: true %>
   </body>
 </html>
