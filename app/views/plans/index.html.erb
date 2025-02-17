@@ -45,6 +45,12 @@
   </div>
 <% end %>
 
+<% if @completed_plan_instance_users_count %>
+  <div class="mb-5">
+    <a href="<%= completed_plans_path %>" class="btn btn-outline-info">Completed Plans</a>
+  </div>
+<% end %>
+
 <% if @created_plans.any? %>
   <div class="mb-5">
     <h2>Created Plans</h2>

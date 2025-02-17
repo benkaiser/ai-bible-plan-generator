@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   authenticate do
     resources :plans, only: [:index, :show, :new, :create, :show, :edit, :update]
+    get 'completed_plans', to: 'plans#completed', as: 'completed_plans'
     resources :plan_instances, only: [:create, :show, :destroy] do
       member do
         patch :update_reading_status

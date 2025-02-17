@@ -10,6 +10,11 @@ class PlansController < ApplicationController
   def index
     @created_plans = current_user.plans.order(created_at: :desc)
     @active_plan_instance_users = current_user.active_plan_instance_users.order(created_at: :desc)
+    @completed_plan_instance_users_count = current_user.completed_plan_instance_users.size
+  end
+
+  def completed
+    @completed_plan_instance_users = current_user.completed_plan_instance_users.order(created_at: :desc)
   end
 
   def new

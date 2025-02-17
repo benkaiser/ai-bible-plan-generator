@@ -168,7 +168,7 @@ function PlanSidebar({
   const completedDays = useMemo<IPlanDay[]>(() => {
     return plan.days.filter(day => getDayCompleted(day.day_number));
   }, []);
-  const [showCompleted, setShowCompleted] = useState(false);
+  const [showCompleted, setShowCompleted] = useState(() => completedDays.length === plan.days.length);
 
   return (
     <div>

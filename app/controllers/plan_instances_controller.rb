@@ -121,7 +121,11 @@ class PlanInstancesController < ApplicationController
     plan_instance_user = PlanInstanceUser.find_by(id: params[:plan_instance_user_id], user: current_user)
 
     if plan_instance_user
-      plan_instance_user.update(completed: params[:completed])
+      if params[:completed]
+        plan_instance_user.update(completed: true, completed_at: Time.current)
+      else
+        plan_instance_user.update(completed: false, completed_at: nil)
+      end
       render json: { success: true }
     else
       render json: { success: false, error: 'Plan instance user not found or not authorized' }, status: :not_found
