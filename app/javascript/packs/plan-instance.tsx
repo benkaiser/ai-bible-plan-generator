@@ -321,6 +321,9 @@ function PlanInstance({}: IPlanInstanceProps) {
       if (!response.ok) {
         alert('Unable to update plan completion status');
       }
+      if (allReadingsCompleted) {
+        window.location.href = '/plans?completed=true';
+      }
     }
   }, [planInstance.id, planInstanceUser.id, plan.days, getReadingCompleted, isReadingCompleted]);
 

@@ -11,6 +11,9 @@ class PlansController < ApplicationController
     @created_plans = current_user.plans.order(created_at: :desc)
     @active_plan_instance_users = current_user.active_plan_instance_users.order(created_at: :desc)
     @completed_plan_instance_users_count = current_user.completed_plan_instance_users.size
+    if params[:completed] == "true"
+      flash.now[:notice] = "You finished the plan! Great job. Go ahead and start another one today."
+    end
   end
 
   def completed
