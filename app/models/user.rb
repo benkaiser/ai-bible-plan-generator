@@ -15,4 +15,9 @@ class User < ApplicationRecord
   def completed_plan_instance_users
     plan_instance_users.where(completed: true, approved: true, removed: false)
   end
+
+  # Always remember the user
+  def remember_me
+    true
+  end
 end
