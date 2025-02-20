@@ -71,6 +71,11 @@
           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       <% end %>
+      <% if flash.any? %>
+        <script>
+          window.flash = <%= raw(flash.to_json) %>;
+        </script>
+      <% end %>
       <%= yield %>
     </div>
   </body>

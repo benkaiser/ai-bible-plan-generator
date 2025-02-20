@@ -5,6 +5,7 @@
     "@gracious.tech/fetch-client": "^0.9.0",
     "@hotwired/turbo-rails": "^8.0.12",
     "@popperjs/core": "^2.11.8",
+    "@tsparticles/confetti": "^3.8.1",
     "autoprefixer": "^10.4.20",
     "best-effort-json-parser": "^1.1.2",
     "bootstrap": "^5.3.3",
