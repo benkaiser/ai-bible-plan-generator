@@ -6,61 +6,9 @@ import { IPlan, IPlanDay, IPlanRequest, IReading } from './interfaces/IPlan';
 import { checkScriptureRangeValidBSB } from './utilities/checkScriptureExistsBSB';
 import { ensureBookShortName } from './components/bible/utilities';
 import { fakeStream } from './utilities/fakeStream';
+import Plan from './components/Plan';
 
 const planContainer = document.getElementById('plan-container');
-
-function Plan({ plan }: { plan: IPlan }) {
-  if (!plan) {
-    return null;
-  }
-  return (
-    <section className="border border-primary rounded my-4 p-4">
-      <h2>{plan.title}</h2>
-      <p>{plan.description}</p>
-      <div className="plan-container py-2">
-        {plan.days && plan.days.map(day => <PlanDay day={day} />)}
-      </div>
-    </section>
-  );
-}
-
-function PlanDay({ day }: { day: IPlanDay }) {
-  if (!day.readings || !day.outline || day.readings.length === 0) {
-    // Since response is streamed, we may receive incomplete days
-    return null;
-  }
-  return (
-    <div className="card">
-      <div className="card-header">
-        Day {day.day_number}: {day.outline}
-      </div>
-      <ul className="list-group list-group-flush">
-        {day.readings.map(reading => (
-          <PlanReading reading={reading} />
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function InfoIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
-      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-      <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
-    </svg>
-  )
-}
-
-function PlanReading({ reading }: { reading: IReading }) {
-  return (
-    <li key={reading.book + reading.chapter} className="list-group-item">
-      {reading.book} {reading.chapter}{reading.verse_range && `:${reading.verse_range}`}
-
-      <a className="ps-2" data-bs-toggle="tooltip" data-bs-original-title={reading.why_selected} title={reading.why_selected}><InfoIcon /></a>
-    </li>
-  );
-}
 
 interface IPlanActionsProps {
   plan: IPlan;
@@ -216,7 +164,9 @@ class PlanManager extends Component<{}, IPlanManagerState> {
     return (
       <Fragment>
         <PlanForm allowSubmit={!this.state.isGenerating} onSubmit={this.onSubmit} />
-        <Plan plan={this.state.plan} />
+        <div class="my-4">
+          <Plan plan={this.state.plan} />
+        </div>
         { (this.state.isGenerating || this.state.generationCompleted) &&
           <PlanActions cover={this.state.planCover} plan={this.state.plan} isValidating={this.state.isValidating} isValid={this.state.isValid} generating={this.state.isGenerating} completed={this.state.generationCompleted} /> }
       </Fragment>

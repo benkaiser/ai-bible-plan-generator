@@ -1,3 +1,14 @@
+<%= stylesheet_link_tag "home", "data-turbo-track": "reload" %>
+
+<div class="feature-section" style="background-image: url('/backdrop.avif');">
+  <div class="overlay">
+    <h1 class="feature-text">Create a Bible Reading Plan About</h1>
+    <h1 class="feature-text" id="dynamic-text">Crazy Miracles<span class="blinking-cursor">|</span></h1>
+  </div>
+</div>
+
+<div id='plan-container'></div>
+
 <div class="jumbotron text-center my-5">
   <h1 class="display-4">Welcome to AI Bible Plan Generator</h1>
   <p class="lead">Generate personalized Bible reading plans with AI insights for each day.</p>
@@ -26,3 +37,5 @@
     <p>Simply input a prompt and let our AI do the rest. It's that easy!</p>
   </div>
 </div>
+
+<%= javascript_include_tag "home", "data-turbo-track": "reload" %>

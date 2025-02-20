@@ -4,6 +4,13 @@ export interface IPlan {
   days: Array<IPlanDay>;
 }
 
+export interface IDatabasePlan {
+  name: string;
+  description: string;
+  cover_photo: string;
+  days: Array<IPlanDay>;
+}
+
 export interface IPlanDay {
   day_number: number;
   outline: string;

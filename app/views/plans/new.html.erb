@@ -12,24 +12,3 @@
 
 <%= stylesheet_link_tag "new-plan", "data-turbo-track": "reload" %>
 <%= javascript_include_tag "new-plan", "data-turbo-track": "reload" %>
-<% content_for :head do %>
-  <style>
-    .plan-container {
-      display: flex;
-      overflow-x: auto;
-      white-space: nowrap;
-    }
-
-    .plan-container .card {
-      flex: 0 0 auto;
-      margin-right: 16px; /* Adjust spacing between cards as needed */
-      width: 300px; /* Adjust card width as needed */
-    }
-
-    .plan-container .card-body {
-      display: flex;
-      flex-direction: column;
-      white-space: normal;
-    }
-  </style>
-<% end %>

@@ -1,0 +1,75 @@
+@keyframes blink {
+  from, to {
+    color: transparent;
+  }
+  50% {
+    color: white;
+  }
+}
+
+@-webkit-keyframes blink {
+  from, to {
+    color: transparent;
+  }
+  50% {
+    color: white;
+  }
+}
+
+.feature-section {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 25px;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border-radius: 25px;
+}
+
+.feature-text {
+  color: white;
+  font-size: 2rem;
+  text-align: center;
+}
+.blinking-cursor {
+  font-weight: 100;
+  font-size: 30px;
+  color: white;
+  -webkit-animation: 1s blink step-end infinite;
+  animation: 1s blink step-end infinite;
+}
+
+#plan-container {
+  margin: 25px;
+  margin-top: -100px;
+  position: relative;
+}
+
+.home-plan {
+  transition: opacity 0.5s ease-in-out, height 0.5s ease-in-out;
+  opacity: 0;
+  height: auto;
+}
+
+.home-plan.fade-in {
+  opacity: 1;
+}
+
+.home-plan.fade-out {
+  opacity: 0;
+}

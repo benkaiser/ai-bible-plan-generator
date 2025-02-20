@@ -4,7 +4,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from 'preact/ho
 import ReactBible from './components/bible/ReactBible';
 import DayOverview from './components/DayOverview';
 import Collapse from 'react-bootstrap/Collapse';
-import { readingControls, readingSection } from './plan-instance.module.css';
+import { readingControls } from './plan-instance.module.css';
 import isMobile from './utilities/isMobile';
 
 const PlanContext = createContext<{

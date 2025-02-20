@@ -1,0 +1,17 @@
+.planContainer {
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.planContainer :global(.card) {
+  flex: 0 0 auto;
+  margin-right: 16px; /* Adjust spacing between cards as needed */
+  width: 300px; /* Adjust card width as needed */
+}
+
+.planContainer :global(.card-body) {
+  display: flex;
+  flex-direction: column;
+  white-space: normal;
+}
