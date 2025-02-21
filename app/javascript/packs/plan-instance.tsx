@@ -332,8 +332,6 @@ function PlanInstance({}: IPlanInstanceProps) {
     onChangeCompletion(true, day.day_number, readingIndex);
     if (readingIndex < day.readings.length) {
       navigate(`/day/${dayIndex}/reading/${readingIndex + 1}`);
-    } else if (dayIndex < plan.days.length - 1) {
-      navigate(`/day/${dayIndex + 1}/reading/0`);
     } else {
       navigate('/');
     }
