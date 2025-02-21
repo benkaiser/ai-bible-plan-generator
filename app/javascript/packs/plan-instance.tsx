@@ -4,7 +4,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from 'preact/ho
 import ReactBible from './components/bible/ReactBible';
 import DayOverview from './components/DayOverview';
 import Collapse from 'react-bootstrap/Collapse';
-import { readingControls } from './plan-instance.module.css';
+import { readingControls, rightSectionMobile } from './plan-instance.module.css';
 import isMobile from './utilities/isMobile';
 
 const PlanContext = createContext<{
@@ -355,7 +355,7 @@ function PlanInstance({}: IPlanInstanceProps) {
         <Routes>
           <Route path="*" Component={SideBarRoute} />
         </Routes>
-        <div className={`col-12 ${isMobile() ? '' : 'col-md-9'}`} id="right-section">
+        <div className={`col-12 ${isMobile() ? rightSectionMobile : 'col-md-9'}`} id="right-section">
           <Routes>
             <Route path="/day/:dayIndex/reading/0" Component={DayOverviewRoute} />
             <Route path="/day/:dayIndex/reading/:readingIndex" Component={ReadingDetailsRoute} />
