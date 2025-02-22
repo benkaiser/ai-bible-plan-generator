@@ -90,9 +90,19 @@ class DynamicText extends Component<{}, IDynamicTextState> {
 
 function onLoad() {
   const dynamicTextElement = document.getElementById('dynamic-text');
-  dynamicTextElement.innerHTML = '';
-  if (dynamicTextElement) {
+  const planContainer = document.getElementById('plan-container');
+  if (window.location.pathname === '/') {
+    dynamicTextElement.innerHTML = '';
     render(<DynamicText />, dynamicTextElement);
+  } else {
+    if (dynamicTextElement) {
+      render(null, dynamicTextElement);
+      dynamicTextElement.innerHTML = '';
+    }
+    if (planContainer) {
+      render(null, planContainer);
+      planContainer.innerHTML = '';
+    }
   }
 }
 

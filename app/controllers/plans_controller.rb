@@ -26,6 +26,12 @@ class PlansController < ApplicationController
 
   def show
     @plan = Plan.find(params[:id])
+    if @plan.present? && (@plan.system_key.present? || @plan.user_id == current_user.id || @plan.plan_instances.joins(:plan_instance_users).exists?(plan_instance_users: { user_id: current_user.id }))
+      render :show
+    else
+      # Handle the case where the conditions are not met
+      redirect_to plans_path, alert: 'The plan you tried to access is unavailable.'
+    end
   end
 
   def create

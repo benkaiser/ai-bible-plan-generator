@@ -56,24 +56,7 @@
     <h2>Created Plans</h2>
     <div class="row">
       <% @created_plans.each do |plan| %>
-        <div class="col-md-4">
-          <div class="card mb-4">
-            <% unless plan.cover_photo.empty? %>
-              <a href="<%= plan_path(plan) %>">
-                <img src="<%= plan.cover_photo %>/400/200"
-                  class="card-img-top bg-dark"
-                  alt="Plan cover photo"
-                />
-              </a>
-            <% end %>
-            <div class="card-body">
-              <h5 class="card-title"><%= plan.name %></h5>
-              <p class="card-text"><%= plan.description %></p>
-              <%= link_to 'View Plan', plan_path(plan), class: 'btn btn-primary' %>
-              <%= link_to 'Edit Plan', edit_plan_path(plan), class: 'btn btn-secondary ml-2' %>
-            </div>
-          </div>
-        </div>
+        <%= render 'plan_card', plan: plan, actions: (link_to('Edit Plan', edit_plan_path(plan), class: 'btn btn-secondary ml-2')) %>
       <% end %>
     </div>
   </div>

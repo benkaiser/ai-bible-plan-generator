@@ -1,0 +1,21 @@
+
+<div class="col-md-4">
+  <div class="card mb-4">
+    <% unless plan.cover_photo.empty? %>
+      <a href="<%= plan_path(plan) %>">
+        <img src="<%= plan.cover_photo %>/400/200"
+          class="card-img-top bg-dark"
+          alt="Plan cover photo"
+        />
+      </a>
+    <% end %>
+    <div class="card-body">
+      <h5 class="card-title"><%= plan.name %></h5>
+      <p class="card-text"><%= plan.description %></p>
+      <%= link_to 'View Plan', plan_path(plan), class: 'btn btn-primary' %>
+      <% if local_assigns[:actions] %>
+        <%= actions %>
+      <% end %>
+    </div>
+  </div>
+</div>

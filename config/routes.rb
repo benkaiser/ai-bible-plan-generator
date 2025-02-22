@@ -4,6 +4,8 @@ Rails.application.routes.draw do
 
   get 'bible(/:book(/:chapter))', to: 'bible#show', as: 'bible'
 
+  resources :plans, only: [:show]
+
   authenticate do
     resources :plans, only: [:index, :show, :new, :create, :show, :edit, :update]
     get 'completed_plans', to: 'plans#completed', as: 'completed_plans'
