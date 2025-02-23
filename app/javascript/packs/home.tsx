@@ -91,6 +91,7 @@ class DynamicText extends Component<{}, IDynamicTextState> {
 function onLoad() {
   const dynamicTextElement = document.getElementById('dynamic-text');
   const planContainer = document.getElementById('plan-container');
+  planContainer.className = 'plan-container';
   if (window.location.pathname === '/') {
     dynamicTextElement.innerHTML = '';
     render(<DynamicText />, dynamicTextElement);
@@ -106,6 +107,10 @@ function onLoad() {
   }
 }
 
-document.addEventListener('turbo:load', () => {
+document.addEventListener('DOMContentLoaded', onPageLoad)
+document.addEventListener('turbo:render', onPageLoad)
+
+function onPageLoad(event) {
+  document.removeEventListener('DOMContentLoaded', onPageLoad)
   onLoad();
-});
+}
