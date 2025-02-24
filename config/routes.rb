@@ -4,10 +4,8 @@ Rails.application.routes.draw do
 
   get 'bible(/:book(/:chapter))', to: 'bible#show', as: 'bible'
 
-  resources :plans, only: [:show]
-
   authenticate do
-    resources :plans, only: [:index, :show, :new, :create, :show, :edit, :update]
+    resources :plans, only: [:index, :show, :new, :create, :edit, :update]
     get 'completed_plans', to: 'plans#completed', as: 'completed_plans'
     resources :plan_instances, only: [:create, :show, :destroy] do
       member do
@@ -22,6 +20,9 @@ Rails.application.routes.draw do
     post 'api/fix_reading', to: 'plans#fix_reading'
   end
 
+  unauthenticated do
+    resources :plans, only: [:show]
+  end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

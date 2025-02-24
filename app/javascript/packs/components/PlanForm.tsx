@@ -3,6 +3,7 @@ import { useCallback, useRef, useState } from 'preact/hooks';
 import { IPlanRequest } from '../interfaces/IPlan';
 import TopicInput from './TopicInput';
 import { imageLoadContainer } from './PlanForm.module.css';
+import TopicIdeas from './TopicIdeas';
 
 interface IPlanFormProps {
   allowSubmit: boolean;
@@ -46,12 +47,17 @@ const PlanForm = (props: IPlanFormProps) => {
     setLoading(false);
   };
 
-  const onSubmit = useCallback((event: Event) => {
-    event.preventDefault();
+  const onSubmit = useCallback((event?: Event) => {
+    event?.preventDefault();
     const topic = topicInputRef.current.value;
     const planLength = showCustomLength ? customLength : length;
     props.onSubmit({ topic, length: planLength, cover: `https://picsum.photos/seed/${seed}` });
   }, [props, showCustomLength, customLength, length]);
+
+  const onChangeTopic = useCallback((topic: string) => {
+    topicInputRef.current.value = topic;
+    onSubmit();
+  }, []);
 
   return (
     <form id="plan-form me-2" onSubmit={onSubmit}>
@@ -90,6 +96,10 @@ const PlanForm = (props: IPlanFormProps) => {
             )}
             <label htmlFor="plan-topic">Bible reading plan about</label>
             <TopicInput inputRef={topicInputRef} />
+            <button type="button" className="btn btn-primary my-2" id="generate-plan" onClick={onSubmit} disabled={!props.allowSubmit}>
+              Generate Plan
+            </button>
+            <TopicIdeas onChangePrompt={onChangeTopic} />
           </div>
         </div>
         <div className="col-md-6">
@@ -118,9 +128,6 @@ const PlanForm = (props: IPlanFormProps) => {
             </div>
         </div>
       </div>
-      <button type="button" className="btn btn-primary my-2" id="generate-plan" onClick={onSubmit} disabled={!props.allowSubmit}>
-          Generate Plan
-        </button>
     </form>
   );
 };

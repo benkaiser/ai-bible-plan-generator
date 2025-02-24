@@ -1,5 +1,5 @@
 import { parse } from 'best-effort-json-parser';
-import { render, h, Component, Fragment, createRef } from 'preact';
+import { render, h, Component, Fragment, createRef, RefObject } from 'preact';
 import { events } from 'fetch-event-stream';
 import PlanForm from './components/PlanForm';
 import { IPlan, IPlanDay, IPlanRequest, IReading } from './interfaces/IPlan';
@@ -82,9 +82,12 @@ interface IPlanManagerState {
 }
 
 class PlanManager extends Component<{}, IPlanManagerState> {
+  private planActionsRef: RefObject<HTMLDivElement>;
+
   constructor(props) {
     super(props);
     this.state = { plan: null, planCover: '', isGenerating: false, isValid: false, isValidating: false, generationCompleted: false };
+    this.planActionsRef = createRef<HTMLDivElement>();
   }
 
   setPlan(plan: IPlan) {
@@ -165,16 +168,27 @@ class PlanManager extends Component<{}, IPlanManagerState> {
       <Fragment>
         <PlanForm allowSubmit={!this.state.isGenerating} onSubmit={this.onSubmit} />
         <div class="my-4">
-          <Plan plan={this.state.plan} />
+          { this.state.isGenerating && this.state.plan ? (
+            <section className="border border-primary rounded bg-body p-4" style={{ minHeight: '200px'}}></section>
+          ) : (
+            <Plan plan={this.state.plan} />
+          )}
         </div>
-        { (this.state.isGenerating || this.state.generationCompleted) &&
-          <PlanActions cover={this.state.planCover} plan={this.state.plan} isValidating={this.state.isValidating} isValid={this.state.isValid} generating={this.state.isGenerating} completed={this.state.generationCompleted} /> }
+        <div ref={this.planActionsRef}>
+          { (this.state.isGenerating || this.state.generationCompleted) &&
+            <PlanActions cover={this.state.planCover} plan={this.state.plan} isValidating={this.state.isValidating} isValid={this.state.isValid} generating={this.state.isGenerating} completed={this.state.generationCompleted} /> }
+        </div>
       </Fragment>
     );
   }
 
   onSubmit = (request: IPlanRequest) => {
-    this.setState({ isGenerating: true, planCover: request.cover });
+    this.setState({ isGenerating: true, planCover: request.cover }, () => {
+      setTimeout(() => {
+        this.planActionsRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }, 500);
+    });
+    // scroll to generating section
     // Make an API request to generate the plan
     fetch('/api/generate_plan', {
       method: 'POST',
