@@ -99,6 +99,7 @@ const PlanForm = (props: IPlanFormProps) => {
             <button type="button" className="btn btn-primary my-2" id="generate-plan" onClick={onSubmit} disabled={!props.allowSubmit}>
               Generate Plan
             </button>
+            <div><label>Topic Ideas</label></div>
             <TopicIdeas onChangePrompt={onChangeTopic} />
           </div>
         </div>
