@@ -11,6 +11,10 @@
   margin-bottom: 100px;
 }
 
+.dayOverviewContainer {
+  font-size: 18px;
+}
+
 .rightSectionMobile {
   padding-bottom: 70px;
 }

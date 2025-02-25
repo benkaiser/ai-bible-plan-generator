@@ -4,7 +4,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from 'preact/ho
 import ReactBible from './components/bible/ReactBible';
 import DayOverview from './components/DayOverview';
 import Collapse from 'react-bootstrap/Collapse';
-import { readingControls, rightSectionMobile } from './plan-instance.module.css';
+import { readingControls, rightSectionMobile, dayOverviewContainer } from './plan-instance.module.css';
 import isMobile from './utilities/isMobile';
 
 const PlanContext = createContext<{
@@ -425,7 +425,7 @@ function DayOverviewRoute(_: RouteProps) {
   const { onPrevious, onNext } = useContext(ControlContext);
 
   return (
-    <div>
+    <div className={dayOverviewContainer}>
       <h2>Day {day.day_number}: {day.outline}</h2>
       <DayOverview day={day.day_number} planInstance={planInstance} />
       <ReadingControls isLastReadingForDay={day.readings.length === 0} onNext={() => onNext(parseInt(dayIndex, 10), 0)} />

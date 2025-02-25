@@ -1,5 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Gentium+Plus:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
 :global {
   .fetch-bible:not(.fb-plain) h3[data-c] {
     display: none;
+  }
+
+  .fetch-bible {
+    font-family: 'Gentium Plus', serif;
+  }
+
+  .fetch-bible:not(.fb-plain) {
+    font-size: 18px;
+  }
+  @media (min-width: 800px) {
+    .fetch-bible:not(.fb-plain) {
+      font-size: 20px;
+    }
   }
 }
