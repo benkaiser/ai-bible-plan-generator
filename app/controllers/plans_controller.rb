@@ -60,10 +60,12 @@ class PlansController < ApplicationController
   def generate_plan
     topic = params[:topic]
     length = params[:length].to_i
+    verseAmount = params[:verseAmount].to_i
 
     response.headers['Content-Type'] = 'text/event-stream'
 
-    prompt = PLAN_GENERATION_PROMPT.gsub("{length}", length.to_s).gsub("{topic}", topic)
+    prompt = PLAN_GENERATION_PROMPT.gsub("{length}", length.to_s).gsub("{topic}", topic).gsub("{verseAmount}", verseAmount.to_s)
+    puts prompt
 
     cache_service = PromptCacheService.new(
       prompt: prompt,
@@ -74,7 +76,7 @@ class PlansController < ApplicationController
         }
       ],
       response_format: { type: "json_object" },
-      model: "accounts/fireworks/models/llama-v3p1-8b-instruct",
+      model: "accounts/fireworks/models/llama-v3p1-70b-instruct",
       max_tokens: 16384,
       temperature: 0
     )

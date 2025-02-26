@@ -168,7 +168,7 @@ class PlanManager extends Component<{}, IPlanManagerState> {
       <Fragment>
         <PlanForm allowSubmit={!this.state.isGenerating} onSubmit={this.onSubmit} />
         <div class="my-4">
-          { this.state.isGenerating && this.state.plan ? (
+          { this.state.isGenerating && !this.state.plan ? (
             <section className="border border-primary rounded bg-body p-4" style={{ minHeight: '200px'}}></section>
           ) : (
             <Plan plan={this.state.plan} />
@@ -196,7 +196,7 @@ class PlanManager extends Component<{}, IPlanManagerState> {
         'Content-Type': 'application/json',
         'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')!.getAttribute('content') as string
       },
-      body: JSON.stringify({ topic: request.topic, length: request.length })
+      body: JSON.stringify({ topic: request.topic, length: request.length, verseAmount: request.verseAmount })
     })
     .then(async (response) => {
       if (response.ok) {

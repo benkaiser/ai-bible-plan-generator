@@ -27,5 +27,6 @@ export interface IReading {
 export interface IPlanRequest {
   topic: string;
   length: number;
+  verseAmount: number;
   cover: string;
 }

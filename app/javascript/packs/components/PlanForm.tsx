@@ -12,6 +12,7 @@ interface IPlanFormProps {
 
 const PlanForm = (props: IPlanFormProps) => {
   const [length, setLength] = useState(7);
+  const [verseAmount, setVerseAmount] = useState(2);
   const [customLength, setCustomLength] = useState(7);
   const [showCustomLength, setShowCustomLength] = useState(false);
   const topicInputRef = useRef<HTMLInputElement>(null);
@@ -22,6 +23,10 @@ const PlanForm = (props: IPlanFormProps) => {
     const value = event.target.value;
     setLength(value);
     setShowCustomLength(value === 'custom');
+  };
+
+  const handleVerseAmountChange = (event) => {
+    setVerseAmount(event.target.value);
   };
 
   const handleCustomLengthInput = (event) => {
@@ -51,13 +56,13 @@ const PlanForm = (props: IPlanFormProps) => {
     event?.preventDefault();
     const topic = topicInputRef.current.value;
     const planLength = showCustomLength ? customLength : length;
-    props.onSubmit({ topic, length: planLength, cover: `https://picsum.photos/seed/${seed}` });
-  }, [props, showCustomLength, customLength, length]);
+    props.onSubmit({ topic, length: planLength, verseAmount, cover: `https://picsum.photos/seed/${seed}` });
+  }, [props, showCustomLength, customLength, length, verseAmount]);
 
   const onChangeTopic = useCallback((topic: string) => {
     topicInputRef.current.value = topic;
     onSubmit();
-  }, []);
+  }, [onSubmit]);
 
   return (
     <form id="plan-form me-2" onSubmit={onSubmit}>
@@ -96,6 +101,23 @@ const PlanForm = (props: IPlanFormProps) => {
             )}
             <label htmlFor="plan-topic">Bible reading plan about</label>
             <TopicInput inputRef={topicInputRef} />
+            <div>
+              <label htmlFor="verse-amount">Including</label>
+              <select
+                id="verse-amount"
+                className="form-control d-inline-block mx-2"
+                style={{ width: 'auto' }}
+                value={verseAmount}
+                onChange={handleVerseAmountChange}
+              >
+                <option value={1}>1 scripture</option>
+                <option value={2}>2 scriptures</option>
+                <option value={3}>3 scriptures</option>
+                <option value={4}>4 scriptures</option>
+                <option value={5}>5 scriptures</option>
+              </select>
+              <span>per day</span>
+            </div>
             <button type="button" className="btn btn-primary my-2" id="generate-plan" onClick={onSubmit} disabled={!props.allowSubmit}>
               Generate Plan
             </button>
