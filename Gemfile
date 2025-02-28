@@ -49,6 +49,8 @@ gem "ruby-openai"
 gem 'esbuild-rails'
 gem 'csv'
 gem 'activerecord-import'
+gem 'webpush'
+gem 'whenever', require: false
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

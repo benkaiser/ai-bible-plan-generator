@@ -25,6 +25,7 @@ class PlanInstancesController < ApplicationController
   def destroy
     @plan_instance = PlanInstance.find(params[:id])
     plan_instance_user = PlanInstanceUser.find_by(plan_instance: @plan_instance, user: current_user)
+    plan_instance_user.notification_subscriptions.destroy_all
     plan_instance_user.update(removed: true)
     redirect_to plans_path, notice: 'Plan stopped.'
   end
@@ -123,6 +124,7 @@ class PlanInstancesController < ApplicationController
     if plan_instance_user
       if params[:completed]
         plan_instance_user.update(completed: true, completed_at: Time.current)
+        plan_instance_user.notification_subscriptions.destroy_all
       else
         plan_instance_user.update(completed: false, completed_at: nil)
       end

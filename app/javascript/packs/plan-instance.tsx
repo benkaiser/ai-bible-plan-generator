@@ -6,6 +6,7 @@ import DayOverview from './components/DayOverview';
 import Collapse from 'react-bootstrap/Collapse';
 import { readingControls, rightSectionMobile, dayOverviewContainer } from './plan-instance.module.css';
 import isMobile from './utilities/isMobile';
+import NotificationModal from './components/NotificationModal';
 
 const PlanContext = createContext<{
   plan: IPlan;
@@ -150,6 +151,7 @@ function PlanDay({ day, dayIndex, startDate, onReadingClick, getReadingCompleted
 
 interface IPlanSidebarProps {
   plan: IPlan;
+  planInstance: IPlanInstance;
   startDate: string;
   onReadingClick: (dayIndex: number, readingIndex?: number) => void;
   getReadingCompleted: (dayNumber: number, readingIndex: number) => boolean;
@@ -159,6 +161,7 @@ interface IPlanSidebarProps {
 
 function PlanSidebar({
   plan,
+  planInstance,
   startDate,
   onReadingClick,
   getReadingCompleted,
@@ -168,10 +171,19 @@ function PlanSidebar({
   const completedDays = useMemo<IPlanDay[]>(() => {
     return plan.days.filter(day => getDayCompleted(day.day_number));
   }, []);
+  const [showModal, setShowModal] = useState(false);
   const [showCompleted, setShowCompleted] = useState(() => completedDays.length === plan.days.length);
+
+  const handleNotificationClick = () => {
+    setShowModal(true);
+  };
 
   return (
     <div>
+      <div>
+        <button class="btn btn-outline-info" onClick={handleNotificationClick}><i class="bi bi-bell-fill"></i></button>
+      </div>
+      {showModal && <NotificationModal planInstanceId={planInstance.id} onClose={() => setShowModal(false)} />}
       {completedDays.length > 0 && (
         <button
           onClick={() => setShowCompleted(!showCompleted)}
@@ -392,6 +404,7 @@ function SideBarRoute(_: RouteProps) {
     <div className={`col-12 col-md-3 ${params['*'] && isMobile() ? 'd-none' : ''}`} id="plan-sidebar">
       <PlanSidebar
         plan={plan}
+        planInstance={planInstance}
         startDate={planInstance.start_date}
         onReadingClick={(dayIndex, readingIndex) => navigate(`/day/${dayIndex}/reading/${readingIndex || 0}`)}
         getReadingCompleted={getReadingCompleted}
