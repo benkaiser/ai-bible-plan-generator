@@ -18,6 +18,7 @@ Rails.application.routes.draw do
     # API routes
     post 'api/generate_plan', to: 'plans#generate_plan'
     post 'api/fix_reading', to: 'plans#fix_reading'
+    post 'notification_subscriptions', to: 'notification_subscriptions#create'
   end
 
   unauthenticated do

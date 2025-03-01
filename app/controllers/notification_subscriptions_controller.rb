@@ -14,6 +14,10 @@ class NotificationSubscriptionsController < ApplicationController
   private
 
   def subscription_params
-    params.require(:subscription).permit(:endpoint, :p256dh, :auth, :time)
+    params.permit(:endpoint, :p256dh, :auth, :time).tap do |whitelisted|
+      %i[endpoint p256dh auth time].each do |key|
+        raise ActionController::ParameterMissing, key unless whitelisted.key?(key)
+      end
+    end
   end
 end

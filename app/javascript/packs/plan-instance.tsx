@@ -180,20 +180,21 @@ function PlanSidebar({
 
   return (
     <div>
-      <div>
+      <div className="mb-3 d-flex gap-3 justify-content-between">
+        {completedDays.length > 0 && (
+          <button
+            onClick={() => setShowCompleted(!showCompleted)}
+            aria-controls="completedDaysCollapse"
+            aria-expanded={showCompleted}
+            className="btn btn-outline-info"
+          >
+            {showCompleted ? 'Hide Completed Days' : 'Show Completed Days'}
+          </button>
+        )}
         <button class="btn btn-outline-info" onClick={handleNotificationClick}><i class="bi bi-bell-fill"></i></button>
       </div>
-      {showModal && <NotificationModal planInstanceId={planInstance.id} onClose={() => setShowModal(false)} />}
-      {completedDays.length > 0 && (
-        <button
-          onClick={() => setShowCompleted(!showCompleted)}
-          aria-controls="completedDaysCollapse"
-          aria-expanded={showCompleted}
-          className="btn btn-outline-info mb-3"
-        >
-          {showCompleted ? 'Hide Completed Days' : 'Show Completed Days'}
-        </button>
-      )}
+      <NotificationModal planInstanceId={planInstance.id} onClose={() => setShowModal(false)} show={showModal} />
+
       <Collapse in={showCompleted}>
         <div id="completedDaysCollapse">
           {completedDays.map(day => (

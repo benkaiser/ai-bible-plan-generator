@@ -1,8 +1,11 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
-const NotificationModal = ({ onClose, planInstanceId }) => {
+const NotificationModal = ({ onClose, planInstanceId, show }) => {
   const [time, setTime] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = async () => {
     const permission = await Notification.requestPermission();
@@ -13,26 +16,41 @@ const NotificationModal = ({ onClose, planInstanceId }) => {
         applicationServerKey: (window as any).PUBLIC_VAPID_KEY
       });
 
+      const { endpoint, keys: { p256dh, auth } } = subscription.toJSON();
+
       await fetch('/notification_subscriptions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
         },
-        body: JSON.stringify({ subscription, time, plan_instance_id: planInstanceId })
+        body: JSON.stringify({ endpoint, p256dh, auth, time, plan_instance_id: planInstanceId })
       });
 
       onClose();
+    } else {
+      setError('Notification permissions rejected. Please go into site settings and manually enable notification permissions.');
     }
   };
 
   return (
-    <div className="modal">
-      <h2>Select Notification Time</h2>
-      <input type="time" value={time} onChange={(e) => setTime(e.target.value)} />
-      <button onClick={handleSubmit}>Submit</button>
-      <button onClick={onClose}>Cancel</button>
-    </div>
+    <Modal show={show} onHide={onClose} centered>
+      <Modal.Header closeButton>
+        <Modal.Title>Select Notification Time</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        {error && <div className="alert alert-danger">{error}</div>}
+        <input type="time" className="form-control" value={time} onChange={(e) => setTime(e.target.value)} />
+      </Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={onClose}>
+          Cancel
+        </Button>
+        <Button variant="primary" onClick={handleSubmit}>
+          Submit
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 };
 
