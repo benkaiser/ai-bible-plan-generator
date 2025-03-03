@@ -27,4 +27,8 @@ class PlanInstanceUser < ApplicationRecord
     return 0 if total_readings == 0
     (completed_readings.to_f / total_readings * 100).round(2)
   end
+
+  def has_notifications?
+    notification_subscriptions.where(removed: false).exists?
+  end
 end

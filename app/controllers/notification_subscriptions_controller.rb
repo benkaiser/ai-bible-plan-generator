@@ -11,6 +11,16 @@ class NotificationSubscriptionsController < ApplicationController
     end
   end
 
+  def destroy
+    plan_instance_user = PlanInstanceUser.find_by(plan_instance_id: params[:plan_instance_id], user: current_user)
+    subscriptions = plan_instance_user.notification_subscriptions
+    if subscriptions.update_all(removed: true)
+      render json: { status: 'success' }
+    else
+      render json: { errors: subscriptions.map(&:errors).map(&:full_messages).flatten }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def subscription_params

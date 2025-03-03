@@ -19,6 +19,7 @@ Rails.application.routes.draw do
     post 'api/generate_plan', to: 'plans#generate_plan'
     post 'api/fix_reading', to: 'plans#fix_reading'
     post 'notification_subscriptions', to: 'notification_subscriptions#create'
+    delete 'notification_subscriptions', to: 'notification_subscriptions#destroy'
   end
 
   unauthenticated do

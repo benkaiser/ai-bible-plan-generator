@@ -5,6 +5,7 @@
   window.planInstanceData = <%= @plan_instance.to_json.html_safe %>;
   window.planInstanceUser = <%= @plan_instance_user.to_json.html_safe %>;
   window.planReadingData = <%= @plan_instance_user.plan_instance_readings.to_json.html_safe %>;
+  window.hasNotifications = <%= @plan_instance_user.has_notifications? %>;
   window.PUBLIC_VAPID_KEY = "<%= ENV['VAPID_PUBLIC_KEY'] %>";
 </script>
 <%= stylesheet_link_tag "plan-instance", "data-turbo-track": "reload" %>

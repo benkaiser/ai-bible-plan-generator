@@ -33,6 +33,18 @@ const NotificationModal = ({ onClose, planInstanceId, show }) => {
     }
   };
 
+  const onRemoveAll = async () => {
+    await fetch('/notification_subscriptions', {
+      method: 'DELETE',
+      body: JSON.stringify({ plan_instance_id: planInstanceId }),
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      }
+    });
+    onClose();
+  };
+
   return (
     <Modal show={show} onHide={onClose} centered>
       <Modal.Header closeButton>
@@ -43,6 +55,9 @@ const NotificationModal = ({ onClose, planInstanceId, show }) => {
         <input type="time" className="form-control" value={time} onChange={(e) => setTime(e.target.value)} />
       </Modal.Body>
       <Modal.Footer>
+        { (window as any).hasNotifications && <Button variant="danger" onClick={onRemoveAll}>
+          Remove plan notifications
+        </Button> }
         <Button variant="secondary" onClick={onClose}>
           Cancel
         </Button>
