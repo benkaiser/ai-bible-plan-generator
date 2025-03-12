@@ -1,12 +1,13 @@
 import { createContext, h, render } from 'preact';
 import { HashRouter as Router, Routes, Route, useParams, useNavigate, RouteProps } from 'react-router-dom';
-import { useCallback, useContext, useEffect, useMemo, useState } from 'preact/hooks';
+import { useCallback, useContext, useMemo, useState } from 'preact/hooks';
 import ReactBible from './components/bible/ReactBible';
 import DayOverview from './components/DayOverview';
 import Collapse from 'react-bootstrap/Collapse';
-import { readingControls, rightSectionMobile, dayOverviewContainer } from './plan-instance.module.css';
+import { rightSectionMobile, dayOverviewContainer } from './plan-instance.module.css';
 import isMobile from './utilities/isMobile';
 import NotificationModal from './components/NotificationModal';
+import { ReadingControls } from './components/ReadingControls';
 
 const PlanContext = createContext<{
   plan: IPlan;
@@ -22,13 +23,6 @@ const ControlContext = createContext<{
   getDayCompleted: (dayNumber: number) => boolean;
   onChangeCompletion: (isChecked: boolean, dayNumber: number, readingIndex: number) => void;
 }>(null);
-
-interface IPlanReading {
-  book: string;
-  chapter: number;
-  verse_range?: string;
-  why_selected: string;
-}
 
 interface IPlanDay {
   day_number: number;
@@ -227,27 +221,6 @@ function PlanSidebar({
   );
 }
 
-interface IReadingControlsProps {
-  isLastReadingForDay: boolean;
-  onNext: () => void;
-  onPrevious?: () => void;
-}
-
-function ReadingControls({ isLastReadingForDay, onNext, onPrevious }: IReadingControlsProps) {
-  return (
-    <div className={`d-flex justify-content-between ${isMobile() ? readingControls : 'my-3'}`}>
-      <button className={`btn btn-secondary ${!onPrevious ? 'invisible' : ''}`} type="button" onClick={onPrevious}>
-        <i className="bi bi-arrow-left me-1"></i>
-        Previous reading
-      </button>
-      <button className="btn btn-primary" type="button" onClick={onNext}>
-        <i className={`bi ${isLastReadingForDay ? 'bi-check2' : 'bi-arrow-right'} me-1`}></i>
-        { isLastReadingForDay ? 'Done' : 'Next reading' }
-      </button>
-    </div>
-  );
-}
-
 interface IPlanInstanceProps {}
 
 interface IPlanReadingMap {
@@ -427,7 +400,7 @@ function ReadingDetailsRoute(_: RouteProps) {
     <div>
       <h2>{`${selectedReading.book} ${selectedReading.chapter}${selectedReading.verse_range ? ':' + selectedReading.verse_range : ''}`}</h2>
       <ReactBible isReadingExapandable={true} book={selectedReading.book} chapter={selectedReading.chapter} verseRange={selectedReading.verse_range} />
-      <ReadingControls isLastReadingForDay={selectedReading === day?.readings[day.readings.length - 1]}  onPrevious={() => onPrevious(parseInt(dayIndex, 10), parseInt(readingIndex, 10))} onNext={() => onNext(parseInt(dayIndex, 10), parseInt(readingIndex, 10))} />
+      <ReadingControls selectedReading={selectedReading} isLastReadingForDay={selectedReading === day?.readings[day.readings.length - 1]}  onPrevious={() => onPrevious(parseInt(dayIndex, 10), parseInt(readingIndex, 10))} onNext={() => onNext(parseInt(dayIndex, 10), parseInt(readingIndex, 10))} />
     </div>
   );
 }

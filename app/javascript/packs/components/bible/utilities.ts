@@ -12,3 +12,12 @@ export function ensureBookShortName(bookname: string): string {
     throw new Error(`Book name "${bookname}" not found in books list`);
   }
 }
+
+export function getBook(bookShortname: string): { name: string, id: string, numberOfChapters: number } {
+  const book = books.find(b => b.id === bookShortname);
+  if (book) {
+    return book;
+  } else {
+    throw new Error(`Book short name "${bookShortname}" not found in books list`);
+  }
+}
