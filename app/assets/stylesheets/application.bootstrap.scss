@@ -1,5 +1,12 @@
 @use 'bootstrap-icons/font/bootstrap-icons' as *;
 
+[data-bs-theme=light] body {
+  --bs-heading-color: rgb(45, 45, 45);
+  --bs-body-color: rgb(34, 34, 34);
+  --bs-secondary-color: rgba(34, 34, 34, 0.75);
+  --bs-tertiary-color: rgba(34, 34, 34, 0.5);
+}
+
 .card-header {
   text-wrap-mode: wrap;
 }
