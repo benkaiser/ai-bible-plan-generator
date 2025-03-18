@@ -56,7 +56,9 @@
     <h2>Created Plans</h2>
     <div class="row">
       <% @created_plans.each do |plan| %>
-        <%= render 'plan_card', plan: plan, after_actions: (link_to('Edit Plan', edit_plan_path(plan), class: 'btn btn-secondary ml-2')) %>
+        <%= render 'plan_card', plan: plan, before_actions: (form_with url: plan_instances_path(plan_id: plan.id), method: :post, local: true, html: { style: 'display:inline;' } do %>
+        <%= submit_tag 'Start Plan', class: 'btn btn-success' %>
+      <% end), after_actions: (link_to('Edit Plan', edit_plan_path(plan), class: 'btn btn-secondary ml-2')) %>
       <% end %>
     </div>
   </div>

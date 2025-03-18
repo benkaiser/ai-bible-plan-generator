@@ -15,7 +15,7 @@
 
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
-    <link rel=”mask-icon” href=”mask-icon.svg” color=”#000000">
+    <link rel="mask-icon" href="mask-icon.svg" color="#000000">
     <meta name="theme-color" content="#78c2ad">
 
     <%= stylesheet_link_tag 'application', "data-turbo-track": "reload" %>
@@ -41,11 +41,15 @@
               <li class="nav-item">
                 <%= link_to 'Plans', plans_path, class: "nav-link #{'active' if current_page?(plans_path)}" %>
               </li>
-              <li class="nav-item">
-                <%= link_to 'Account', edit_user_registration_path, class: "nav-link #{'active' if current_page?(edit_user_registration_path)}" %>
-              </li>
-               <li class="nav-item">
-                <%= link_to 'Logout', destroy_user_session_path, class: "nav-link", data: { "turbo-method": :delete } %>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="bi bi-person-circle"></i> <%= current_user.username %>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                  <li><%= link_to 'Account Settings', edit_user_registration_path, class: "dropdown-item" %></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><%= link_to 'Logout', destroy_user_session_path, class: "dropdown-item", data: { "turbo-method": :delete } %></li>
+                </ul>
               </li>
             <% else %>
               <li class="nav-item">

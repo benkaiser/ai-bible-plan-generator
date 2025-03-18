@@ -8,6 +8,22 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
+  validates :username, presence: true, uniqueness: true,
+            format: { with: /\A[a-zA-Z0-9_]+\z/, message: "only allows letters, numbers and underscores" },
+            length: { minimum: 3, maximum: 20 }
+
+  # Add this method to update without password validation
+  def update_without_password_validation(params)
+    if params[:password].blank?
+      params.delete(:password)
+      params.delete(:password_confirmation) if params[:password_confirmation].blank?
+      params.delete(:current_password)
+      update_without_password(params)
+    else
+      update_with_password(params)
+    end
+  end
+
   def active_plan_instance_users
     plan_instance_users.where(completed: false, approved: true, removed: false)
   end

@@ -22,7 +22,7 @@ class ApplicationController < ActionController::Base
   protected
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:timezone])
-    devise_parameter_sanitizer.permit(:account_update, keys: [:timezone])
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:timezone, :username])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:timezone, :username])
   end
 end

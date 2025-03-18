@@ -1,50 +1,131 @@
-<h2>Sign up</h2>
+<div class="row">
+  <div class="col-12 col-md-8 col-lg-4">
+    <h2>Sign up</h2>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "needs-validation", novalidate: true }) do |f| %>
-  <%= render "devise/shared/error_messages", resource: resource %>
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "needs-validation", novalidate: true }) do |f| %>
+      <%= render "devise/shared/error_messages", resource: resource %>
 
-  <div class="mb-3">
-    <%= f.label :email, class: "form-label" %>
-    <%= f.email_field :email, class: "form-control", autofocus: true, autocomplete: "email", required: true %>
-    <div class="invalid-feedback">
-      Please enter a valid email.
-    </div>
-  </div>
+      <div class="mb-3">
+        <%= f.label :username, class: "form-label" %>
+        <div class="input-group">
+          <%= f.text_field :username, class: "form-control", autofocus: true, required: true %>
+            <span class="input-group-text" id="username-feedback" style="min-width: 40px;">
+            <span id="username-spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+            <span id="username-check" class="d-none text-success">✓</span>
+            <span id="username-error" class="d-none text-danger">✗</span>
+            </span>
+        </div>
+        <div class="invalid-feedback">
+          Please choose a username.
+        </div>
+        <div class="text-danger" id="username-error-message"></div>
+      </div>
 
-  <div class="mb-3">
-    <%= f.label :password, class: "form-label" %>
-    <% if @minimum_password_length %>
-    <em>(<%= @minimum_password_length %> characters minimum)</em>
+      <div class="mb-3">
+        <%= f.label :email, class: "form-label" %>
+        <%= f.email_field :email, class: "form-control", autofocus: true, autocomplete: "email", required: true %>
+        <div class="invalid-feedback">
+          Please enter a valid email.
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <%= f.label :password, class: "form-label" %>
+        <% if @minimum_password_length %>
+        <em>(<%= @minimum_password_length %> characters minimum)</em>
+        <% end %>
+        <%= f.password_field :password, class: "form-control", autocomplete: "new-password", required: true %>
+        <div class="invalid-feedback">
+          Please enter a password.
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <%= f.label :password_confirmation, class: "form-label" %>
+        <%= f.password_field :password_confirmation, class: "form-control", autocomplete: "new-password", required: true %>
+        <div class="invalid-feedback">
+          Please confirm your password.
+        </div>
+      </div>
+
+      <%= f.hidden_field :timezone, id: "user_timezone" %>
+      <script>
+        var timezoneField = document.getElementById("user_timezone");
+        if (timezoneField) {
+          try {
+            timezoneField.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
+          } catch (e) {
+            timezoneField.value = "UTC";
+          }
+        }
+
+        // Username availability check with debounce
+        document.addEventListener('DOMContentLoaded', function() {
+          const usernameField = document.getElementById('<%= f.object_name %>_username');
+          const usernameSpinner = document.getElementById('username-spinner');
+          const usernameCheck = document.getElementById('username-check');
+          const usernameError = document.getElementById('username-error');
+          const usernameErrorMessage = document.getElementById('username-error-message');
+
+          let debounceTimer;
+
+          usernameField.addEventListener('input', function() {
+            const username = this.value.trim();
+
+            // Show spinner and hide check/error icons
+            if (username.length > 0) {
+              usernameSpinner.classList.remove('d-none');
+              usernameCheck.classList.add('d-none');
+              usernameError.classList.add('d-none');
+              usernameErrorMessage.textContent = '';
+            } else {
+              usernameSpinner.classList.add('d-none');
+              usernameCheck.classList.add('d-none');
+              usernameError.classList.add('d-none');
+              usernameErrorMessage.textContent = '';
+            }
+
+            clearTimeout(debounceTimer);
+
+            debounceTimer = setTimeout(() => {
+              if (username.length > 0) {
+                fetch('/users/check_username', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                  },
+                  body: JSON.stringify({ username: username })
+                })
+                .then(response => response.json())
+                .then(data => {
+                  usernameSpinner.classList.add('d-none');
+
+                  if (data.valid) {
+                    usernameCheck.classList.remove('d-none');
+                    usernameError.classList.add('d-none');
+                    usernameErrorMessage.textContent = '';
+                  } else {
+                    usernameCheck.classList.add('d-none');
+                    usernameError.classList.remove('d-none');
+                    usernameErrorMessage.textContent = data.message;
+                  }
+                })
+                .catch(error => {
+                  usernameSpinner.classList.add('d-none');
+                  console.error('Error checking username:', error);
+                });
+              }
+            }, 500); // 500ms debounce time
+          });
+        });
+      </script>
+
+      <div class="mb-3">
+        <%= f.submit "Sign up", class: "btn btn-primary" %>
+      </div>
     <% end %>
-    <%= f.password_field :password, class: "form-control", autocomplete: "new-password", required: true %>
-    <div class="invalid-feedback">
-      Please enter a password.
-    </div>
+
+    <%= render "devise/shared/links" %>
   </div>
-
-  <div class="mb-3">
-    <%= f.label :password_confirmation, class: "form-label" %>
-    <%= f.password_field :password_confirmation, class: "form-control", autocomplete: "new-password", required: true %>
-    <div class="invalid-feedback">
-      Please confirm your password.
-    </div>
-  </div>
-
-  <%= f.hidden_field :timezone, id: "user_timezone" %>
-  <script>
-    var timezoneField = document.getElementById("user_timezone");
-    if (timezoneField) {
-      try {
-        timezoneField.value = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      } catch (e) {
-        timezoneField.value = "UTC";
-      }
-    }
-  </script>
-
-  <div class="mb-3">
-    <%= f.submit "Sign up", class: "btn btn-primary" %>
-  </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+</div>

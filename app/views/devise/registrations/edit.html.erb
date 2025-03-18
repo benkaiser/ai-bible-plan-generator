@@ -1,4 +1,4 @@
-<h2>Edit <%= resource_name.to_s.humanize %></h2>
+<h2>Account Settings</h2>
 
 <div class="row">
   <div class="col-md-6">
@@ -6,8 +6,24 @@
       <%= render "devise/shared/error_messages", resource: resource %>
 
       <div class="mb-3">
+        <%= f.label :username, class: "form-label" %>
+        <div class="input-group">
+          <%= f.text_field :username, autofocus: true, class: "form-control", required: true %>
+          <span class="input-group-text" id="username-feedback" style="min-width: 40px;">
+            <span id="username-spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+            <span id="username-check" class="d-none text-success">✓</span>
+            <span id="username-error" class="d-none text-danger">✗</span>
+          </span>
+        </div>
+        <div class="invalid-feedback">
+          Please choose a username.
+        </div>
+        <div class="text-danger" id="username-error-message"></div>
+      </div>
+
+      <div class="mb-3">
         <%= f.label :email, class: "form-label" %>
-        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control" %>
+        <%= f.email_field :email, autocomplete: "email", class: "form-control" %>
       </div>
 
       <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
@@ -35,6 +51,82 @@
       <div class="mb-3">
         <%= f.submit "Update", class: "btn btn-primary" %>
       </div>
+
+      <script>
+        // Username availability check with debounce
+        document.addEventListener('DOMContentLoaded', function() {
+          const usernameField = document.getElementById('<%= f.object_name %>_username');
+          const usernameSpinner = document.getElementById('username-spinner');
+          const usernameCheck = document.getElementById('username-check');
+          const usernameError = document.getElementById('username-error');
+          const usernameErrorMessage = document.getElementById('username-error-message');
+          const originalUsername = usernameField.value.trim();
+
+          let debounceTimer;
+
+          // Initially show check mark for their current username
+          usernameCheck.classList.remove('d-none');
+
+          usernameField.addEventListener('input', function() {
+            const username = this.value.trim();
+
+            // If username is unchanged, show checkmark and exit
+            if (username === originalUsername) {
+              usernameSpinner.classList.add('d-none');
+              usernameCheck.classList.remove('d-none');
+              usernameError.classList.add('d-none');
+              usernameErrorMessage.textContent = '';
+              return;
+            }
+
+            // Show spinner and hide check/error icons
+            if (username.length > 0) {
+              usernameSpinner.classList.remove('d-none');
+              usernameCheck.classList.add('d-none');
+              usernameError.classList.add('d-none');
+              usernameErrorMessage.textContent = '';
+            } else {
+              usernameSpinner.classList.add('d-none');
+              usernameCheck.classList.add('d-none');
+              usernameError.classList.add('d-none');
+              usernameErrorMessage.textContent = '';
+            }
+
+            clearTimeout(debounceTimer);
+
+            debounceTimer = setTimeout(() => {
+              if (username.length > 0) {
+                fetch('/users/check_username', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                  },
+                  body: JSON.stringify({ username: username })
+                })
+                .then(response => response.json())
+                .then(data => {
+                  usernameSpinner.classList.add('d-none');
+
+                  if (data.valid) {
+                    usernameCheck.classList.remove('d-none');
+                    usernameError.classList.add('d-none');
+                    usernameErrorMessage.textContent = '';
+                  } else {
+                    usernameCheck.classList.add('d-none');
+                    usernameError.classList.remove('d-none');
+                    usernameErrorMessage.textContent = data.message;
+                  }
+                })
+                .catch(error => {
+                  usernameSpinner.classList.add('d-none');
+                  console.error('Error checking username:', error);
+                });
+              }
+            }, 500); // 500ms debounce time
+          });
+        });
+      </script>
     <% end %>
   </div>
 
@@ -45,7 +137,5 @@
       Unhappy?
       <%= button_to "Close my account", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" }, method: :delete, class: "btn btn-danger" %>
     </div>
-
-    <%= link_to "Back", :back, class: "btn btn-secondary" %>
   </div>
 </div>

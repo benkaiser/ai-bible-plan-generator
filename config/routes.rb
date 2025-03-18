@@ -1,5 +1,13 @@
 Rails.application.routes.draw do
-  devise_for :users
+  devise_for :users, controllers: {
+    registrations: 'users/registrations'
+  }
+
+  # Add the devise_scope block for the username check route
+  devise_scope :user do
+    post '/users/check_username', to: 'users/registrations#check_username'
+  end
+
   root 'home#index'
 
   get 'bible(/:book(/:chapter))', to: 'bible#show', as: 'bible'
