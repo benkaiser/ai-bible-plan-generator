@@ -34,3 +34,15 @@ services:
       - .:/myapp
     depends_on:
       - db
+  worker:
+    build: .
+    env_file:
+      - .env
+    environment:
+      RAILS_ENV: development
+      DATABASE_URL: postgres://default:password@db:5432/
+    command: bash -c "bin/jobs"
+    volumes:
+      - .:/myapp
+    depends_on:
+      - db

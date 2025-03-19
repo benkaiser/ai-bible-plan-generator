@@ -10,7 +10,29 @@ class PlanInstancesController < ApplicationController
     @plan_instance = PlanInstance.new(plan: @plan, start_date: current_date)
 
     if @plan_instance.save
+      # Create the creator's plan instance user record
       PlanInstanceUser.create(plan_instance: @plan_instance, user: current_user, approved: true, creator: true, completed: false, removed: false)
+
+      # Handle collaborative plans with other users
+      if params[:usernames].present? && params[:usernames].is_a?(Array)
+        params[:usernames].each do |username|
+          invited_user = User.find_by(username: username)
+          if invited_user && invited_user != current_user
+            plan_instance_user = PlanInstanceUser.create(
+              plan_instance: @plan_instance,
+              user: invited_user,
+              approved: false,
+              creator: false,
+              completed: false,
+              removed: false
+            )
+
+            # Send invitation email
+            PlanMailer.invitation_email(invited_user, current_user, @plan_instance).deliver_later
+          end
+        end
+      end
+
       redirect_to @plan_instance, notice: 'You have now started this plan.'
     else
       redirect_to @plan, alert: 'Failed to create plan instance.'
@@ -131,6 +153,18 @@ class PlanInstancesController < ApplicationController
       render json: { success: true }
     else
       render json: { success: false, error: 'Plan instance user not found or not authorized' }, status: :not_found
+    end
+  end
+
+  # Method to handle confirmation of plan participation
+  def confirm_participation
+    plan_instance_user = PlanInstanceUser.find_by(id: params[:plan_instance_user_id])
+
+    if plan_instance_user && plan_instance_user.user.id == current_user.id && !plan_instance_user.approved
+      plan_instance_user.update(approved: true)
+      redirect_to plan_instance_path(plan_instance_user.plan_instance), notice: 'You have successfully joined the reading plan!'
+    else
+      redirect_to root_path, alert: 'Invalid or expired invitation link.'
     end
   end
 end

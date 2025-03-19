@@ -22,9 +22,13 @@ default: &default
 
 
 development:
-  <<: *default
-  database: bible_plan_generator_development
-  url: <%= ENV["DATABASE_URL"] %>
+  primary: &primary_development
+    <<: *default
+    database: bible_plan_generator_development
+    url: <%= ENV["DATABASE_URL"] %>
+  queue:
+    <<: *primary_development
+    database: bible_plan_generator_development_queue
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.

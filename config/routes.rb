@@ -28,6 +28,8 @@ Rails.application.routes.draw do
     post 'api/fix_reading', to: 'plans#fix_reading'
     post 'notification_subscriptions', to: 'notification_subscriptions#create'
     delete 'notification_subscriptions', to: 'notification_subscriptions#destroy'
+    # Add the route for confirming plan participation
+    get '/plan_instances/:plan_instance_user_id/confirm_participation', to: 'plan_instances#confirm_participation', as: 'confirm_plan_participation'
   end
 
   unauthenticated do

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+</head>
+<body>
+  <p>Hello <%= @invited_user.username %>,</p>
+
+  <p><strong><%= @inviting_user.username %></strong> has invited you to join a Bible reading plan:</p>
+
+  <div style="margin: 20px 0; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+    <h2><%= @plan.name %></h2>
+    <p><strong>Starting Date:</strong> <%= @plan_instance.start_date.strftime("%B %d, %Y") %></p>
+    <p><strong>Duration:</strong> <%= @plan.days.size %> days</p>
+  </div>
+
+  <p>Click the button below to join this reading plan:</p>
+
+  <p>
+    <a href="<%= @confirmation_url %>" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px;">
+      Join Reading Plan
+    </a>
+  </p>
+
+  <p>If you didn't expect this invitation, you can safely ignore this email.</p>
+
+  <p>Thank you,<br>
+  AI Bible Plan Team</p>
+</body>
+</html>

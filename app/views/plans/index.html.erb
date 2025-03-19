@@ -56,9 +56,7 @@
     <h2>Created Plans</h2>
     <div class="row">
       <% @created_plans.each do |plan| %>
-        <%= render 'plan_card', plan: plan, before_actions: (form_with url: plan_instances_path(plan_id: plan.id), method: :post, local: true, html: { style: 'display:inline;' } do %>
-        <%= submit_tag 'Start Plan', class: 'btn btn-success' %>
-      <% end), after_actions: (link_to('Edit Plan', edit_plan_path(plan), class: 'btn btn-secondary ml-2')) %>
+        <%= render 'plan_card', plan: plan, before_actions: start_plan_split_button(plan), after_actions: (link_to('Edit Plan', edit_plan_path(plan), class: 'btn btn-secondary ml-2')) %>
       <% end %>
     </div>
   </div>
@@ -68,13 +66,15 @@
   <h2>Community Plans</h2>
   <div class="row">
     <% @community_plans.each do |plan| %>
-      <%= render 'plan_card', plan: plan, before_actions: (form_with url: plan_instances_path(plan_id: plan.id), method: :post, local: true, html: { style: 'display:inline;' } do %>
-        <%= submit_tag 'Start Plan', class: 'btn btn-success' %>
-      <% end), after_actions: nil %>
+      <%= render 'plan_card', plan: plan, before_actions: start_plan_split_button(plan), after_actions: nil %>
     <% end %>
   </div>
 </div>
 
+<!-- Container for the Preact modal component -->
+<div id="start-plan-with-others-container"></div>
+
 <div id='pwa-install'></div>
 
 <%= javascript_include_tag "plan-overview", "data-turbo-track": "reload" %>
+<%= javascript_include_tag "start-plan-with-others", "data-turbo-track": "reload" %>
