@@ -8,12 +8,14 @@ import { rightSectionMobile, dayOverviewContainer } from './plan-instance.module
 import isMobile from './utilities/isMobile';
 import NotificationModal from './components/NotificationModal';
 import { ReadingControls } from './components/ReadingControls';
+import { IPlanReading } from './interfaces/IPlanReading';
 
 const PlanContext = createContext<{
   plan: IPlan;
   planInstance: IPlanInstance;
   planInstanceUser: IPlanInstanceUser;
   planReadingData: IPlanUserReading[];
+  planInstanceOtherUsers: IPlanInstanceOtherUser[];
 }>(null);
 
 const ControlContext = createContext<{
@@ -67,11 +69,18 @@ interface IPlanInstanceUser {
   updated_at: string;
 }
 
+interface IPlanInstanceOtherUser {
+  username: string;
+  // which day in the plan the user is up to
+  latest_uncompleted_day: number;
+}
+
 interface IWindow extends Window {
   planData: IPlan;
   planInstanceData: IPlanInstance;
   planInstanceUser: IPlanInstanceUser;
   planReadingData: IPlanUserReading[];
+  planInstanceOtherUsers: IPlanInstanceOtherUser[];
 }
 
 declare let window: IWindow;
@@ -97,6 +106,32 @@ function PlanReading({ reading, isReadingCompleted, onCheckboxChange, onClick }:
   );
 }
 
+interface IPlanDayOtherUsersProps {
+  dayNumber: number;
+  planInstanceOtherUsers: IPlanInstanceOtherUser[];
+  completed?: boolean;
+}
+
+function PlanDayOtherUsers({ dayNumber, planInstanceOtherUsers, completed = false }: IPlanDayOtherUsersProps) {
+  const users = planInstanceOtherUsers.filter(user =>
+    completed ? user.latest_uncompleted_day === null : user.latest_uncompleted_day === dayNumber
+  );
+
+  if (users.length === 0) return null;
+
+  return (
+    <div className="small mt-1">
+      <i className="bi bi-person-fill me-1"></i>
+      {users.map((user, index) => (
+        <span key={user.username}>
+          {user.username}{index < users.length - 1 ? ', ' : ''}
+        </span>
+      ))}
+      {completed && ' (completed)'}
+    </div>
+  );
+}
+
 interface IPlanDayProps {
   day: IPlanDay;
   dayIndex: number;
@@ -105,9 +140,10 @@ interface IPlanDayProps {
   getReadingCompleted: (dayNumber: number, readingIndex: number) => boolean;
   onChangeCompletion: (isChecked: boolean, dayNumber: number, readingIndex: number) => void;
   getDayCompleted: (dayNumber: number) => boolean;
+  planInstanceOtherUsers: IPlanInstanceOtherUser[];
 }
 
-function PlanDay({ day, dayIndex, startDate, onReadingClick, getReadingCompleted, getDayCompleted, onChangeCompletion }: IPlanDayProps) {
+function PlanDay({ day, dayIndex, startDate, onReadingClick, getReadingCompleted, getDayCompleted, onChangeCompletion, planInstanceOtherUsers }: IPlanDayProps) {
   const dayDate = new Date(startDate);
   dayDate.setDate(dayDate.getDate() + dayIndex);
   const today = new Date();
@@ -120,6 +156,7 @@ function PlanDay({ day, dayIndex, startDate, onReadingClick, getReadingCompleted
       <div className="card-header">
         Day {day.day_number}: {day.outline}
         <span className={`badge ${badgeClass} ms-2`}>{dayDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
+        <PlanDayOtherUsers dayNumber={day.day_number} planInstanceOtherUsers={planInstanceOtherUsers} />
       </div>
       <ul className="list-group list-group-flush">
         <PlanReading
@@ -151,6 +188,7 @@ interface IPlanSidebarProps {
   getReadingCompleted: (dayNumber: number, readingIndex: number) => boolean;
   getDayCompleted: (dayNumber: number) => boolean;
   onChangeCompletion: (isChecked: boolean, dayNumber: number, readingIndex: number) => void;
+  planInstanceOtherUsers: IPlanInstanceOtherUser[];
 }
 
 function PlanSidebar({
@@ -160,13 +198,24 @@ function PlanSidebar({
   onReadingClick,
   getReadingCompleted,
   getDayCompleted,
-  onChangeCompletion
+  onChangeCompletion,
+  planInstanceOtherUsers
 }: IPlanSidebarProps) {
   const completedDays = useMemo<IPlanDay[]>(() => {
     return plan.days.filter(day => getDayCompleted(day.day_number));
   }, []);
   const [showModal, setShowModal] = useState(false);
   const [showCompleted, setShowCompleted] = useState(() => completedDays.length === plan.days.length);
+
+  const usersOnHiddenCompletedDays = useMemo(() => {
+    if (showCompleted) return [];
+
+    const completedDayNumbers = completedDays.map(day => day.day_number);
+    return planInstanceOtherUsers.filter(user =>
+      user.latest_uncompleted_day !== null &&
+      completedDayNumbers.includes(user.latest_uncompleted_day)
+    );
+  }, [completedDays, planInstanceOtherUsers, showCompleted]);
 
   const handleNotificationClick = () => {
     setShowModal(true);
@@ -189,6 +238,14 @@ function PlanSidebar({
       </div>
       <NotificationModal planInstanceId={planInstance.id} onClose={() => setShowModal(false)} show={showModal} />
 
+      {!showCompleted && usersOnHiddenCompletedDays.length > 0 && (
+        <div className="alert alert-light mb-3">
+          {usersOnHiddenCompletedDays.map(user => (
+            <div key={user.username}>{user.username} (day {user.latest_uncompleted_day})</div>
+          ))}
+        </div>
+      )}
+
       <Collapse in={showCompleted}>
         <div id="completedDaysCollapse">
           {completedDays.map(day => (
@@ -201,6 +258,7 @@ function PlanSidebar({
               getReadingCompleted={getReadingCompleted}
               getDayCompleted={getDayCompleted}
               onChangeCompletion={onChangeCompletion}
+              planInstanceOtherUsers={planInstanceOtherUsers}
             />
           ))}
         </div>
@@ -215,8 +273,17 @@ function PlanSidebar({
           getReadingCompleted={getReadingCompleted}
           getDayCompleted={getDayCompleted}
           onChangeCompletion={onChangeCompletion}
+          planInstanceOtherUsers={planInstanceOtherUsers}
         />
       ))}
+
+      <div className="mb-3">
+        <PlanDayOtherUsers
+          dayNumber={plan.days.length}
+          planInstanceOtherUsers={planInstanceOtherUsers}
+          completed={true}
+        />
+      </div>
     </div>
   );
 }
@@ -284,7 +351,6 @@ function PlanInstance({}: IPlanInstanceProps) {
     if (!response.ok) {
       alert('Unable to update reading completion status');
     }
-    // if all readings are completed, mark the plan_user_instance as completed
     const allReadingsCompleted = plan.days.every(day => {
       if (day.readings.length === 0) {
         return true;
@@ -321,14 +387,12 @@ function PlanInstance({}: IPlanInstanceProps) {
     } else {
       navigate('/');
     }
-    // TODO: if it's the last day, move the user back to the plan index page
   }, [plan.days, onChangeCompletion]);
 
   const onPreviousReading = useCallback((currentDayIndex: number, currentReadingIndex: number) => {
     if (currentReadingIndex > 0) {
       navigate(`/day/${currentDayIndex}/reading/${currentReadingIndex - 1}`);
     }
-    // only rendered on readings and not on overview, so no need to move to the previous day
   }, [plan.days, onChangeCompletion]);
 
   return (
@@ -363,7 +427,6 @@ function PlanOverviewOnMobile(_: RouteProps) {
   if (!params['*']) {
     return null;
   }
-  // render a small bootstrap button saying "Back to overview" only on mobile
   return (
     <a onClick={() => navigate('/')} className="btn btn-outline-info d-block mb-2 btn-sm d-md-none">Back to overview</a>
   );
@@ -372,7 +435,7 @@ function PlanOverviewOnMobile(_: RouteProps) {
 function SideBarRoute(_: RouteProps) {
   const params = useParams();
   const navigate = useNavigate();
-  const { plan, planInstance } = useContext(PlanContext);
+  const { plan, planInstance, planInstanceOtherUsers } = useContext(PlanContext);
   const { getReadingCompleted, getDayCompleted, onChangeCompletion } = useContext(ControlContext);
   return (
     <div className={`col-12 col-md-3 ${params['*'] && isMobile() ? 'd-none' : ''}`} id="plan-sidebar">
@@ -384,6 +447,7 @@ function SideBarRoute(_: RouteProps) {
         getReadingCompleted={getReadingCompleted}
         getDayCompleted={getDayCompleted}
         onChangeCompletion={onChangeCompletion}
+        planInstanceOtherUsers={planInstanceOtherUsers}
       />
     </div>
   );
@@ -422,7 +486,7 @@ function DayOverviewRoute(_: RouteProps) {
 
 render((
   <Router>
-    <PlanContext.Provider value={{ plan: window.planData, planInstance: window.planInstanceData, planInstanceUser: window.planInstanceUser, planReadingData: window.planReadingData }}>
+    <PlanContext.Provider value={{ plan: window.planData, planInstance: window.planInstanceData, planInstanceUser: window.planInstanceUser, planInstanceOtherUsers: window.planInstanceOtherUsers, planReadingData: window.planReadingData }}>
       <PlanInstance />
     </PlanContext.Provider>
   </Router>

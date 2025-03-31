@@ -42,6 +42,14 @@ class PlanInstancesController < ApplicationController
   def show
     @plan_instance = PlanInstance.find(params[:id])
     @plan_instance_user = PlanInstanceUser.find_by(plan_instance: @plan_instance, user: current_user)
+    # get the usernames and plan_instance_user.latest_uncompleted_day of all the other users in the plan instance
+    @plan_instance_other_users = @plan_instance.plan_instance_users.where.not(user: current_user)
+    @plan_instance_other_users = @plan_instance_other_users.map do |plan_instance_user|
+      {
+        username: plan_instance_user.user.username,
+        latest_uncompleted_day: plan_instance_user.latest_uncompleted_day,
+      }
+    end
   end
 
   def destroy
