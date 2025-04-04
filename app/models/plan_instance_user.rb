@@ -8,6 +8,11 @@ class PlanInstanceUser < ApplicationRecord
   validates :completed, inclusion: { in: [true, false] }
   validates :removed, inclusion: { in: [true, false] }
 
+  def other_users
+    # Fetch all users in the same plan_instance except the current user
+    plan_instance.plan_instance_users.where.not(id: id).includes(:user).map(&:user)
+  end
+
   def latest_uncompleted_day
     plan_days = plan_instance.plan.days
 

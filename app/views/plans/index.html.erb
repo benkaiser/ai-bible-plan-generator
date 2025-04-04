@@ -22,6 +22,17 @@
             <div class="card-body">
               <h5 class="card-title"><%= plan_instance_user.plan_instance.plan.name %></h5>
               <p class="card-text"><%= plan_instance_user.plan_instance.plan.description %></p>
+              <% if plan_instance_user.other_users.any? %>
+                <p class="card-text">
+                  Reading with:
+                    <% plan_instance_user.other_users.each do |user| %>
+                      <span class="badge bg-info me-1">
+                        <i class="bi bi-person-fill me-1"></i>
+                        <%= user.username %></span>
+                      </span>
+                    <% end %>
+                </p>
+              <% end %>
               <p class="card-text"><small class="text-muted">Started on: <%= plan_instance_user.plan_instance.start_date.strftime("%b %d, %Y") %></small></p>
               <div class="progress mb-3">
                 <div class="progress-bar" role="progressbar" style="width: <%= plan_instance_user.completion_percentage %>%" aria-valuenow="<%= plan_instance_user.completion_percentage %>" aria-valuemin="0" aria-valuemax="100"></div>

@@ -36,16 +36,38 @@ class PlansController < ApplicationController
   end
 
   def create
-    @plan = current_user.plans.build(plan_params.except(:action))
+    @plan = current_user.plans.build(plan_params.except(:action, :collaborators))
     @plan.days = JSON.parse(plan_params[:days]) if plan_params[:days].is_a?(String)
 
     if @plan.save
-      if plan_params[:action] == "start"
+      if plan_params[:action] == "start" || plan_params[:action] == "start_together"
         current_date = Time.now.in_time_zone(current_user.timezone).to_date rescue Date.today
         @plan_instance = PlanInstance.new(plan: @plan, start_date: current_date)
 
         if @plan_instance.save
           PlanInstanceUser.create(plan_instance: @plan_instance, user: current_user, approved: true, creator: true, completed: false, removed: false)
+
+          # Handle collaborative plans with other users
+          if plan_params[:action] == "start_together" && plan_params[:collaborators].present?
+            collaborators = JSON.parse(plan_params[:collaborators])
+            collaborators.each do |username|
+              invited_user = User.find_by(username: username)
+              if invited_user && invited_user != current_user
+                plan_instance_user = PlanInstanceUser.create(
+                  plan_instance: @plan_instance,
+                  user: invited_user,
+                  approved: false,
+                  creator: false,
+                  completed: false,
+                  removed: false
+                )
+
+                # Send invitation email
+                PlanMailer.invitation_email(invited_user, current_user, @plan_instance).deliver_later
+              end
+            end
+          end
+
           redirect_to @plan_instance, notice: 'Plan saved and started.'
         end
       else
@@ -124,7 +146,7 @@ class PlansController < ApplicationController
   private
 
   def plan_params
-    params.require(:plan).permit(:name, :description, :cover_photo, :days, :action)
+    params.require(:plan).permit(:name, :description, :cover_photo, :days, :action, :collaborators)
   end
 
   def fix_reading_params

@@ -7,6 +7,8 @@ import { checkScriptureRangeValidBSB } from './utilities/checkScriptureExistsBSB
 import { ensureBookShortName } from './components/bible/utilities';
 import { fakeStream } from './utilities/fakeStream';
 import Plan from './components/Plan';
+import PlanCollaborationModal from './start-plan-with-others';
+import { useState } from 'preact/hooks';
 
 const planContainer = document.getElementById('plan-container');
 
@@ -20,8 +22,9 @@ interface IPlanActionsProps {
 }
 
 function PlanActions(props: IPlanActionsProps) {
+  const [showModal, setShowModal] = useState(false);
+
   if (props.generating) {
-    // show a boostrap 5 spinner and say "Generating..."
     return (
       <div className="d-flex">
         <div className="spinner-border text-primary" role="status">
@@ -31,7 +34,6 @@ function PlanActions(props: IPlanActionsProps) {
     );
   }
   if (props.isValidating) {
-    // show a boostrap 5 spinner and say "Validating..."
     return (
       <div className="d-flex">
         <div className="spinner-border text-primary" role="status">
@@ -41,7 +43,6 @@ function PlanActions(props: IPlanActionsProps) {
     );
   }
   if (!props.isValid) {
-    // show an info section explaining that the plan is invalid and they should try with a different prompt
     return (
       <div className="alert alert-danger" role="alert">
         <h4 className="alert-heading">Invalid Plan</h4>
@@ -64,10 +65,34 @@ function PlanActions(props: IPlanActionsProps) {
     actionField.value = action;
     form.submit();
   };
+
+  const handleCollaborationSubmit = (usernames: string[]) => {
+    const collaboratorsField = document.getElementById('plan-collaborators') as HTMLInputElement;
+    collaboratorsField.value = JSON.stringify(usernames);
+    setShowModal(false);
+    onSubmit('start_together');
+  };
+
   return (
-    <div className="d-flex gap-2">
-      <button className="btn btn-primary" onClick={() => onSubmit('start')} disabled={!props.completed}>Save and Start Plan Today</button>
-      <button className="btn btn-info" onClick={() => onSubmit('default')} disabled={!props.completed}>Save Plan</button>
+    <div>
+      <div className="d-flex gap-2">
+        <button className="btn btn-primary" onClick={() => onSubmit('start')} disabled={!props.completed}>Start Myself</button>
+        <button className="btn btn-secondary" onClick={() => setShowModal(true)} disabled={!props.completed}>Start Together</button>
+        <button className="btn btn-info" onClick={() => onSubmit('default')} disabled={!props.completed}>Save Plan</button>
+      </div>
+
+      {showModal && (
+        <PlanCollaborationModal
+          planId=""
+          planName={props.plan.title}
+          onClose={() => setShowModal(false)}
+          onSubmit={(formData) => {
+            const usernames = formData.getAll('usernames[]') as string[];
+            handleCollaborationSubmit(usernames);
+            return false; // Prevent default form submission
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -86,7 +111,14 @@ class PlanManager extends Component<{}, IPlanManagerState> {
 
   constructor(props) {
     super(props);
-    this.state = { plan: null, planCover: '', isGenerating: false, isValid: false, isValidating: false, generationCompleted: false };
+    this.state = {
+      plan: null,
+      planCover: '',
+      isGenerating: false,
+      isValid: false,
+      isValidating: false,
+      generationCompleted: false
+    };
     this.planActionsRef = createRef<HTMLDivElement>();
   }
 
@@ -114,7 +146,6 @@ class PlanManager extends Component<{}, IPlanManagerState> {
           const bookId: string = ensureBookShortName(reading.book);
           isValid = checkScriptureRangeValidBSB(bookId, reading.chapter, reading.verse_range);
         } catch (e) {
-          // book is not valid
           isValid = false;
         }
         if (!isValid) {
@@ -147,14 +178,12 @@ class PlanManager extends Component<{}, IPlanManagerState> {
       body: JSON.stringify({ day: day, reading: reading })
     });
     const newDay = await response.json();
-    // check if each of the readings are now valid, if not, throw an error
     newDay.readings.forEach(newReading => {
       const bookId: string = ensureBookShortName(newReading.book);
       if (!checkScriptureRangeValidBSB(bookId, newReading.chapter, newReading.verse_range)) {
         throw new Error('Invalid reading: ' + newReading.book + ' ' + newReading.chapter + ':' + newReading.verse_range);
       }
     });
-    // If all readings are valid, replace that specific day in the plan with the new day, making sure to not mutate the original plan
     this.setState({
       plan: {
         ...this.state.plan,
@@ -176,7 +205,14 @@ class PlanManager extends Component<{}, IPlanManagerState> {
         </div>
         <div ref={this.planActionsRef}>
           { (this.state.isGenerating || this.state.generationCompleted) &&
-            <PlanActions cover={this.state.planCover} plan={this.state.plan} isValidating={this.state.isValidating} isValid={this.state.isValid} generating={this.state.isGenerating} completed={this.state.generationCompleted} /> }
+            <PlanActions
+              cover={this.state.planCover}
+              plan={this.state.plan}
+              isValidating={this.state.isValidating}
+              isValid={this.state.isValid}
+              generating={this.state.isGenerating}
+              completed={this.state.generationCompleted}
+            /> }
         </div>
       </Fragment>
     );
@@ -188,8 +224,6 @@ class PlanManager extends Component<{}, IPlanManagerState> {
         this.planActionsRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
       }, 500);
     });
-    // scroll to generating section
-    // Make an API request to generate the plan
     fetch('/api/generate_plan', {
       method: 'POST',
       headers: {

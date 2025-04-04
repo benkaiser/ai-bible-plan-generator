@@ -15,7 +15,7 @@ interface PlanCollaborationModalProps {
   planId: string;
   planName: string;
   onClose: () => void;
-  onSubmit: (formData: FormData) => void;
+  onSubmit: (formData: FormData) => boolean | void;
 }
 
 interface AddedUser {
@@ -216,7 +216,10 @@ const PlanCollaborationModal = ({ planId, planName, onClose, onSubmit }: PlanCol
         formData.append('usernames[]', user.username);
       });
 
-      onSubmit(formData);
+      const result = onSubmit(formData);
+      if (result !== false) {
+        formRef.current.classList.add('was-validated');
+      }
     } else {
       formRef.current.classList.add('was-validated');
     }
@@ -284,16 +287,20 @@ const PlanCollaborationModal = ({ planId, planName, onClose, onSubmit }: PlanCol
   );
 };
 
+export default PlanCollaborationModal;
+
 // Main container component that will be rendered on the page
 const StartPlanWithOthersContainer = () => {
   const [modalProps, setModalProps] = useState<{
     show: boolean;
     planId: string;
     planName: string;
+    onSubmitCallback?: (usernames: string[]) => void;
   }>({
     show: false,
     planId: '',
-    planName: ''
+    planName: '',
+    onSubmitCallback: undefined
   });
 
   useEffect(() => {
@@ -319,27 +326,36 @@ const StartPlanWithOthersContainer = () => {
   };
 
   const handleSubmit = (formData: FormData) => {
-    // Submit the form data to create a collaborative plan
-    fetch('/plan_instances', {
-      method: 'POST',
-      body: formData,
-      headers: {
-        'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')!.getAttribute('content') as string
-      }
-    }).then(response => {
-      if (response.redirected) {
-        window.location.href = response.url;
-      } else {
-        return response.json();
-      }
-    }).then(data => {
-      if (data && data.redirect_to) {
-        window.location.href = data.redirect_to;
-      }
-    }).catch(error => {
-      console.error('Error creating collaborative plan:', error);
-    });
+    if (modalProps.onSubmitCallback) {
+      // Use the callback provided by the parent component
+      const usernames = formData.getAll('usernames[]') as string[];
+      modalProps.onSubmitCallback(usernames);
+      handleClose();
+      return false; // Prevent default form submission
+    } else {
+      // Default behavior for standalone mode
+      fetch('/plan_instances', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')!.getAttribute('content') as string
+        }
+      }).then(response => {
+        if (response.redirected) {
+          window.location.href = response.url;
+        } else {
+          return response.json();
+        }
+      }).then(data => {
+        if (data && data.redirect_to) {
+          window.location.href = data.redirect_to;
+        }
+      }).catch(error => {
+        console.error('Error creating collaborative plan:', error);
+      });
+      return true;
+    }
   };
 
   return modalProps.show ? (
