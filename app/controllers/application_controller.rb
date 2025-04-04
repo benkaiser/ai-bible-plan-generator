@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
       "Overcoming Anxiety",
       "Balancing Work and Faith",
       "Financial Wisdom",
-      "Divine Interventions",
+      "Epic Battles of Faith",
       "Mental Health and Faith",
       "Building Strong Relationships"
     ]
