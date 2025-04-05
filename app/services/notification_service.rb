@@ -15,6 +15,8 @@ class NotificationService
             message: { title: title, options: {
               body: body,
               image: image,
+              badge: "/badge-72x72.png",
+              icon: "/icon-192x192.png",
               data: { path: "/plan_instances/#{subscription.plan_instance_user.plan_instance_id}" }
             } }.to_json,
             endpoint: subscription.endpoint,
