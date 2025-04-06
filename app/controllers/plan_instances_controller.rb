@@ -175,4 +175,16 @@ class PlanInstancesController < ApplicationController
       redirect_to root_path, alert: 'Invalid or expired invitation link.'
     end
   end
+
+  # Method to handle declining plan participation
+  def decline_invitation
+    plan_instance_user = PlanInstanceUser.find_by(id: params[:plan_instance_user_id])
+
+    if plan_instance_user && plan_instance_user.user.id == current_user.id && !plan_instance_user.approved
+      plan_instance_user.update(removed: true)
+      redirect_to plans_path, notice: 'You have declined the reading plan invitation.'
+    else
+      redirect_to root_path, alert: 'Invalid or expired invitation link.'
+    end
+  end
 end

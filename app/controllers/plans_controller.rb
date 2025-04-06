@@ -10,6 +10,7 @@ class PlansController < ApplicationController
   def index
     @created_plans = current_user.plans.order(created_at: :desc)
     @active_plan_instance_users = current_user.active_plan_instance_users.order(created_at: :desc)
+    @plan_invitations = current_user.plan_instance_users.where(approved: false, removed: false).order(created_at: :desc)
     @completed_plan_instance_users_count = current_user.completed_plan_instance_users.size
     @community_plans = self.class.community_plans_cache
     if params[:completed] == "true"

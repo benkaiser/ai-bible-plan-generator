@@ -1,63 +1,103 @@
-<h1 class="mb-4">Plans</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1>Plans</h1>
+  <% if @plan_invitations.any? %>
+    <div class="dropdown">
+      <button class="btn btn-link position-relative" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bi bi-bell-fill fs-4"></i>
+        <span class="position-absolute badge rounded-pill bg-danger">
+          <%= @plan_invitations.size %>
+          <span class="visually-hidden">unread invitations</span>
+        </span>
+      </button>
+      <div class="dropdown-menu dropdown-menu-end p-3" style="width: 350px;" aria-labelledby="notificationDropdown">
+        <h6 class="dropdown-header">Plan Invitations</h6>
+        <div class="dropdown-divider"></div>
+        <% @plan_invitations.each do |plan_invitation| %>
+          <div class="card mb-2">
+            <div class="card-body p-2">
+              <div class="d-flex">
+                <% unless plan_invitation.plan_instance.plan.cover_photo.empty? %>
+                  <img src="<%= plan_invitation.plan_instance.plan.cover_photo %>/100/100"
+                      class="me-2 rounded" style="width: 50px; height: 50px; object-fit: cover;"
+                      alt="Plan cover photo" />
+                <% else %>
+                  <div class="bg-secondary me-2 rounded" style="width: 50px; height: 50px;"></div>
+                <% end %>
+                <div class="flex-grow-1">
+                  <h6 class="mb-0"><%= plan_invitation.plan_instance.plan.name %></h6>
+                  <p class="text-muted small mb-1">
+                    <%= plan_invitation.plan_instance.plan_instance_users.find_by(creator: true).user.username %> invited you to a <%= plan_invitation.plan_instance.plan.days.count %> day plan.
+                  </p>
+                  <div class="d-flex gap-2">
+                    <%= button_to 'Accept', confirm_participation_path(plan_instance_user_id: plan_invitation.id), method: :post, class: 'btn btn-sm btn-success me-1' %>
+                    <%= button_to 'Decline', decline_invitation_path(plan_instance_user_id: plan_invitation.id), method: :post, class: 'btn btn-sm btn-outline-danger' %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
 
 <div class="d-flex justify-content-start mb-4">
   <%= link_to 'Create New Plan', new_plan_path, class: 'btn btn-success btn-lg' %>
 </div>
 
 <% if @active_plan_instance_users.any? %>
-  <div class="mb-5">
-    <h2>Active Plans</h2>
-    <div class="row">
-      <% @active_plan_instance_users.each do |plan_instance_user| %>
-        <div class="col-md-4">
-          <div class="card mb-4">
-            <% unless plan_instance_user.plan_instance.plan.cover_photo.empty? %>
-              <a href="<%= plan_instance_path(plan_instance_user.plan_instance) %>">
-                <img src="<%= plan_instance_user.plan_instance.plan.cover_photo %>/400/200"
-                  class="card-img-top bg-dark"
-                  alt="Plan cover photo"
-                />
-              </a>
+  <h2>Active Plans</h2>
+  <div class="row">
+    <% @active_plan_instance_users.each do |plan_instance_user| %>
+      <div class="col-md-4">
+        <div class="card mb-4">
+          <% unless plan_instance_user.plan_instance.plan.cover_photo.empty? %>
+            <a href="<%= plan_instance_path(plan_instance_user.plan_instance) %>">
+              <img src="<%= plan_instance_user.plan_instance.plan.cover_photo %>/400/200"
+                class="card-img-top bg-dark"
+                alt="Plan cover photo"
+              />
+            </a>
+          <% end %>
+          <div class="card-body">
+            <h5 class="card-title"><%= plan_instance_user.plan_instance.plan.name %></h5>
+            <p class="card-text"><%= plan_instance_user.plan_instance.plan.description %></p>
+            <% if plan_instance_user.other_users.any? %>
+              <p class="card-text">
+                Reading with:
+                  <% plan_instance_user.other_users.each do |user| %>
+                    <span class="badge bg-info me-1">
+                      <i class="bi bi-person-fill me-1"></i>
+                      <%= user.username %></span>
+                    </span>
+                  <% end %>
+              </p>
             <% end %>
-            <div class="card-body">
-              <h5 class="card-title"><%= plan_instance_user.plan_instance.plan.name %></h5>
-              <p class="card-text"><%= plan_instance_user.plan_instance.plan.description %></p>
-              <% if plan_instance_user.other_users.any? %>
-                <p class="card-text">
-                  Reading with:
-                    <% plan_instance_user.other_users.each do |user| %>
-                      <span class="badge bg-info me-1">
-                        <i class="bi bi-person-fill me-1"></i>
-                        <%= user.username %></span>
-                      </span>
-                    <% end %>
-                </p>
-              <% end %>
-              <p class="card-text"><small class="text-muted">Started on: <%= plan_instance_user.plan_instance.start_date.strftime("%b %d, %Y") %></small></p>
-              <div class="progress mb-3">
-                <div class="progress-bar" role="progressbar" style="width: <%= plan_instance_user.completion_percentage %>%" aria-valuenow="<%= plan_instance_user.completion_percentage %>" aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
-              <%= link_to 'Continue Reading', plan_instance_path(plan_instance_user.plan_instance), class: 'btn btn-primary' %>
-              <div class="dropdown d-inline">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton<%= plan_instance_user.plan_instance.id %>" data-bs-toggle="dropdown" aria-expanded="false">
-                  Actions
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton<%= plan_instance_user.plan_instance.id %>">
-                  <li>
-                    <%= link_to 'Stop plan', plan_instance_path(plan_instance_user.plan_instance), data: { 'turbo-method': 'delete', 'turbo-confirm': 'Are you sure you want to stop reading this plan and remove it from your list?' }, class: 'dropdown-item' %>
-                  </li>
-                </ul>
-              </div>
+            <p class="card-text"><small class="text-muted">Started on: <%= plan_instance_user.plan_instance.start_date.strftime("%b %d, %Y") %></small></p>
+            <div class="progress mb-3">
+              <div class="progress-bar" role="progressbar" style="width: <%= plan_instance_user.completion_percentage %>%" aria-valuenow="<%= plan_instance_user.completion_percentage %>" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <%= link_to 'Continue Reading', plan_instance_path(plan_instance_user.plan_instance), class: 'btn btn-primary' %>
+            <div class="dropdown d-inline">
+              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton<%= plan_instance_user.plan_instance.id %>" data-bs-toggle="dropdown" aria-expanded="false">
+                Actions
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton<%= plan_instance_user.plan_instance.id %>">
+                <li>
+                  <%= link_to 'Stop plan', plan_instance_path(plan_instance_user.plan_instance), data: { 'turbo-method': 'delete', 'turbo-confirm': 'Are you sure you want to stop reading this plan and remove it from your list?' }, class: 'dropdown-item' %>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
-      <% end %>
-    </div>
+      </div>
+    <% end %>
   </div>
 <% end %>
 
 <% if @completed_plan_instance_users_count %>
-  <div class="mb-5">
+  <div class="mb-3">
     <a href="<%= completed_plans_path %>" class="btn btn-outline-info">Completed Plans</a>
   </div>
 <% end %>

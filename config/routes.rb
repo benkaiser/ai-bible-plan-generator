@@ -30,6 +30,8 @@ Rails.application.routes.draw do
     delete 'notification_subscriptions', to: 'notification_subscriptions#destroy'
     # Add the route for confirming plan participation
     get '/plan_instances/:plan_instance_user_id/confirm_participation', to: 'plan_instances#confirm_participation', as: 'confirm_plan_participation'
+    post 'confirm_participation', to: 'plan_instances#confirm_participation'
+    post 'decline_invitation', to: 'plan_instances#decline_invitation'
   end
 
   unauthenticated do
