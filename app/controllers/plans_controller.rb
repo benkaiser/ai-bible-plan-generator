@@ -52,7 +52,7 @@ class PlansController < ApplicationController
           if plan_params[:action] == "start_together" && plan_params[:collaborators].present?
             collaborators = JSON.parse(plan_params[:collaborators])
             collaborators.each do |username|
-              invited_user = User.find_by(username: username)
+              invited_user = User.find_by("lower(username) = ?", username.downcase)
               if invited_user && invited_user != current_user
                 plan_instance_user = PlanInstanceUser.create(
                   plan_instance: @plan_instance,

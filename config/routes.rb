@@ -38,6 +38,18 @@ Rails.application.routes.draw do
     resources :plans, only: [:show]
   end
 
+  resources :plan_instances do
+    member do
+      get :members
+      post :invite_user
+      patch :update_reading_status
+      patch :update_plan_status
+      get :day_overview
+      get :confirm_participation
+      get :decline_invitation
+    end
+  end
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

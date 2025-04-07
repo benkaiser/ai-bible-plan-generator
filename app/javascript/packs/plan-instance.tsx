@@ -9,6 +9,7 @@ import isMobile from './utilities/isMobile';
 import NotificationModal from './components/NotificationModal';
 import { ReadingControls } from './components/ReadingControls';
 import { IPlanReading } from './interfaces/IPlanReading';
+import UserManagementModal from './components/UserManagementModal';
 
 const PlanContext = createContext<{
   plan: IPlan;
@@ -71,7 +72,6 @@ interface IPlanInstanceUser {
 
 interface IPlanInstanceOtherUser {
   username: string;
-  // which day in the plan the user is up to
   latest_uncompleted_day: number;
 }
 
@@ -205,6 +205,7 @@ function PlanSidebar({
     return plan.days.filter(day => getDayCompleted(day.day_number));
   }, []);
   const [showModal, setShowModal] = useState(false);
+  const [showUserModal, setShowUserModal] = useState(false);
   const [showCompleted, setShowCompleted] = useState(() => completedDays.length === plan.days.length);
 
   const usersOnHiddenCompletedDays = useMemo(() => {
@@ -221,6 +222,10 @@ function PlanSidebar({
     setShowModal(true);
   };
 
+  const handleUserManagementClick = () => {
+    setShowUserModal(true);
+  };
+
   return (
     <div>
       <div className="mb-3 d-flex gap-3 justify-content-between">
@@ -231,12 +236,25 @@ function PlanSidebar({
             aria-expanded={showCompleted}
             className="btn btn-outline-info"
           >
-            {showCompleted ? 'Hide Completed Days' : 'Show Completed Days'}
+            {showCompleted ? 'Hide Completed' : 'Show Completed'}
           </button>
         )}
-        <button class="btn btn-outline-info" onClick={handleNotificationClick}><i class="bi bi-bell-fill"></i></button>
+        <div className="d-flex gap-2">
+          <button className="btn btn-outline-info" onClick={handleUserManagementClick}>
+            <i className="bi bi-people-fill"></i>
+          </button>
+          <button className="btn btn-outline-info" onClick={handleNotificationClick}>
+            <i className="bi bi-bell-fill"></i>
+          </button>
+        </div>
       </div>
       <NotificationModal planInstanceId={planInstance.id} onClose={() => setShowModal(false)} show={showModal} />
+      <UserManagementModal
+        planInstanceId={planInstance.id}
+        planInstanceUser={useContext(PlanContext).planInstanceUser}
+        onClose={() => setShowUserModal(false)}
+        show={showUserModal}
+      />
 
       {!showCompleted && usersOnHiddenCompletedDays.length > 0 && (
         <div className="alert alert-light mb-3">

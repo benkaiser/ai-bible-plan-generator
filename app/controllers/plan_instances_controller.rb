@@ -16,7 +16,7 @@ class PlanInstancesController < ApplicationController
       # Handle collaborative plans with other users
       if params[:usernames].present? && params[:usernames].is_a?(Array)
         params[:usernames].each do |username|
-          invited_user = User.find_by(username: username)
+          invited_user = User.find_by("lower(username) = ?", username.downcase)
           if invited_user && invited_user != current_user
             plan_instance_user = PlanInstanceUser.create(
               plan_instance: @plan_instance,
@@ -42,8 +42,7 @@ class PlanInstancesController < ApplicationController
   def show
     @plan_instance = PlanInstance.find(params[:id])
     @plan_instance_user = PlanInstanceUser.find_by(plan_instance: @plan_instance, user: current_user)
-    # get the usernames and plan_instance_user.latest_uncompleted_day of all the other users in the plan instance
-    @plan_instance_other_users = @plan_instance.plan_instance_users.where.not(user: current_user)
+    @plan_instance_other_users = @plan_instance.plan_instance_users.where.not(user: current_user).where(approved: true)
     @plan_instance_other_users = @plan_instance_other_users.map do |plan_instance_user|
       {
         username: plan_instance_user.user.username,
@@ -186,5 +185,92 @@ class PlanInstancesController < ApplicationController
     else
       redirect_to root_path, alert: 'Invalid or expired invitation link.'
     end
+  end
+
+  # Method to get all members of a plan instance
+  def members
+    @plan_instance = PlanInstance.find(params[:id])
+    @plan_instance_user = PlanInstanceUser.find_by(plan_instance: @plan_instance, user: current_user)
+
+    # Ensure the current user is a member of this plan
+    unless @plan_instance_user
+      render json: { error: 'You are not authorized to view this plan' }, status: :unauthorized
+      return
+    end
+
+    # Get all users in this plan instance
+    @members = @plan_instance.plan_instance_users.includes(:user).map do |piu|
+      status = if piu.completed
+                'completed'
+              elsif !piu.approved && !piu.removed
+                'pending'
+              elsif !piu.removed
+                'active'
+              end
+
+      next if piu.removed || !status
+
+      {
+        id: piu.id,
+        username: piu.user.username,
+        status: status,
+        completedAt: piu.completed_at,
+        isCreator: piu.creator
+      }
+    end.compact
+
+    render json: { members: @members }
+  end
+
+  # Method to invite a user to a plan instance
+  def invite_user
+    @plan_instance = PlanInstance.find(params[:id])
+    @plan_instance_user = PlanInstanceUser.find_by(plan_instance: @plan_instance, user: current_user)
+
+    # Ensure the current user is a member of this plan
+    unless @plan_instance_user
+      render json: { error: 'You are not authorized to invite users to this plan' }, status: :unauthorized
+      return
+    end
+
+    username = params[:username]
+    invited_user = User.find_by("lower(username) = ?", username.downcase)
+
+    # Check if user exists
+    unless invited_user
+      render json: { error: 'User not found' }, status: :not_found
+      return
+    end
+
+    # Check if user is already in the plan
+    existing_membership = PlanInstanceUser.find_by(plan_instance: @plan_instance, user: invited_user)
+    if existing_membership
+      if existing_membership.removed
+        # Re-invite the user if they were previously removed
+        existing_membership.update(removed: false, approved: false)
+        PlanMailer.invitation_email(invited_user, current_user, @plan_instance).deliver_later
+        render json: { message: 'User re-invited successfully' }
+      elsif existing_membership.approved
+        render json: { error: 'User is already a member of this plan' }, status: :unprocessable_entity
+      else
+        render json: { error: 'User has already been invited to this plan' }, status: :unprocessable_entity
+      end
+      return
+    end
+
+    # Create invitation
+    plan_instance_user = PlanInstanceUser.create(
+      plan_instance: @plan_instance,
+      user: invited_user,
+      approved: false,
+      creator: false,
+      completed: false,
+      removed: false
+    )
+
+    # Send invitation email
+    PlanMailer.invitation_email(invited_user, current_user, @plan_instance).deliver_later
+
+    render json: { message: 'User invited successfully' }
   end
 end
