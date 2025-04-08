@@ -26,9 +26,6 @@ development:
     <<: *default
     database: bible_plan_generator_development
     url: <%= ENV["DATABASE_URL"] %>
-  queue:
-    <<: *primary_development
-    database: bible_plan_generator_development_queue
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
@@ -94,10 +91,6 @@ production:
     <<: *primary_production
     database: bible_plan_generator_production_cache
     migrations_paths: db/cache_migrate
-  queue:
-    <<: *primary_production
-    database: bible_plan_generator_production_queue
-    migrations_paths: db/queue_migrate
   cable:
     <<: *primary_production
     database: bible_plan_generator_production_cable
