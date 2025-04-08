@@ -16,6 +16,19 @@ class Users::RegistrationsController < Devise::RegistrationsController
     end
   end
 
+  def create
+    # first line of defence against bot signups
+    if params[:user][:timezone].blank?
+      redirect_to root_path
+    else
+      super
+    end
+  end
+
+  def after_sign_up_path_for(resource)
+    plans_path
+  end
+
   protected
 
   def after_update_path_for(resource)
