@@ -22,5 +22,6 @@ jobs:
       - name: Push to dokku
         uses: dokku/github-action@master
         with:
+          trace: true
           git_remote_url: 'ssh://dokku@kaiserapps.com/bible-planner'
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
