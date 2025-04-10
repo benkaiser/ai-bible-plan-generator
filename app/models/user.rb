@@ -25,11 +25,13 @@ class User < ApplicationRecord
   end
 
   def active_plan_instance_users
-    plan_instance_users.where(completed: false, approved: true, removed: false)
+    plan_instance_users.joins(:plan_instance)
+                       .where(completed: false, approved: true, removed: false, plan_instances: { deleted: false })
   end
 
   def completed_plan_instance_users
-    plan_instance_users.where(completed: true, approved: true, removed: false)
+    plan_instance_users.joins(:plan_instance)
+                       .where(completed: true, approved: true, removed: false, plan_instances: { deleted: false })
   end
 
   # Always remember the user

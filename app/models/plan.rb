@@ -1,7 +1,17 @@
 class Plan < ApplicationRecord
   belongs_to :user
-  has_many :plan_instances
+  has_many :plan_instances, dependent: :destroy
   serialize :days, coder: JSON
+
+  default_scope { where(deleted: false) }
+
+  def soft_delete
+    update(deleted: true)
+  end
+
+  def restore
+    update(deleted: false)
+  end
 
   validates :name, presence: true
   validates :description, presence: true

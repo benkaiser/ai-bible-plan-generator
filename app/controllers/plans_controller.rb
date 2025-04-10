@@ -144,6 +144,22 @@ class PlansController < ApplicationController
     render json: { error: e.message }, status: :internal_server_error
   end
 
+  def destroy
+    @plan = Plan.unscoped.find(params[:id])
+
+    if @plan.user_id == current_user.id
+      if @plan.soft_delete
+        @plan.plan_instances.each do |plan_instance|
+          plan_instance.soft_delete
+        end
+        redirect_to plans_path, notice: 'Plan was successfully deleted.'
+      else
+        redirect_to plans_path, alert: 'Failed to delete plan.'
+      end
+    else
+      redirect_to plans_path, alert: 'You are not authorized to delete this plan.'
+    end
+  end
 
   private
 

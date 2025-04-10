@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   get 'bible(/:book(/:chapter))', to: 'bible#show', as: 'bible'
 
   authenticate do
-    resources :plans, only: [:index, :show, :new, :create, :edit, :update]
+    resources :plans, only: [:index, :show, :new, :create, :edit, :update, :destroy]
     get 'completed_plans', to: 'plans#completed', as: 'completed_plans'
     resources :plan_instances, only: [:create, :show, :destroy] do
       member do

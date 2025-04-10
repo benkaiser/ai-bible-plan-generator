@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_18_110351) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_10_034623) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -77,6 +77,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_18_110351) do
     t.date "start_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "deleted"
     t.index ["plan_id"], name: "index_plan_instances_on_plan_id"
   end
 
@@ -89,6 +90,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_18_110351) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.string "system_key"
+    t.boolean "deleted"
     t.index ["user_id"], name: "index_plans_on_user_id"
   end
 
@@ -242,7 +244,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_18_110351) do
   add_foreign_key "plan_instance_readings", "plan_instance_users"
   add_foreign_key "plan_instance_users", "plan_instances"
   add_foreign_key "plan_instance_users", "users"
-  add_foreign_key "plan_instances", "plans"
+  add_foreign_key "plan_instances", "plans", on_delete: :cascade
   add_foreign_key "plans", "users"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
