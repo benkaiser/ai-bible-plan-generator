@@ -7,12 +7,10 @@
   <%= form.hidden_field :days, id: 'plan-days' %>
   <%= form.hidden_field :action, id: 'plan-action' %>
   <%= form.hidden_field :collaborators, id: 'plan-collaborators' %>
+  <%= form.hidden_field :start_date, id: 'plan-start-date' %>
 <% end %>
 
 <div id='plan-container' class="my-4"></div>
 
-<div id="start-plan-with-others-container"></div>
-
 <%= stylesheet_link_tag "new-plan", "data-turbo-track": "reload" %>
 <%= javascript_include_tag "new-plan", "data-turbo-track": "reload" %>
-<%= javascript_include_tag "start-plan-with-others", "data-turbo-track": "reload" %>

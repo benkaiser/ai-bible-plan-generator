@@ -37,13 +37,14 @@ class PlansController < ApplicationController
   end
 
   def create
-    @plan = current_user.plans.build(plan_params.except(:action, :collaborators))
+    @plan = current_user.plans.build(plan_params.except(:action, :collaborators, :start_date))
     @plan.days = JSON.parse(plan_params[:days]) if plan_params[:days].is_a?(String)
 
     if @plan.save
       if plan_params[:action] == "start" || plan_params[:action] == "start_together"
-        current_date = Time.now.in_time_zone(current_user.timezone).to_date rescue Date.today
-        @plan_instance = PlanInstance.new(plan: @plan, start_date: current_date)
+        # Use the submitted start_date or default to today's date
+        start_date = plan_params[:start_date].present? ? Date.parse(plan_params[:start_date]) : Time.now.in_time_zone(current_user.timezone).to_date rescue Date.today
+        @plan_instance = PlanInstance.new(plan: @plan, start_date: start_date)
 
         if @plan_instance.save
           PlanInstanceUser.create(plan_instance: @plan_instance, user: current_user, approved: true, creator: true, completed: false, removed: false)
@@ -147,7 +148,7 @@ class PlansController < ApplicationController
   private
 
   def plan_params
-    params.require(:plan).permit(:name, :description, :cover_photo, :days, :action, :collaborators)
+    params.require(:plan).permit(:name, :description, :cover_photo, :days, :action, :collaborators, :start_date)
   end
 
   def fix_reading_params

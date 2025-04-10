@@ -1,11 +1,14 @@
 <h1><%= @plan.name %></h1>
 <p><%= @plan.description %></p>
 <p>
-  <img src="<%= @plan.cover_photo %>/400/200" class="img-thumbnail" alt="Plan cover photo" />
+  <img src="<%= @plan.cover_photo %>/400/200" height="200px" width="400px" class="img-thumbnail" alt="Plan cover photo" />
 </p>
 
 <div class="container">
-  <%= button_to 'Start Plan', plan_instances_path(plan_id: @plan.id), method: :post, id: 'plan-link', class: 'btn btn-primary mb-3' %>
+  <div class="d-flex gap-2">
+    <%= button_to 'Start Plan', plan_instances_path(plan_id: @plan.id), method: :post, id: 'plan-link', class: 'btn btn-primary mb-3' %>
+    <%= button_to 'Start Plan Together', '#', class: 'btn btn-primary mb-3 start-with-others', data: { bs_toggle: 'modal', bs_target: '#startWithOthersModal', plan_id: @plan.id, plan_name: @plan.name } %>
+  </div>
 
   <% @plan.days.each do |day| %>
     <div class="card mb-3">
@@ -39,3 +42,5 @@
   url.searchParams.append('current_date', formattedDate);
   planLink.parentElement.action = url.toString();
 </script>
+<div id="start-plan-with-others-container"></div>
+<%= javascript_include_tag "start-plan-with-others", "data-turbo-track": "reload" %>

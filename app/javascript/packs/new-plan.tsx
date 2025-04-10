@@ -51,7 +51,7 @@ function PlanActions(props: IPlanActionsProps) {
     )
   }
 
-  const onSubmit = (action: string) => {
+  const onSubmit = (action: string, selectedStartDate?: string) => {
     const nameField = document.getElementById('plan-name') as HTMLInputElement;
     nameField.value = props.plan.title;
     const descriptionField = document.getElementById('plan-description') as HTMLInputElement;
@@ -66,11 +66,15 @@ function PlanActions(props: IPlanActionsProps) {
     form.submit();
   };
 
-  const handleCollaborationSubmit = (usernames: string[]) => {
+  const handleCollaborationSubmit = (usernames: string[], selectedStartDate: string) => {
     const collaboratorsField = document.getElementById('plan-collaborators') as HTMLInputElement;
     collaboratorsField.value = JSON.stringify(usernames);
+    if (selectedStartDate) {
+      const startDateField = document.getElementById('plan-start-date') as HTMLInputElement;
+      startDateField.value = selectedStartDate;
+    }
     setShowModal(false);
-    onSubmit('start_together');
+    onSubmit('start_together', selectedStartDate);
   };
 
   return (
@@ -88,7 +92,8 @@ function PlanActions(props: IPlanActionsProps) {
           onClose={() => setShowModal(false)}
           onSubmit={(formData) => {
             const usernames = formData.getAll('usernames[]') as string[];
-            handleCollaborationSubmit(usernames);
+            const selectedStartDate = formData.get('current_date') as string;
+            handleCollaborationSubmit(usernames, selectedStartDate);
             return false; // Prevent default form submission
           }}
         />
