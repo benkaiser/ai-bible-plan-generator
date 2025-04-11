@@ -323,9 +323,13 @@ export default class BibleAudioControls extends Component<BibleAudioControlsProp
             {isLoading ? (
               <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             ) : isPlaying ? (
-              <span>⏸️</span>
+              <span>
+                <i className="bi bi-pause-fill"></i>
+              </span>
             ) : (
-              <span>▶️</span>
+              <span>
+                <i className="bi bi-play-fill"></i>
+              </span>
             )}
           </button>
 
