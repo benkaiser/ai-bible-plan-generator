@@ -477,11 +477,27 @@ function ReadingDetailsRoute(_: RouteProps) {
   const day = plan.days[parseInt(dayIndex, 10)];
   const selectedReading = day.readings[parseInt(readingIndex, 10) - 1];
   const { onPrevious, onNext } = useContext(ControlContext);
+  const [showAudioPlayer, setShowAudioPlayer] = useState(false);
 
   return (
     <div>
-      <h2>{`${selectedReading.book} ${selectedReading.chapter}${selectedReading.verse_range ? ':' + selectedReading.verse_range : ''}`}</h2>
-      <ReactBible isReadingExapandable={true} book={selectedReading.book} chapter={selectedReading.chapter} verseRange={selectedReading.verse_range} />
+      <div className="d-flex align-items-center justify-content-between mb-3">
+        <h2>{`${selectedReading.book} ${selectedReading.chapter}${selectedReading.verse_range ? ':' + selectedReading.verse_range : ''}`}</h2>
+        <button
+          className="btn btn-outline-primary"
+          onClick={() => setShowAudioPlayer(!showAudioPlayer)}
+          title="Toggle audio player"
+        >
+          <i className="bi bi-volume-up-fill"></i>
+        </button>
+      </div>
+      <ReactBible
+        isReadingExapandable={true}
+        book={selectedReading.book}
+        chapter={selectedReading.chapter}
+        verseRange={selectedReading.verse_range}
+        audioPlayer={showAudioPlayer}
+      />
       <ReadingControls selectedReading={selectedReading} isLastReadingForDay={selectedReading === day?.readings[day.readings.length - 1]}  onPrevious={() => onPrevious(parseInt(dayIndex, 10), parseInt(readingIndex, 10))} onNext={() => onNext(parseInt(dayIndex, 10), parseInt(readingIndex, 10))} />
     </div>
   );

@@ -57,6 +57,7 @@ const books = [
   },
   {
     id: "RUT",
+    audioBookId: "Rth",
     name: "Ruth",
     otherNames: ["ruth", "rut", "ru"],
     order: 8,
@@ -169,6 +170,7 @@ const books = [
   },
   {
     id: "SNG",
+    audioBookId: "Son",
     name: "Song of Solomon",
     otherNames: ["song of solomon", "sos", "song of songs", "song", "song of sol", "so"],
     order: 22,
@@ -201,6 +203,7 @@ const books = [
   },
   {
     id: "EZK",
+    audioBookId: "Eze",
     name: "Ezekiel",
     otherNames: ["ezekiel", "ezk", "ez"],
     order: 26,
@@ -225,6 +228,7 @@ const books = [
   },
   {
     id: "JOL",
+    audioBookId: "Joe",
     name: "Joel",
     otherNames: ["joel", "jol", "jl"],
     order: 29,
@@ -265,6 +269,7 @@ const books = [
   },
   {
     id: "NAM",
+    audioBookId: "Nah",
     name: "Nahum",
     otherNames: ["nahum", "nam", "na"],
     order: 34,
@@ -321,6 +326,7 @@ const books = [
   },
   {
     id: "MRK",
+    audioBookId: "Mar",
     name: "Mark",
     otherNames: ["mark", "mrk", "mk"],
     order: 41,
@@ -337,6 +343,7 @@ const books = [
   },
   {
     id: "JHN",
+    audioBookId: "Joh",
     name: "John",
     otherNames: ["john", "jhn", "jn"],
     order: 43,
@@ -393,6 +400,7 @@ const books = [
   },
   {
     id: "PHP",
+    audioBookId: "Phi",
     name: "Philippians",
     otherNames: ["philippians", "php", "phi"],
     order: 50,
@@ -465,6 +473,7 @@ const books = [
   },
   {
     id: "JAS",
+    audioBookId: "Jam",
     name: "James",
     otherNames: ["james", "jas", "jm"],
     order: 59,
@@ -489,6 +498,7 @@ const books = [
   },
   {
     id: "1JN",
+    audioBookId: "1Jo",
     name: "1 John",
     otherNames: ["1 john", "1 jn", "first john", "first jn"],
     order: 62,
@@ -497,6 +507,7 @@ const books = [
   },
   {
     id: "2JN",
+    audioBookId: "2Jo",
     name: "2 John",
     otherNames: ["2 john", "2 jn", "second john", "second jn"],
     order: 63,
@@ -505,6 +516,7 @@ const books = [
   },
   {
     id: "3JN",
+    audioBookId: "3Jo",
     name: "3 John",
     otherNames: ["3 john", "3 jn", "third john", "third jn"],
     order: 64,

@@ -8,6 +8,7 @@ import { ensureBookShortName } from './utilities';
 import { BibleClient, BibleCollection } from '@gracious.tech/fetch-client';
 import * as fetchCss from '@gracious.tech/fetch-client/client.css';
 import * as bibleCustomCss from './bible.module.css';
+import BibleAudioControls from './audio/BibleAudioControls';
 
 // avoid tree-shaking, use the fetchCss import
 +fetchCss;
@@ -19,6 +20,7 @@ interface IBibleProps {
   verseRange?: string;
   lookup?: string;
   isReadingExapandable?: boolean;
+  audioPlayer?: boolean;
 }
 
 interface IBibleState {
@@ -108,6 +110,10 @@ export default class ReactBible extends Component<IBibleProps, IBibleState> {
 
   render() {
     const { contents, isLoading, showFullChapter } = this.state;
+    let { book, chapter, verseRange, lookup } = this.props;
+    if (lookup) {
+      [book, chapter, verseRange] = lookup.split(' ');
+    }
     if (!contents || isLoading) {
       return (
         <div class="spinner-border" role="status">
@@ -138,6 +144,13 @@ export default class ReactBible extends Component<IBibleProps, IBibleState> {
 
     return (
       <div>
+        {this.props.audioPlayer && (
+          <BibleAudioControls
+            book={this.props.book}
+            chapter={this.props.chapter}
+            verseRange={this.state.showFullChapter ? undefined : this.props.verseRange}
+          />
+        )}
         <div className="fetch-bible" dangerouslySetInnerHTML={{ __html: this.state.contents }} />
         {this.props.isReadingExapandable && !showFullChapter && (
           <div>

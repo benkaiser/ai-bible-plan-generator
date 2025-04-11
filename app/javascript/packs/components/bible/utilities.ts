@@ -13,6 +13,25 @@ export function ensureBookShortName(bookname: string): string {
   }
 }
 
+export function ensureAudioBookId(bookname: string): string {
+  const bookId = ensureBookShortName(bookname);
+  const book = books.find(b => b.id === bookId);
+  if (book) {
+    if (book.audioBookId) {
+      return book.audioBookId;
+    }
+    // If no audioBookId is found, return the original bookId but only capitalize the first non-numeric character, e.g. "1JN" -> "1Jn" and "GEN" -> "Gen"
+    const match = bookId.match(/^(\d*)([A-Z]+)$/);
+    if (match) {
+      const [_, digits, letters] = match;
+      const capitalized = letters[0] + letters.slice(1).toLowerCase();
+      return digits + capitalized;
+    }
+    // Fallback if unexpected format
+    return bookId;
+  }
+}
+
 export function getBook(bookShortname: string): { name: string, id: string, numberOfChapters: number } {
   const book = books.find(b => b.id === bookShortname);
   if (book) {
