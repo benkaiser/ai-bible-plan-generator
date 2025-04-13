@@ -1,0 +1,29 @@
+.edit-plan-container {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.cover-selector img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.cover-selector {
+  margin-bottom: 20px;
+}
+
+.reading-item {
+  position: relative;
+  padding: 15px;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.remove-reading-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}

@@ -40,9 +40,6 @@ export function checkScriptureRangeValidBSB(bookId, chapter, verse_range) {
   const startVerse = Number(verseRangeMatch[1]);
   const endVerse = verseRangeMatch[2] ? Number(verseRangeMatch[2]) : startVerse;
 
-  for (let verse = startVerse; verse <= endVerse; verse++) {
-    if (checkScriptureExists(bookId, chapter, verse)) return true;
-  }
-
-  return false;
+  return checkScriptureExists(bookId, chapter, startVerse) &&
+         checkScriptureExists(bookId, chapter, endVerse);
 }

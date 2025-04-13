@@ -81,6 +81,37 @@ class PlansController < ApplicationController
     end
   end
 
+  def edit
+    @plan = Plan.find(params[:id])
+
+    # Ensure only the owner can edit the plan
+    if @plan.user_id != current_user.id
+      redirect_to plans_path, alert: 'You are not authorized to edit this plan.'
+    end
+  end
+
+  def update
+    @plan = Plan.find(params[:id])
+
+    if @plan.user_id != current_user.id
+      redirect_to plans_path, alert: 'You are not authorized to update this plan.'
+      return
+    end
+
+    # Process plan updates
+    update_params = plan_params.except(:action, :collaborators, :start_date)
+
+    # Convert days from JSON string if needed
+    update_params[:days] = JSON.parse(update_params[:days]) if update_params[:days].is_a?(String)
+
+    if @plan.update(update_params)
+      redirect_to @plan, notice: 'Plan was successfully updated.'
+    else
+      logger.error "Failed to update plan: #{@plan.errors.full_messages.join(', ')}"
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
   def generate_plan
     topic = params[:topic]
     length = params[:length].to_i

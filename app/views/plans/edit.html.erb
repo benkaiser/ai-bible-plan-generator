@@ -1,0 +1,13 @@
+<h1>Edit Plan</h1>
+
+<%= form_with model: @plan, local: true, id: 'plan-form' do |form| %>
+  <%= form.hidden_field :name, id: 'plan-name' %>
+  <%= form.hidden_field :description, id: 'plan-description' %>
+  <%= form.hidden_field :cover_photo, id: 'plan-cover-photo' %>
+  <%= form.hidden_field :days, id: 'plan-days' %>
+<% end %>
+
+<div id='plan-edit-container' class="my-4" data-plan="<%= @plan.to_json %>"></div>
+
+<%= stylesheet_link_tag "edit-plan", "data-turbo-track": "reload" %>
+<%= javascript_include_tag "edit-plan", "data-turbo-track": "reload" %>
