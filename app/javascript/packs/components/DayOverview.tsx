@@ -11,12 +11,16 @@ interface IDayOverviewProps {
 
 interface IDayOverviewState {
   dayOverview: string;
+  loading: boolean;
 }
 
 class DayOverview extends Component<IDayOverviewProps, IDayOverviewState> {
   constructor(props) {
     super(props);
-    this.state = { dayOverview: '' };
+    this.state = {
+      dayOverview: '',
+      loading: false
+    };
   }
 
   componentDidMount(): void {
@@ -25,12 +29,13 @@ class DayOverview extends Component<IDayOverviewProps, IDayOverviewState> {
 
   componentWillReceiveProps(nextProps: Readonly<IDayOverviewProps>, nextContext: any): void {
     if (this.props.day !== nextProps.day) {
-      this.setState({ dayOverview: '' });
+      this.setState({ dayOverview: '', loading: false });
       this.fetchPlan(nextProps.day);
     }
   }
 
   fetchPlan(day: number) {
+    this.setState({ loading: true });
     fetch(`/plan_instances/${this.props.planInstance.id}/day_overview`, {
       method: 'POST',
       headers: {
@@ -51,17 +56,21 @@ class DayOverview extends Component<IDayOverviewProps, IDayOverviewState> {
           if (Array.isArray(pieceOfData)) {
             fakeStream(pieceOfData, (chunk) => {
               completion += chunk;
-              this.setState({ dayOverview: completion });
+              this.setState({ dayOverview: completion, loading: false });
             }, 20, 60);
           } else {
             completion += pieceOfData.choices[0]?.delta?.content || '';
-            this.setState({ dayOverview: completion });
+            this.setState({ dayOverview: completion, loading: false });
           }
         }
       }
+      this.setState({ loading: false });
     })
     .catch(error => {
-      this.setState({ dayOverview: 'Unable to generate plan overview. Please try again later.' });
+      this.setState({
+        dayOverview: 'Unable to generate plan overview. Please refresh the page and try again.',
+        loading: false
+      });
       console.error('Error:', error);
     });
   }
@@ -69,7 +78,15 @@ class DayOverview extends Component<IDayOverviewProps, IDayOverviewState> {
   render() {
     return (
       <div>
-        <Markdown>{this.state.dayOverview}</Markdown>
+        {this.state.loading ? (
+          <div className="d-flex justify-content-start my-5">
+            <div className="spinner-border" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        ) : (
+          <Markdown>{this.state.dayOverview}</Markdown>
+        )}
       </div>
     );
   }
