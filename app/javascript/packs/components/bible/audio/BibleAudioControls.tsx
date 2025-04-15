@@ -300,17 +300,16 @@ export default class BibleAudioControls extends Component<BibleAudioControlsProp
 
     // Calculate effective min, max, and current values for the slider
     const minValue = 0;
-    const maxValue = endTime !== null ? (endTime - (startTime || 0)) : duration || 1;
+    let maxValue = endTime !== null ? (endTime - (startTime || 0)) : duration || 1;
+    if (startTime !== null && endTime === null) {
+      maxValue = duration - startTime;
+    }
     const currentValue = startTime !== null ? Math.max(0, currentTime - startTime) : currentTime;
 
     // Format display times - show relative to verse range if applicable
     const displayCurrentTime = startTime !== null ?
       this.formatTime(Math.max(0, currentTime - startTime)) :
       this.formatTime(currentTime);
-
-    const displayTotalTime = endTime !== null && startTime !== null ?
-      this.formatTime(endTime - startTime) :
-      this.formatTime(duration);
 
     return (
       <div className="bible-audio-controls mb-3">
@@ -347,7 +346,7 @@ export default class BibleAudioControls extends Component<BibleAudioControlsProp
           </div>
 
           <div className="ms-2 text-muted small">
-            {displayCurrentTime} / {displayTotalTime}
+            { duration !== 0 ? <span>{displayCurrentTime}</span> : <span>0:00</span> }
           </div>
         </div>
       </div>
