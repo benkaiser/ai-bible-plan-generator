@@ -21,6 +21,7 @@
     "react-bootstrap": "^2.10.8",
     "react-markdown": "^9.0.3",
     "react-router-dom": "^7.1.5",
+    "replicate": "^1.0.1",
     "sass": "^1.80.6",
     "tiny-glob": "^0.2.9",
     "typescript": "^5.7.3"

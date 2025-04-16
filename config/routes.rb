@@ -20,6 +20,11 @@ Rails.application.routes.draw do
         patch :update_reading_status
         patch :update_plan_status
         post :day_overview
+        post :get_daily_reading_tts
+        get :members
+        post :invite_user
+        get :confirm_participation
+        get :decline_invitation
       end
     end
 
@@ -36,18 +41,6 @@ Rails.application.routes.draw do
 
   unauthenticated do
     resources :plans, only: [:show]
-  end
-
-  resources :plan_instances do
-    member do
-      get :members
-      post :invite_user
-      patch :update_reading_status
-      patch :update_plan_status
-      get :day_overview
-      get :confirm_participation
-      get :decline_invitation
-    end
   end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

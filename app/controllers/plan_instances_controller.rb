@@ -1,6 +1,8 @@
 class PlanInstancesController < ApplicationController
   include ActionController::Live
   include BibleHelper
+  require 'redcarpet'
+  require 'redcarpet/render_strip'
 
   OVERVIEW_GENERATION_PROMPT = File.read(Rails.root.join('app', 'prompts', 'overview_generation_generic.txt'))
 
@@ -65,49 +67,13 @@ class PlanInstancesController < ApplicationController
     @plan_instance = PlanInstance.find(params[:id])
     @plan_instance_user = PlanInstanceUser.find_by(plan_instance: @plan_instance, user: current_user)
     @day_number = params[:day_number].to_i
-    # extract day from plan_instance
-    @day = @plan_instance.plan.days[@day_number - 1]
-    # return an error if @day.day_number == @day_number
-    if @day.nil? || @day['day_number'] != @day_number
-      render json: { success: false, error: 'Day not found' }, status: :not_found
-      return
-    end
-    # for each of the readings, extract the book chapter and verse_range from them. Use them to pull out the
-    # bible verses from the ChapterVerse model.
-    scriptures = ""
-    @readings = @day['readings'].map do |reading|
-      book = ensure_book_short_name(reading['book'])
-      chapter = reading['chapter']
-      verse_range = reading['verse_range']
 
-      verses = ChapterVerse.where(bookId: book, chapterNumber: chapter).order(:number)
-
-      if verse_range.present?
-        range_parts = verse_range.split('-').map(&:to_i)
-        if range_parts.size == 1
-          verses = verses.where(number: range_parts[0])
-        elsif range_parts.size == 2
-          verses = verses.where("number >= ? AND number <= ?", range_parts[0], range_parts[1])
-        end
-      end
-
-      verses
-      verse_reference = if verse_range.present?
-        ":#{verse_range}"
-      else
-        ""
-      end
-      scriptures += "#{short_name_to_long_name(book)} #{chapter}#{verse_reference}\n#{verses.map(&:text).join(' ')}\n"
-    end
+    prompt = prepare_day_content(@plan_instance, @day_number)
+    return unless prompt # Return if an error occurred
 
     # now actually make the API calls and stream the response
     response.headers['Content-Type'] = 'text/event-stream'
 
-    prompt = OVERVIEW_GENERATION_PROMPT.gsub("{scriptures}", scriptures.to_s)
-                                      .gsub("{title}", @plan_instance.plan.name)
-                                      .gsub("{outline}", @day['outline'])
-                                      .gsub("{day}", @day['day_number'].to_s)
-                                      .gsub("{total_days}", @plan_instance.plan.days.size.to_s)
     cache_service = PromptCacheService.new(
       prompt: prompt,
       messages: [
@@ -128,6 +94,45 @@ class PlanInstancesController < ApplicationController
     response.stream.write "data: Error: #{e.message}\n\n"
   ensure
     response.stream.close
+  end
+
+  # Post request, containing the tts contents for a given day
+  def get_daily_reading_tts
+    @plan_instance = PlanInstance.find(params[:id])
+    @plan_instance_user = PlanInstanceUser.find_by(plan_instance: @plan_instance, user: current_user)
+    @day_number = params[:day_number].to_i
+
+    prompt = prepare_day_content(@plan_instance, @day_number)
+    return render json: { success: false, error: 'Day not found' }, status: :not_found unless prompt
+
+    # Generate the content text
+    cache_service = PromptCacheService.new(
+      prompt: prompt,
+      messages: [{ role: "user", content: prompt }],
+      model: "accounts/fireworks/models/llama-v3p1-8b-instruct",
+      temperature: 0.5
+    )
+
+    # Get the full text content directly from the service
+    content_text = cache_service.fetch_content_as_text
+
+    # Ensure we have content before proceeding
+    if content_text.blank?
+      return render json: { success: false, error: 'No content generated' }, status: :unprocessable_entity
+    end
+
+    # Strip markdown before sending to TTS
+    plain_text = strip_markdown(content_text)
+
+    # Use the Replicate TTS service to generate audio
+    tts_service = ReplicateTtsService.new(plain_text)
+    result = tts_service.generate_audio
+
+    if result[:success]
+      render json: { success: true, audio_url: result[:audio_url] }
+    else
+      render json: { success: false, error: result[:error] }, status: :internal_server_error
+    end
   end
 
   def update_reading_status
@@ -272,5 +277,55 @@ class PlanInstancesController < ApplicationController
     PlanMailer.invitation_email(invited_user, current_user, @plan_instance).deliver_later
 
     render json: { message: 'User invited successfully' }
+  end
+
+  private
+
+  def strip_markdown(text)
+    Redcarpet::Markdown.new(Redcarpet::Render::StripDown).render(text)
+  end
+
+  def prepare_day_content(plan_instance, day_number)
+    # extract day from plan_instance
+    day = plan_instance.plan.days[day_number - 1]
+    # return an error if day.day_number == day_number
+    if day.nil? || day['day_number'] != day_number
+      return nil
+    end
+
+    # for each of the readings, extract the book chapter and verse_range from them. Use them to pull out the
+    # bible verses from the ChapterVerse model.
+    scriptures = ""
+    readings = day['readings'].map do |reading|
+      book = ensure_book_short_name(reading['book'])
+      chapter = reading['chapter']
+      verse_range = reading['verse_range']
+
+      verses = ChapterVerse.where(bookId: book, chapterNumber: chapter).order(:number)
+
+      if verse_range.present?
+        range_parts = verse_range.split('-').map(&:to_i)
+        if range_parts.size == 1
+          verses = verses.where(number: range_parts[0])
+        elsif range_parts.size == 2
+          verses = verses.where("number >= ? AND number <= ?", range_parts[0], range_parts[1])
+        end
+      end
+
+      verse_reference = if verse_range.present?
+        ":#{verse_range}"
+      else
+        ""
+      end
+      scriptures += "#{short_name_to_long_name(book)} #{chapter}#{verse_reference}\n#{verses.map(&:text).join(' ')}\n"
+    end
+
+    prompt = OVERVIEW_GENERATION_PROMPT.gsub("{scriptures}", scriptures.to_s)
+                                     .gsub("{title}", plan_instance.plan.name)
+                                     .gsub("{outline}", day['outline'])
+                                     .gsub("{day}", day['day_number'].to_s)
+                                     .gsub("{total_days}", plan_instance.plan.days.size.to_s)
+
+    return prompt
   end
 end

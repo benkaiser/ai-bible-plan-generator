@@ -477,7 +477,15 @@ function ReadingDetailsRoute(_: RouteProps) {
   const day = plan.days[parseInt(dayIndex, 10)];
   const selectedReading = day.readings[parseInt(readingIndex, 10) - 1];
   const { onPrevious, onNext } = useContext(ControlContext);
-  const [showAudioPlayer, setShowAudioPlayer] = useState(false);
+  const [showAudioPlayer, setShowAudioPlayer] = useState(
+    () => sessionStorage.getItem('showAudioPlayer') === 'true'
+  );
+
+  const toggleAudioPlayer = () => {
+    const newState = !showAudioPlayer;
+    setShowAudioPlayer(newState);
+    sessionStorage.setItem('showAudioPlayer', newState.toString());
+  };
 
   return (
     <div>
@@ -485,7 +493,7 @@ function ReadingDetailsRoute(_: RouteProps) {
         <h2>{`${selectedReading.book} ${selectedReading.chapter}${selectedReading.verse_range ? ':' + selectedReading.verse_range : ''}`}</h2>
         <button
           className="btn btn-outline-primary"
-          onClick={() => setShowAudioPlayer(!showAudioPlayer)}
+          onClick={toggleAudioPlayer}
           title="Toggle audio player"
         >
           <i className="bi bi-volume-up-fill"></i>
@@ -511,8 +519,12 @@ function DayOverviewRoute(_: RouteProps) {
 
   return (
     <div className={dayOverviewContainer}>
-      <h2>Day {day.day_number}: {day.outline}</h2>
-      <DayOverview day={day.day_number} planInstance={planInstance} />
+      <DayOverview
+        key={day.day_number}
+        day={day.day_number}
+        planInstance={planInstance}
+        outline={day.outline}
+      />
       <ReadingControls isLastReadingForDay={day.readings.length === 0} onNext={() => onNext(parseInt(dayIndex, 10), 0)} />
     </div>
   );
