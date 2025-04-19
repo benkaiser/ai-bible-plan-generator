@@ -6,6 +6,9 @@ class PlanInstancesController < ApplicationController
 
   OVERVIEW_GENERATION_PROMPT = File.read(Rails.root.join('app', 'prompts', 'overview_generation_generic.txt'))
 
+  before_action :check_plan_accessibility, only: [:show]
+  before_action :ensure_authenticated_or_redirect, only: [:public_show]
+
   def create
     current_date = params[:current_date].present? ? Date.parse(params[:current_date]) : Date.today
     @plan = Plan.find(params[:plan_id])
@@ -43,7 +46,28 @@ class PlanInstancesController < ApplicationController
 
   def show
     @plan_instance = PlanInstance.find(params[:id])
+    # If user isn't logged in and the plan is public, redirect to public view
+    if !current_user && @plan_instance.visibility == 'public'
+      redirect_to public_plan_path(@plan_instance.slug.presence || @plan_instance.id)
+      return
+    end
+
     @plan_instance_user = PlanInstanceUser.find_by(plan_instance: @plan_instance, user: current_user)
+
+    # If user is not a member but plan is public, create a membership automatically
+    if !@plan_instance_user && @plan_instance.visibility == 'public' && current_user
+      @plan_instance_user = PlanInstanceUser.create(
+        plan_instance: @plan_instance,
+        user: current_user,
+        approved: true,
+        creator: false,
+        completed: false,
+        removed: false
+      )
+      # show the welcome message
+      flash[:notice] = 'You have joined the plan!'
+    end
+
     @plan_instance_other_users = @plan_instance.plan_instance_users.where.not(user: current_user).where(approved: true)
     @plan_instance_other_users = @plan_instance_other_users.map do |plan_instance_user|
       {
@@ -51,6 +75,30 @@ class PlanInstancesController < ApplicationController
         latest_uncompleted_day: plan_instance_user.latest_uncompleted_day,
       }
     end
+  end
+
+  # Public view of a plan for non-members
+  def public_show
+    @plan_instance = if params[:slug].present?
+                      PlanInstance.find_by(slug: params[:slug])
+                    else
+                      PlanInstance.find(params[:id])
+                    end
+
+    # Ensure the plan is public
+    unless @plan_instance&.visibility == 'public'
+      redirect_to root_path, alert: 'This plan is not available for public viewing.'
+      return
+    end
+
+    # If user is logged in, redirect to show page which will handle membership
+    if current_user
+      redirect_to plan_instance_path(@plan_instance)
+      return
+    end
+
+    # For non-logged in users, show public view with join option
+    @plan = @plan_instance.plan
   end
 
   def destroy
@@ -279,6 +327,64 @@ class PlanInstancesController < ApplicationController
     render json: { message: 'User invited successfully' }
   end
 
+  # Method to get plan settings
+  def settings
+    @plan_instance = PlanInstance.find(params[:id])
+    @plan_instance_user = PlanInstanceUser.find_by(plan_instance: @plan_instance, user: current_user)
+
+    # Ensure the current user is a member of this plan
+    unless @plan_instance_user
+      render json: { error: 'You are not authorized to view this plan settings' }, status: :unauthorized
+      return
+    end
+
+    render json: {
+      visibility: @plan_instance.visibility,
+      slug: @plan_instance.slug
+    }
+  end
+
+  # Method to update plan settings
+  def update_settings
+    @plan_instance = PlanInstance.find(params[:id])
+    @plan_instance_user = PlanInstanceUser.find_by(plan_instance: @plan_instance, user: current_user)
+
+    # Ensure the current user is the creator of this plan
+    unless @plan_instance_user&.creator
+      render json: { error: 'You are not authorized to update this plan settings' }, status: :unauthorized
+      return
+    end
+
+    # Update settings
+    if @plan_instance.update(settings_params)
+      render json: {
+        message: 'Settings updated successfully',
+        visibility: @plan_instance.visibility,
+        slug: @plan_instance.slug
+      }
+    else
+      render json: {
+        error: 'Failed to update settings',
+        errors: @plan_instance.errors.full_messages
+      }, status: :unprocessable_entity
+    end
+  end
+
+  # Method to check slug availability
+  def check_slug
+    current_plan_id = params[:current_plan_instance_id]
+    slug = params[:slug]
+
+    # Check if slug is available (excluding the current plan)
+    is_available = if current_plan_id.present?
+                     !PlanInstance.where.not(id: current_plan_id).exists?(slug: slug)
+                   else
+                     !PlanInstance.exists?(slug: slug)
+                   end
+
+    render json: { available: is_available }
+  end
+
   private
 
   def strip_markdown(text)
@@ -327,5 +433,47 @@ class PlanInstancesController < ApplicationController
                                      .gsub("{total_days}", plan_instance.plan.days.size.to_s)
 
     return prompt
+  end
+
+  def settings_params
+    params.require(:plan_instance).permit(:visibility, :slug)
+  end
+
+  def check_plan_accessibility
+    plan_instance = PlanInstance.find(params[:id])
+
+    # Check if user is authenticated
+    if current_user
+      # Check if user is a member of the plan or if plan is public
+      is_member = PlanInstanceUser.exists?(plan_instance: plan_instance, user: current_user, removed: false)
+
+      unless is_member || plan_instance.visibility == 'public'
+        redirect_to root_path, alert: 'You do not have access to this plan.'
+      end
+    else
+      # Unauthenticated users can only access public plans through the public view
+      unless plan_instance.visibility == 'public'
+        redirect_to new_user_session_path, alert: 'Please log in to access this plan.'
+      end
+    end
+  end
+
+  def ensure_authenticated_or_redirect
+    unless current_user
+      # Store the plan instance URL to redirect back after login
+      store_location_for(:user, request.original_url)
+    end
+  end
+
+  def store_location_for(resource, location)
+    session["#{resource}_return_to"] = location
+  end
+
+  def after_sign_in_path_for(resource)
+    stored_location_for(resource) || super
+  end
+
+  def stored_location_for(resource)
+    session.delete("#{resource}_return_to")
   end
 end

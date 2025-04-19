@@ -12,6 +12,9 @@ Rails.application.routes.draw do
 
   get 'bible(/:book(/:chapter))', to: 'bible#show', as: 'bible'
 
+  # Public routes for plan instances
+  get 'plans/:slug', to: 'plan_instances#public_show', as: 'public_plan'
+
   authenticate do
     resources :plans, only: [:index, :show, :new, :create, :edit, :update, :destroy]
     get 'completed_plans', to: 'plans#completed', as: 'completed_plans'
@@ -25,6 +28,13 @@ Rails.application.routes.draw do
         post :invite_user
         get :confirm_participation
         get :decline_invitation
+        # Add new routes for plan settings
+        get :settings
+        patch :update_settings
+      end
+
+      collection do
+        post :check_slug
       end
     end
 
