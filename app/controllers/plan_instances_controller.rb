@@ -46,7 +46,6 @@ class PlanInstancesController < ApplicationController
 
   def show
     @plan_instance = PlanInstance.find(params[:id])
-    # If user isn't logged in and the plan is public, redirect to public view
     if !current_user && @plan_instance.visibility == 'public'
       redirect_to public_plan_path(@plan_instance.slug.presence || @plan_instance.id)
       return

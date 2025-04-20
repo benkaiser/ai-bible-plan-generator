@@ -12,8 +12,7 @@ Rails.application.routes.draw do
 
   get 'bible(/:book(/:chapter))', to: 'bible#show', as: 'bible'
 
-  # Public routes for plan instances
-  get 'plans/:slug', to: 'plan_instances#public_show', as: 'public_plan'
+  get 'p/:slug', to: 'plan_instances#public_show', as: 'public_plan'
 
   authenticate do
     resources :plans, only: [:index, :show, :new, :create, :edit, :update, :destroy]

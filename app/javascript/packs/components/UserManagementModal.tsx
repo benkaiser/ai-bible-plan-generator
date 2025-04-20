@@ -469,7 +469,7 @@ class UserManagementModal extends Component<IUserManagementModalProps, IUserMana
     } = this.state;
 
     const planUrl = slug ?
-      `${window.location.origin}/plans/${slug}` :
+      `${window.location.origin}/p/${slug}` :
       `${window.location.origin}/plan_instances/${this.props.planInstanceId}`;
 
     return (
