@@ -1,7 +1,9 @@
 class User < ApplicationRecord
-  has_many :plans, dependent: :destroy
-  has_many :plan_instance_users
+  has_many :plans, dependent: :nullify
+  has_many :plan_instance_users, dependent: :destroy
   has_many :plan_instances, through: :plan_instance_users
+  has_many :plan_instance_comments, dependent: :nullify
+  has_many :notification_subscriptions, dependent: :destroy
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable

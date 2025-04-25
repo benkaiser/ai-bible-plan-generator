@@ -21,6 +21,17 @@
         <div class="text-danger" id="username-error-message"></div>
       </div>
 
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <%= f.label :first_name, class: "form-label" %> <span class="text-muted">(optional)</span>
+          <%= f.text_field :first_name, class: "form-control" %>
+        </div>
+        <div class="col-md-6">
+          <%= f.label :last_name, class: "form-label" %> <span class="text-muted">(optional)</span>
+          <%= f.text_field :last_name, class: "form-control" %>
+        </div>
+      </div>
+
       <div class="mb-3">
         <%= f.label :email, class: "form-label" %>
         <%= f.email_field :email, class: "form-control", autofocus: true, autocomplete: "email", required: true %>
@@ -60,7 +71,7 @@
         }
 
         // Username availability check with debounce
-        document.addEventListener('DOMContentLoaded', function() {
+        (() => {
           const usernameField = document.getElementById('<%= f.object_name %>_username');
           const usernameSpinner = document.getElementById('username-spinner');
           const usernameCheck = document.getElementById('username-check');
@@ -118,7 +129,7 @@
               }
             }, 500); // 500ms debounce time
           });
-        });
+        })();
       </script>
 
       <div class="mb-3">

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_19_120403) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_25_125020) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -235,20 +235,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_19_120403) do
     t.datetime "updated_at", null: false
     t.string "timezone"
     t.string "username"
+    t.string "first_name"
+    t.string "last_name"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
   add_foreign_key "notification_subscriptions", "plan_instance_users"
-  add_foreign_key "notification_subscriptions", "users"
+  add_foreign_key "notification_subscriptions", "users", on_delete: :cascade
   add_foreign_key "plan_instance_comments", "plan_instances"
-  add_foreign_key "plan_instance_comments", "users"
+  add_foreign_key "plan_instance_comments", "users", on_delete: :nullify
   add_foreign_key "plan_instance_readings", "plan_instance_users"
   add_foreign_key "plan_instance_users", "plan_instances"
-  add_foreign_key "plan_instance_users", "users"
+  add_foreign_key "plan_instance_users", "users", on_delete: :cascade
   add_foreign_key "plan_instances", "plans", on_delete: :cascade
-  add_foreign_key "plans", "users"
+  add_foreign_key "plans", "users", on_delete: :nullify
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
