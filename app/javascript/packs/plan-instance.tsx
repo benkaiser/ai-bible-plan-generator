@@ -1,9 +1,11 @@
 import { createContext, h, render } from 'preact';
 import { HashRouter as Router, Routes, Route, useParams, useNavigate, RouteProps } from 'react-router-dom';
-import { useCallback, useContext, useMemo, useState } from 'preact/hooks';
+import { useCallback, useContext, useMemo, useState, useRef } from 'preact/hooks';
 import ReactBible from './components/bible/ReactBible';
 import DayOverview from './components/DayOverview';
 import Collapse from 'react-bootstrap/Collapse';
+import Tooltip from 'react-bootstrap/Tooltip';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import { rightSectionMobile, dayOverviewContainer } from './plan-instance.module.css';
 import isMobile from './utilities/isMobile';
 import NotificationModal from './components/NotificationModal';
@@ -119,14 +121,31 @@ function PlanDayOtherUsers({ dayNumber, planInstanceOtherUsers, completed = fals
 
   if (users.length === 0) return null;
 
+  const MAX_USERS_TO_DISPLAY = 3;
+  const hasMoreUsers = users.length > MAX_USERS_TO_DISPLAY;
+  const displayedUsers = hasMoreUsers ? users.slice(0, MAX_USERS_TO_DISPLAY) : users;
+
+  const tooltipContent = (
+    <Tooltip id={`tooltip-users-${dayNumber}-${completed}`}>
+      {users.map(user => user.username).join(', ')}
+    </Tooltip>
+  );
+
   return (
     <div className="small mt-1">
       <i className="bi bi-person-fill me-1"></i>
-      {users.map((user, index) => (
+      {displayedUsers.map((user, index) => (
         <span key={user.username}>
-          {user.username}{index < users.length - 1 ? ', ' : ''}
+          {user.username}{index < displayedUsers.length - 1 ? ', ' : ''}
         </span>
       ))}
+      {hasMoreUsers && (
+        <OverlayTrigger placement="top" overlay={tooltipContent}>
+          <span className="ms-1" style={{ cursor: 'pointer' }}>
+            +{users.length - MAX_USERS_TO_DISPLAY} more
+          </span>
+        </OverlayTrigger>
+      )}
       {completed && ' (completed)'}
     </div>
   );
@@ -530,10 +549,21 @@ function DayOverviewRoute(_: RouteProps) {
   );
 }
 
-render((
-  <Router>
-    <PlanContext.Provider value={{ plan: window.planData, planInstance: window.planInstanceData, planInstanceUser: window.planInstanceUser, planInstanceOtherUsers: window.planInstanceOtherUsers, planReadingData: window.planReadingData }}>
-      <PlanInstance />
-    </PlanContext.Provider>
-  </Router>
-), document.getElementById('plan-instance-root'));
+function renderApp() {
+  render((
+    <Router>
+      <PlanContext.Provider value={{ plan: window.planData, planInstance: window.planInstanceData, planInstanceUser: window.planInstanceUser, planInstanceOtherUsers: window.planInstanceOtherUsers, planReadingData: window.planReadingData }}>
+        <PlanInstance />
+      </PlanContext.Provider>
+    </Router>
+  ), document.getElementById('plan-instance-root'));
+}
+
+renderApp();
+
+document.addEventListener('turbo:load', () => {
+  const planInstanceRoot = document.getElementById('plan-instance-root');
+  if (planInstanceRoot) {
+    renderApp();
+  }
+});
