@@ -19,8 +19,39 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'node_worker/package-lock.json'
+
+      - name: Create node_worker branch
+        run: |
+          # Create orphan branch for node worker
+          git checkout --orphan node_worker
+
+          # Remove all files except node_worker directory
+          find . -maxdepth 1 -not -name '.' -not -name 'node_worker' -exec rm -rf {} +
+
+          # Move node_worker contents to root
+          mv node_worker/* .
+          mv node_worker/.[^.]* . 2>/dev/null || true
+          rmdir node_worker
+
+          # Install dependencies and build
+          npm install
+          npm run build
+
+          # Add built files
+          git add .
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git commit -m "Build node worker for deployment"
+
       - name: Push to dokku node worker
         uses: dokku/github-action@master
         with:
           git_remote_url: 'ssh://dokku@kaiserapps.com/bible-planner-node-worker'
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          branch: 'node_worker'
