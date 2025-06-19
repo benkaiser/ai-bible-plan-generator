@@ -39,15 +39,14 @@ jobs:
           mv node_worker/.[^.]* . 2>/dev/null || true
           rmdir node_worker
 
-          # Install dependencies and build
-          npm install
-          npm run build
-
           # Add built files
           git add .
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           git commit -m "Build node worker for deployment"
+
+          # Capture the new commit SHA
+          echo "NODE_WORKER_COMMIT=$(git rev-parse HEAD)" >> $GITHUB_ENV
 
       - name: Push to dokku node worker
         uses: dokku/github-action@master
@@ -55,3 +54,5 @@ jobs:
           git_remote_url: 'ssh://dokku@kaiserapps.com/bible-planner-node-worker'
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
           branch: 'node_worker'
+          ci_branch_name: 'node_worker'
+          ci_commit: ${{ env.NODE_WORKER_COMMIT }}
