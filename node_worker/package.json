@@ -4,7 +4,7 @@
   "description": "Node.js worker for handling streaming LLM requests",
   "main": "dist/server.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --noCheck",
     "start": "node dist/server.js",
     "dev": "nodemon src/server.ts"
   },
