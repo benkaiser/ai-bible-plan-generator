@@ -1,2 +1,2 @@
-web: cd node_worker && npm start
-js: cd node_worker && npm install && npm run build
+web: npm start
+js: npm install && npm run build

@@ -26,5 +26,5 @@ EXPOSE 3001
 # Set working directory to node_worker
 WORKDIR /myapp/node_worker
 
-# Start the application
-CMD ["npm", "run", "dev"]
+# Start the application inside the node_worker directory
+CMD ["npm", "start"]
