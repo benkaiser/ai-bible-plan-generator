@@ -182,19 +182,48 @@ class PlanManager extends Component<{}, IPlanManagerState> {
       },
       body: JSON.stringify({ day: day, reading: reading })
     });
-    const newDay = await response.json();
-    newDay.readings.forEach(newReading => {
-      const bookId: string = ensureBookShortName(newReading.book);
-      if (!checkScriptureRangeValidBSB(bookId, newReading.chapter, newReading.verse_range)) {
-        throw new Error('Invalid reading: ' + newReading.book + ' ' + newReading.chapter + ':' + newReading.verse_range);
+
+    // Handle streaming response
+    if (response.ok) {
+      let stream = events(response);
+      let completion = '';
+
+      for await (let event of stream) {
+        if (event.data === '[DONE]') {
+          break;
+        }
+
+        const pieceOfData = JSON.parse(event.data);
+        if (Array.isArray(pieceOfData)) {
+          // Handle array format (cached response)
+          pieceOfData.forEach(chunk => {
+            completion += chunk.choices?.[0]?.delta?.content || '';
+          });
+        } else {
+          // Handle streaming chunks
+          completion += pieceOfData.choices?.[0]?.delta?.content || '';
+        }
       }
-    });
-    this.setState({
-      plan: {
-        ...this.state.plan,
-        days: this.state.plan.days.map(day => day.day_number === newDay.day_number ? newDay : day)
-      }
-    });
+
+      // Parse the final accumulated content as JSON
+      const newDay = JSON.parse(completion);
+
+      newDay.readings.forEach(newReading => {
+        const bookId: string = ensureBookShortName(newReading.book);
+        if (!checkScriptureRangeValidBSB(bookId, newReading.chapter, newReading.verse_range)) {
+          throw new Error('Invalid reading: ' + newReading.book + ' ' + newReading.chapter + ':' + newReading.verse_range);
+        }
+      });
+
+      this.setState({
+        plan: {
+          ...this.state.plan,
+          days: this.state.plan.days.map(day => day.day_number === newDay.day_number ? newDay : day)
+        }
+      });
+    } else {
+      throw new Error('Failed to fix reading');
+    }
   }
 
   render() {

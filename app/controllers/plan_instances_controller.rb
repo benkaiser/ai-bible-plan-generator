@@ -118,9 +118,6 @@ class PlanInstancesController < ApplicationController
     prompt = prepare_day_content(@plan_instance, @day_number)
     return unless prompt # Return if an error occurred
 
-    # now actually make the API calls and stream the response
-    response.headers['Content-Type'] = 'text/event-stream'
-
     cache_service = PromptCacheService.new(
       prompt: prompt,
       messages: [
@@ -133,14 +130,25 @@ class PlanInstancesController < ApplicationController
       temperature: 0.5
     )
 
-    cache_service.fetch_or_generate do |chunk|
-      response.stream.write "data: #{chunk.gsub("\n", "\\n")}\n\n"
+    result = cache_service.fetch_or_generate
+
+    # Check if we need to redirect to Node.js worker
+    if result.is_a?(Hash) && result[:redirect_to_node]
+      node_worker_url = ENV['NODE_WORKER_URL'] || 'http://localhost:3001'
+      redirect_to "#{node_worker_url}/llm_stream/#{result[:job_id]}", allow_other_host: true
+      return
     end
-    response.stream.write "data: [DONE]\n\n"
+
+    # If we have a cached response, stream it
+    if result.is_a?(String)
+      response.headers['Content-Type'] = 'text/event-stream'
+      response.stream.write "data: #{result}\n\n"
+      response.stream.write "data: [DONE]\n\n"
+    end
   rescue => e
-    response.stream.write "data: Error: #{e.message}\n\n"
+    response.stream.write "data: Error: #{e.message}\n\n" if response.stream
   ensure
-    response.stream.close
+    response.stream.close if response.stream
   end
 
   # Post request, containing the tts contents for a given day
@@ -152,7 +160,7 @@ class PlanInstancesController < ApplicationController
     prompt = prepare_day_content(@plan_instance, @day_number)
     return render json: { success: false, error: 'Day not found' }, status: :not_found unless prompt
 
-    # Generate the content text
+    # For TTS, always redirect to Node.js worker
     cache_service = PromptCacheService.new(
       prompt: prompt,
       messages: [{ role: "user", content: prompt }],
@@ -160,26 +168,9 @@ class PlanInstancesController < ApplicationController
       temperature: 0.5
     )
 
-    # Get the full text content directly from the service
-    content_text = cache_service.fetch_content_as_text
-
-    # Ensure we have content before proceeding
-    if content_text.blank?
-      return render json: { success: false, error: 'No content generated' }, status: :unprocessable_entity
-    end
-
-    # Strip markdown before sending to TTS
-    plain_text = strip_markdown(content_text)
-
-    # Use the Replicate TTS service to generate audio
-    tts_service = ReplicateTtsService.new(plain_text)
-    result = tts_service.generate_audio
-
-    if result[:success]
-      render json: { success: true, audio_url: result[:audio_url] }
-    else
-      render json: { success: false, error: result[:error] }, status: :internal_server_error
-    end
+    job_id = cache_service.prepare_for_node_worker
+    node_worker_url = ENV['NODE_WORKER_URL'] || 'http://localhost:3001'
+    redirect_to "#{node_worker_url}/tts_stream/#{job_id}", allow_other_host: true
   end
 
   def update_reading_status

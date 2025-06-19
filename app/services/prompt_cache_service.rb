@@ -10,102 +10,84 @@ class PromptCacheService
     @response_format = response_format
   end
 
-  def fetch_or_generate(&block)
+  def fetch_or_generate
     cache_key = generate_cache_key
     cached_response = PromptCache.find_by(key: cache_key)
 
-    if cached_response
-      block.call(cached_response.response) if block_given?
+    if cached_response&.response.present?
       return cached_response.response
     else
-      response = generate_response(&block)
-      PromptCache.create(key: cache_key, response: response)
-      return response
-    end
-  end
-
-  # Method to fetch the complete content in one go (not streaming)
-  def fetch_complete_content
-    cache_key = generate_cache_key
-    cached_response = PromptCache.find_by(key: cache_key)
-
-    if cached_response
-      return cached_response.response
-    end
-
-    response = generate_response()
-
-    # Cache the complete response
-    PromptCache.create(key: cache_key, response: response)
-
-    return response
-  end
-
-  def extract_content_from_response(json_content)
-    begin
-      content_text = ""
-
-      # Parse the JSON response
-      parsed_data = JSON.parse(json_content)
-
-      if parsed_data.is_a?(Array)
-        # Handle array of chunks
-        parsed_data.each do |chunk|
-          if chunk['choices'] && chunk['choices'][0] && chunk['choices'][0]['delta'] &&
-             chunk['choices'][0]['delta']['content']
-            content_text += chunk['choices'][0]['delta']['content']
-          end
-        end
-      else
-        # Handle single response object
-        if parsed_data['choices'] && parsed_data['choices'][0]
-          if parsed_data['choices'][0]['message'] && parsed_data['choices'][0]['message']['content']
-            # Format for complete responses
-            content_text = parsed_data['choices'][0]['message']['content']
-          elsif parsed_data['choices'][0]['text']
-            # Alternative format
-            content_text = parsed_data['choices'][0]['text']
-          end
-        end
+      # If no cached response, store the request for Node.js worker to process
+      job_id = SecureRandom.uuid
+      cache_record = PromptCache.find_or_create_by(key: cache_key) do |record|
+        record.job_id = job_id
+        record.store_llm_request(
+          messages: @messages,
+          model: @model,
+          temperature: @temperature,
+          max_tokens: @max_tokens,
+          response_format: @response_format
+        )
       end
 
-      return content_text
-    rescue JSON::ParserError => e
-      Rails.logger.error("Failed to parse JSON content: #{e.message}")
-      return ""
+      # If record exists but doesn't have job_id or llm_request, update it
+      if cache_record.job_id.blank? || cache_record.llm_request.blank?
+        cache_record.update!(
+          job_id: job_id,
+          llm_request: {
+            messages: @messages,
+            model: @model,
+            temperature: @temperature,
+            max_tokens: @max_tokens,
+            response_format: @response_format
+          }.to_json,
+          llm_model: @model,
+          llm_temperature: @temperature,
+          llm_max_tokens: @max_tokens
+        )
+      end
+
+      # Return the job_id so Rails can redirect the client to Node.js worker
+      return { redirect_to_node: true, job_id: cache_record.job_id }
     end
   end
 
-  def fetch_content_as_text
-    json_content = fetch_complete_content
-    extract_content_from_response(json_content)
+  # For TTS requests - always redirect to Node.js worker
+  def prepare_for_node_worker
+    cache_key = generate_cache_key
+    job_id = SecureRandom.uuid
+
+    cache_record = PromptCache.find_or_create_by(key: cache_key) do |record|
+      record.job_id = job_id
+      record.store_llm_request(
+        messages: @messages,
+        model: @model,
+        temperature: @temperature,
+        max_tokens: @max_tokens,
+        response_format: @response_format
+      )
+    end
+
+    # If record already exists but doesn't have a job_id, assign one
+    if cache_record.job_id.blank?
+      cache_record.update!(
+        job_id: job_id,
+        llm_request: {
+          messages: @messages,
+          model: @model,
+          temperature: @temperature,
+          max_tokens: @max_tokens,
+          response_format: @response_format
+        }.to_json
+      )
+    end
+
+    cache_record.job_id
   end
 
   private
 
   def generate_cache_key
     Digest::MD5.hexdigest("#{@prompt}-#{@messages}-#{@model}-#{@temperature}-#{@max_tokens}")
-  end
-
-  def generate_response
-    client = OpenAI::Client.new()
-    response_chunks = []
-    parameters = {
-      response_format: @response_format,
-      model: @model,
-      messages: @messages,
-      temperature: @temperature,
-      max_tokens: @max_tokens
-    }
-
-    if block_given?
-      parameters[:stream] = proc do |chunk, _bytesize|
-        response_chunks << chunk
-        yield chunk.to_json if block_given?
-      end
-    end
-
-    response = client.chat(parameters: parameters)
-    response_chunks.empty? ? response.to_json : response_chunks.to_json
   end
 end

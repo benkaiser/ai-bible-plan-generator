@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_25_125020) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_19_111101) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -102,6 +102,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_25_125020) do
     t.text "response"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "llm_request"
+    t.string "llm_model"
+    t.decimal "llm_temperature"
+    t.integer "llm_max_tokens"
+    t.string "job_id"
   end
 
   create_table "solid_queue_blocked_executions", force: :cascade do |t|

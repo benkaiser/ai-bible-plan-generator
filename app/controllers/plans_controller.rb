@@ -117,8 +117,6 @@ class PlansController < ApplicationController
     length = params[:length].to_i
     verseAmount = params[:verseAmount].to_i
 
-    response.headers['Content-Type'] = 'text/event-stream'
-
     prompt = PLAN_GENERATION_PROMPT.gsub("{length}", length.to_s).gsub("{topic}", topic).gsub("{verseAmount}", verseAmount.to_s)
     puts prompt
 
@@ -136,21 +134,31 @@ class PlansController < ApplicationController
       temperature: 0
     )
 
-    cache_service.fetch_or_generate do |chunk|
-      response.stream.write "data: #{chunk.gsub("\n", "\\n")}\n\n"
+    result = cache_service.fetch_or_generate
+
+    # Check if we need to redirect to Node.js worker
+    if result.is_a?(Hash) && result[:redirect_to_node]
+      node_worker_url = ENV['NODE_WORKER_URL'] || 'http://localhost:3001'
+      redirect_to "#{node_worker_url}/llm_stream/#{result[:job_id]}", allow_other_host: true
+      return
     end
-    response.stream.write "data: [DONE]\n\n"
+
+    # If we have a cached response, stream it
+    if result.is_a?(String)
+      response.headers['Content-Type'] = 'text/event-stream'
+      response.stream.write "data: #{result}\n\n"
+      response.stream.write "data: [DONE]\n\n"
+    end
   rescue => e
-    response.stream.write "data: Error: #{e.message}\n\n"
+    response.stream.write "data: Error: #{e.message}\n\n" if response.stream
   ensure
-    response.stream.close
+    response.stream.close if response.stream
   end
 
   # this takes in a JSON object for `reading` with the invalid scripture lookup, and `day` the reading belongs too.
   # it needs to call the LLM, receive back the new `day` JSON object and send it down in one JSON response.
   # To do this it should do a call similar to above, but use the DAY_FIXING_PROMPT up above. And do not use the streaming responses, just send a single JSON payload with the full LLM response.
   def fix_reading
-    client = OpenAI::Client.new()
     params.require(:reading)
     params.require(:day)
     permitted_params = params.permit(reading: {}, day: {})
@@ -168,9 +176,22 @@ class PlansController < ApplicationController
       model: "accounts/fireworks/models/deepseek-v3", # this model seems to perform better at fixing mistakes, even though it is slower.
       temperature: 0
     )
-    response = cache_service.fetch_or_generate
 
-    render json: JSON.parse(response).dig("choices", 0, "message", "content")
+    result = cache_service.fetch_or_generate
+
+    # Check if we need to redirect to Node.js worker
+    if result.is_a?(Hash) && result[:redirect_to_node]
+      node_worker_url = ENV['NODE_WORKER_URL'] || 'http://localhost:3001'
+      redirect_to "#{node_worker_url}/llm_stream/#{result[:job_id]}", allow_other_host: true
+      return
+    end
+
+    # If we have a cached response, return it directly
+    if result.is_a?(String)
+      response.headers['Content-Type'] = 'text/event-stream'
+      response.stream.write "data: #{result}\n\n"
+      response.stream.write "data: [DONE]\n\n"
+    end
   rescue => e
     render json: { error: e.message }, status: :internal_server_error
   end

@@ -39,3 +39,7 @@
 /node_modules
 .env
 .DS_Store
+
+
+node_worker/dist
+node_worker/node_modules
