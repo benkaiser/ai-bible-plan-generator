@@ -31,8 +31,8 @@ jobs:
           # Create orphan branch for node worker
           git checkout --orphan node_worker
 
-          # Remove all files except node_worker directory
-          find . -maxdepth 1 -not -name '.' -not -name 'node_worker' -exec rm -rf {} +
+          # Remove all files except node_worker directory and .git
+          find . -maxdepth 1 -not -name '.' -not -name 'node_worker' -not -name '.git' -exec rm -rf {} +
 
           # Move node_worker contents to root
           mv node_worker/* .
