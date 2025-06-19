@@ -1,2 +1,2 @@
 web: npm --prefix /myapp/node_worker start
-js: npm --prefix /myapp/node_worker install && npm --prefix /myapp/node_worker run build
+release: npm --prefix /myapp/node_worker install && npm --prefix /myapp/node_worker run build
