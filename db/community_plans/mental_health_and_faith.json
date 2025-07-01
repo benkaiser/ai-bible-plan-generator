@@ -1,0 +1,134 @@
+{
+  "name": "Mental Health and Faith",
+  "system_key": "Mental Health and Faith",
+  "description": "A 7-day reading plan exploring the intersection of mental health and faith, featuring passages from the Bible that offer guidance, comfort, and hope.",
+  "cover_photo": "https://picsum.photos/seed/93845",
+  "days": [
+    {
+      "day_number": 1,
+      "outline": "Understanding Mental Health and Faith",
+      "readings": [
+        {
+          "why_selected": "To understand the importance of mental health in the context of faith.",
+          "book": "1 Samuel",
+          "chapter": 16,
+          "verse_range": "1-13"
+        },
+        {
+          "why_selected": "To see how mental health affects our relationship with God.",
+          "book": "Psalm",
+          "chapter": 38,
+          "verse_range": "1-22"
+        }
+      ]
+    },
+    {
+      "day_number": 2,
+      "outline": "Faith and Anxiety",
+      "readings": [
+        {
+          "why_selected": "To understand the root causes of anxiety and how faith can help.",
+          "book": "Matthew",
+          "chapter": 6,
+          "verse_range": "25-34"
+        },
+        {
+          "why_selected": "To see how faith can calm anxiety and bring peace.",
+          "book": "Philippians",
+          "chapter": 4,
+          "verse_range": "4-7"
+        }
+      ]
+    },
+    {
+      "day_number": 3,
+      "outline": "Depression and Hope",
+      "readings": [
+        {
+          "why_selected": "To understand the nature of depression and how faith can help.",
+          "book": "Psalm",
+          "chapter": 42,
+          "verse_range": "1-11"
+        },
+        {
+          "why_selected": "To see how faith can bring hope and comfort in times of depression.",
+          "book": "Romans",
+          "chapter": 8,
+          "verse_range": "18-39"
+        }
+      ]
+    },
+    {
+      "day_number": 4,
+      "outline": "Faith and Self-Care",
+      "readings": [
+        {
+          "why_selected": "To understand the importance of self-care in maintaining mental health.",
+          "book": "Matthew",
+          "chapter": 11,
+          "verse_range": "28-30"
+        },
+        {
+          "why_selected": "To see how faith can guide our self-care practices.",
+          "book": "1 Timothy",
+          "chapter": 4,
+          "verse_range": "6-8"
+        }
+      ]
+    },
+    {
+      "day_number": 5,
+      "outline": "Forgiveness and Mental Health",
+      "readings": [
+        {
+          "why_selected": "To understand the impact of unforgiveness on mental health.",
+          "book": "Matthew",
+          "chapter": 6,
+          "verse_range": "14-15"
+        },
+        {
+          "why_selected": "To see how forgiveness can bring healing and peace.",
+          "book": "Colossians",
+          "chapter": 3,
+          "verse_range": "13-14"
+        }
+      ]
+    },
+    {
+      "day_number": 6,
+      "outline": "Mental Health and Community",
+      "readings": [
+        {
+          "why_selected": "To understand the importance of community in maintaining mental health.",
+          "book": "Hebrews",
+          "chapter": 10,
+          "verse_range": "24-25"
+        },
+        {
+          "why_selected": "To see how faith can guide our relationships and community.",
+          "book": "Galatians",
+          "chapter": 6,
+          "verse_range": "2-5"
+        }
+      ]
+    },
+    {
+      "day_number": 7,
+      "outline": "Hope and Resilience",
+      "readings": [
+        {
+          "why_selected": "To understand the power of hope in overcoming mental health challenges.",
+          "book": "Romans",
+          "chapter": 5,
+          "verse_range": "1-5"
+        },
+        {
+          "why_selected": "To see how faith can give us the strength to persevere.",
+          "book": "1 Corinthians",
+          "chapter": 16,
+          "verse_range": "13-14"
+        }
+      ]
+    }
+  ]
+}

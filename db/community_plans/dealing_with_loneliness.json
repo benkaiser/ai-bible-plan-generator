@@ -1,0 +1,134 @@
+{
+  "name": "Dealing with Loneliness",
+  "system_key": "Dealing with Loneliness",
+  "description": "A 7-day reading plan to help you navigate feelings of loneliness and find comfort in God's presence.",
+  "cover_photo": "https://picsum.photos/seed/32868",
+  "days": [
+    {
+      "day_number": 1,
+      "outline": "Understanding Loneliness",
+      "readings": [
+        {
+          "why_selected": "To understand the root causes of loneliness and how it affects us.",
+          "book": "Psalm",
+          "chapter": 38,
+          "verse_range": "1-8"
+        },
+        {
+          "why_selected": "To see how David expresses his feelings of isolation and disconnection.",
+          "book": "Psalm",
+          "chapter": 42,
+          "verse_range": "1-11"
+        }
+      ]
+    },
+    {
+      "day_number": 2,
+      "outline": "God's Presence in Loneliness",
+      "readings": [
+        {
+          "why_selected": "To see how God's presence can bring comfort and peace in times of loneliness.",
+          "book": "Psalm",
+          "chapter": 23,
+          "verse_range": "1-6"
+        },
+        {
+          "why_selected": "To understand God's promise to be with us always.",
+          "book": "Hebrews",
+          "chapter": 13,
+          "verse_range": "5-6"
+        }
+      ]
+    },
+    {
+      "day_number": 3,
+      "outline": "The Power of Community",
+      "readings": [
+        {
+          "why_selected": "To see the importance of community in overcoming loneliness.",
+          "book": "Hebrews",
+          "chapter": 10,
+          "verse_range": "24-25"
+        },
+        {
+          "why_selected": "To understand how we can support and encourage one another.",
+          "book": "Galatians",
+          "chapter": 6,
+          "verse_range": "2"
+        }
+      ]
+    },
+    {
+      "day_number": 4,
+      "outline": "Finding Purpose in Loneliness",
+      "readings": [
+        {
+          "why_selected": "To see how God can use our loneliness to draw us closer to Him.",
+          "book": "2 Corinthians",
+          "chapter": 12,
+          "verse_range": "7-10"
+        },
+        {
+          "why_selected": "To understand how our struggles can be used for good.",
+          "book": "Romans",
+          "chapter": 8,
+          "verse_range": "28-30"
+        }
+      ]
+    },
+    {
+      "day_number": 5,
+      "outline": "Prayer and Worship",
+      "readings": [
+        {
+          "why_selected": "To see the importance of prayer in times of loneliness.",
+          "book": "Psalm",
+          "chapter": 55,
+          "verse_range": "1-23"
+        },
+        {
+          "why_selected": "To understand how worship can bring us closer to God.",
+          "book": "Psalm",
+          "chapter": 100,
+          "verse_range": "1-5"
+        }
+      ]
+    },
+    {
+      "day_number": 6,
+      "outline": "Hope and Encouragement",
+      "readings": [
+        {
+          "why_selected": "To see how God's Word can bring hope and encouragement in times of loneliness.",
+          "book": "Isaiah",
+          "chapter": 40,
+          "verse_range": "1-11"
+        },
+        {
+          "why_selected": "To understand how we can encourage one another with God's Word.",
+          "book": "1 Thessalonians",
+          "chapter": 4,
+          "verse_range": "13-18"
+        }
+      ]
+    },
+    {
+      "day_number": 7,
+      "outline": "Conclusion",
+      "readings": [
+        {
+          "why_selected": "To see how God's presence and love can overcome loneliness.",
+          "book": "John",
+          "chapter": 16,
+          "verse_range": "33"
+        },
+        {
+          "why_selected": "To understand how we can trust God in times of loneliness.",
+          "book": "Romans",
+          "chapter": 8,
+          "verse_range": "28"
+        }
+      ]
+    }
+  ]
+}

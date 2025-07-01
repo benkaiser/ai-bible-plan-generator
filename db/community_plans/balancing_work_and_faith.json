@@ -1,0 +1,134 @@
+{
+  "name": "Balancing Work and Faith",
+  "system_key": "Balancing Work and Faith",
+  "description": "A 7-day reading plan to help you find balance between your work and faith.",
+  "cover_photo": "https://picsum.photos/seed/44796",
+  "days": [
+    {
+      "day_number": 1,
+      "outline": "Introduction to the importance of balance",
+      "readings": [
+        {
+          "why_selected": "To understand the importance of balance in our lives.",
+          "book": "Matthew",
+          "chapter": 6,
+          "verse_range": "25-34"
+        },
+        {
+          "why_selected": "To see how Jesus prioritizes his work and faith.",
+          "book": "Mark",
+          "chapter": 1,
+          "verse_range": "35-39"
+        }
+      ]
+    },
+    {
+      "day_number": 2,
+      "outline": "The dangers of overwork and burnout",
+      "readings": [
+        {
+          "why_selected": "To understand the consequences of neglecting our faith.",
+          "book": "Proverbs",
+          "chapter": 24,
+          "verse_range": "27-34"
+        },
+        {
+          "why_selected": "To see the importance of rest and self-care.",
+          "book": "Psalm",
+          "chapter": 37,
+          "verse_range": "3-7"
+        }
+      ]
+    },
+    {
+      "day_number": 3,
+      "outline": "Prioritizing faith in our work",
+      "readings": [
+        {
+          "why_selected": "To understand how to apply our faith in our work.",
+          "book": "Colossians",
+          "chapter": 3,
+          "verse_range": "22-25"
+        },
+        {
+          "why_selected": "To see the importance of integrity in our work.",
+          "book": "Proverbs",
+          "chapter": 10,
+          "verse_range": "9-10"
+        }
+      ]
+    },
+    {
+      "day_number": 4,
+      "outline": "The role of community in balancing work and faith",
+      "readings": [
+        {
+          "why_selected": "To understand the importance of community in our faith.",
+          "book": "Hebrews",
+          "chapter": 10,
+          "verse_range": "24-25"
+        },
+        {
+          "why_selected": "To see how community can support us in our work.",
+          "book": "Galatians",
+          "chapter": 6,
+          "verse_range": "2-5"
+        }
+      ]
+    },
+    {
+      "day_number": 5,
+      "outline": "Overcoming obstacles to balance",
+      "readings": [
+        {
+          "why_selected": "To understand how to overcome obstacles to balance.",
+          "book": "Philippians",
+          "chapter": 4,
+          "verse_range": "4-7"
+        },
+        {
+          "why_selected": "To see the importance of perseverance in our faith.",
+          "book": "James",
+          "chapter": 1,
+          "verse_range": "2-4"
+        }
+      ]
+    },
+    {
+      "day_number": 6,
+      "outline": "Maintaining balance in challenging times",
+      "readings": [
+        {
+          "why_selected": "To understand how to maintain balance in challenging times.",
+          "book": "Psalm",
+          "chapter": 46,
+          "verse_range": "1-5"
+        },
+        {
+          "why_selected": "To see the importance of trust in God in challenging times.",
+          "book": "Proverbs",
+          "chapter": 3,
+          "verse_range": "5-6"
+        }
+      ]
+    },
+    {
+      "day_number": 7,
+      "outline": "Conclusion and encouragement",
+      "readings": [
+        {
+          "why_selected": "To understand the importance of balance in our lives.",
+          "book": "Matthew",
+          "chapter": 6,
+          "verse_range": "33-34"
+        },
+        {
+          "why_selected": "To see the encouragement to prioritize our faith.",
+          "book": "1 Corinthians",
+          "chapter": 16,
+          "verse_range": "13-14"
+        }
+      ]
+    }
+  ]
+}

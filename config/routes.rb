@@ -15,7 +15,9 @@ Rails.application.routes.draw do
   get 'p/:slug', to: 'plan_instances#public_show', as: 'public_plan'
 
   authenticate do
-    resources :plans, only: [:index, :show, :new, :create, :edit, :update, :destroy]
+    resources :plans, only: [:index, :show, :new, :create, :edit, :update, :destroy] do
+      get 'days', to: 'plans#days', on: :member
+    end
     get 'completed_plans', to: 'plans#completed', as: 'completed_plans'
     resources :plan_instances, only: [:create, :show, :destroy] do
       member do
@@ -46,6 +48,7 @@ Rails.application.routes.draw do
     get '/plan_instances/:plan_instance_user_id/confirm_participation', to: 'plan_instances#confirm_participation', as: 'confirm_plan_participation'
     post 'confirm_participation', to: 'plan_instances#confirm_participation'
     post 'decline_invitation', to: 'plan_instances#decline_invitation'
+    post 'start_traditional_plan', to: 'plan_instances#start_traditional_plan'
   end
 
   unauthenticated do

@@ -1,0 +1,134 @@
+{
+  "name": "Astonishing Acts of Faith",
+  "system_key": "Astonishing Acts of Faith",
+  "description": "Explore the Bible's most inspiring stories of faith and courage.",
+  "cover_photo": "https://picsum.photos/seed/21110",
+  "days": [
+    {
+      "day_number": 1,
+      "outline": "The Faith of Abraham",
+      "readings": [
+        {
+          "why_selected": "Abraham's faith is a model for trusting God's promises.",
+          "book": "Genesis",
+          "chapter": 12,
+          "verse_range": "1-4"
+        },
+        {
+          "why_selected": "Abraham's willingness to sacrifice Isaac tests his faith.",
+          "book": "Genesis",
+          "chapter": 22,
+          "verse_range": "1-14"
+        }
+      ]
+    },
+    {
+      "day_number": 2,
+      "outline": "The Faith of David",
+      "readings": [
+        {
+          "why_selected": "David's trust in God's deliverance from Goliath inspires faith.",
+          "book": "1 Samuel",
+          "chapter": 17,
+          "verse_range": "1-58"
+        },
+        {
+          "why_selected": "David's psalms express his faith in God's presence.",
+          "book": "Psalm",
+          "chapter": 23,
+          "verse_range": "1-6"
+        }
+      ]
+    },
+    {
+      "day_number": 3,
+      "outline": "The Faith of Daniel",
+      "readings": [
+        {
+          "why_selected": "Daniel's faith in God's sovereignty inspires courage.",
+          "book": "Daniel",
+          "chapter": 6,
+          "verse_range": "1-28"
+        },
+        {
+          "why_selected": "Daniel's visions reveal God's plan for the end times.",
+          "book": "Daniel",
+          "chapter": 7,
+          "verse_range": "1-28"
+        }
+      ]
+    },
+    {
+      "day_number": 4,
+      "outline": "The Faith of Esther",
+      "readings": [
+        {
+          "why_selected": "Esther's faith in God's providence saves the Jewish people.",
+          "book": "Esther",
+          "chapter": 4,
+          "verse_range": "1-17"
+        },
+        {
+          "why_selected": "Esther's bravery inspires faith in the face of danger.",
+          "book": "Esther",
+          "chapter": 5,
+          "verse_range": "1-8"
+        }
+      ]
+    },
+    {
+      "day_number": 5,
+      "outline": "The Faith of Peter",
+      "readings": [
+        {
+          "why_selected": "Peter's faith in Jesus' divinity inspires courage.",
+          "book": "Matthew",
+          "chapter": 16,
+          "verse_range": "13-23"
+        },
+        {
+          "why_selected": "Peter's denial of Jesus tests his faith.",
+          "book": "Matthew",
+          "chapter": 26,
+          "verse_range": "69-75"
+        }
+      ]
+    },
+    {
+      "day_number": 6,
+      "outline": "The Faith of Paul",
+      "readings": [
+        {
+          "why_selected": "Paul's conversion experience inspires faith in Jesus.",
+          "book": "Acts",
+          "chapter": 9,
+          "verse_range": "1-31"
+        },
+        {
+          "why_selected": "Paul's letters express his faith in God's sovereignty.",
+          "book": "Romans",
+          "chapter": 8,
+          "verse_range": "1-39"
+        }
+      ]
+    },
+    {
+      "day_number": 7,
+      "outline": "The Faith of the Early Church",
+      "readings": [
+        {
+          "why_selected": "The early church's faith in Jesus inspires courage.",
+          "book": "Acts",
+          "chapter": 2,
+          "verse_range": "1-47"
+        },
+        {
+          "why_selected": "The early church's generosity inspires faith in God's provision.",
+          "book": "Acts",
+          "chapter": 2,
+          "verse_range": "42-47"
+        }
+      ]
+    }
+  ]
+}

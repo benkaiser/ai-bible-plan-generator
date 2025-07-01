@@ -1,0 +1,134 @@
+{
+  "name": "Overcoming Anxiety",
+  "system_key": "Overcoming Anxiety",
+  "description": "A 7-day reading plan to help you find peace and calm in the midst of anxiety.",
+  "cover_photo": "https://picsum.photos/seed/22353",
+  "days": [
+    {
+      "day_number": 1,
+      "outline": "Understanding Anxiety",
+      "readings": [
+        {
+          "why_selected": "To understand the root of anxiety and how it affects our lives.",
+          "book": "Psalm",
+          "chapter": 38,
+          "verse_range": "1-8"
+        },
+        {
+          "why_selected": "To see how anxiety can lead to fear and worry.",
+          "book": "Proverbs",
+          "chapter": 12,
+          "verse_range": "25-28"
+        }
+      ]
+    },
+    {
+      "day_number": 2,
+      "outline": "God's Presence in Times of Anxiety",
+      "readings": [
+        {
+          "why_selected": "To remember that God is always present and available.",
+          "book": "Psalm",
+          "chapter": 46,
+          "verse_range": "1-5"
+        },
+        {
+          "why_selected": "To see how God's presence can calm our fears.",
+          "book": "Isaiah",
+          "chapter": 41,
+          "verse_range": "10-13"
+        }
+      ]
+    },
+    {
+      "day_number": 3,
+      "outline": "Faith and Trust",
+      "readings": [
+        {
+          "why_selected": "To understand the importance of faith in overcoming anxiety.",
+          "book": "Hebrews",
+          "chapter": 11,
+          "verse_range": "1-3"
+        },
+        {
+          "why_selected": "To see how trust in God can bring peace.",
+          "book": "Psalm",
+          "chapter": 37,
+          "verse_range": "3-7"
+        }
+      ]
+    },
+    {
+      "day_number": 4,
+      "outline": "Prayer and Worship",
+      "readings": [
+        {
+          "why_selected": "To learn how to pray effectively in times of anxiety.",
+          "book": "Philippians",
+          "chapter": 4,
+          "verse_range": "4-7"
+        },
+        {
+          "why_selected": "To see the importance of worship in overcoming anxiety.",
+          "book": "Psalm",
+          "chapter": 100,
+          "verse_range": "1-5"
+        }
+      ]
+    },
+    {
+      "day_number": 5,
+      "outline": "God's Sovereignty",
+      "readings": [
+        {
+          "why_selected": "To understand God's sovereignty over all things.",
+          "book": "Job",
+          "chapter": 1,
+          "verse_range": "1-3"
+        },
+        {
+          "why_selected": "To see how God's sovereignty can bring comfort in times of anxiety.",
+          "book": "Psalm",
+          "chapter": 139,
+          "verse_range": "1-6"
+        }
+      ]
+    },
+    {
+      "day_number": 6,
+      "outline": "Hope and Encouragement",
+      "readings": [
+        {
+          "why_selected": "To find hope in the midst of anxiety.",
+          "book": "Romans",
+          "chapter": 8,
+          "verse_range": "28-39"
+        },
+        {
+          "why_selected": "To see how encouragement can help overcome anxiety.",
+          "book": "1 Thessalonians",
+          "chapter": 4,
+          "verse_range": "13-18"
+        }
+      ]
+    },
+    {
+      "day_number": 7,
+      "outline": "Rest and Renewal",
+      "readings": [
+        {
+          "why_selected": "To learn how to rest in God's presence.",
+          "book": "Matthew",
+          "chapter": 11,
+          "verse_range": "25-30"
+        },
+        {
+          "why_selected": "To see how renewal can come from God's presence.",
+          "book": "Psalm",
+          "chapter": 23,
+          "verse_range": "1-6"
+        }
+      ]
+    }
+  ]
+}

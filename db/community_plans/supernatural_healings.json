@@ -1,0 +1,134 @@
+{
+  "name": "Supernatural Healings",
+  "system_key": "Supernatural Healings",
+  "description": "A 7-day reading plan exploring the miraculous healings in the Bible.",
+  "cover_photo": "https://picsum.photos/seed/95645",
+  "days": [
+    {
+      "day_number": 1,
+      "outline": "Introduction to Supernatural Healings",
+      "readings": [
+        {
+          "why_selected": "To understand the significance of supernatural healings in the Bible.",
+          "book": "Matthew",
+          "chapter": 9,
+          "verse_range": "1-8"
+        },
+        {
+          "why_selected": "To see Jesus' compassion and power to heal.",
+          "book": "Matthew",
+          "chapter": 9,
+          "verse_range": "35-38"
+        }
+      ]
+    },
+    {
+      "day_number": 2,
+      "outline": "Healings in the New Testament",
+      "readings": [
+        {
+          "why_selected": "To see Jesus' authority over sickness and disease.",
+          "book": "Mark",
+          "chapter": 1,
+          "verse_range": "23-26"
+        },
+        {
+          "why_selected": "To understand the role of faith in healing.",
+          "book": "Mark",
+          "chapter": 5,
+          "verse_range": "21-43"
+        }
+      ]
+    },
+    {
+      "day_number": 3,
+      "outline": "Healings in the Old Testament",
+      "readings": [
+        {
+          "why_selected": "To see God's power to heal in the Old Testament.",
+          "book": "2 Kings",
+          "chapter": 5,
+          "verse_range": "1-14"
+        },
+        {
+          "why_selected": "To understand the importance of obedience in healing.",
+          "book": "2 Kings",
+          "chapter": 5,
+          "verse_range": "15-27"
+        }
+      ]
+    },
+    {
+      "day_number": 4,
+      "outline": "Healings through Prayer",
+      "readings": [
+        {
+          "why_selected": "To see the power of prayer in healing.",
+          "book": "James",
+          "chapter": 5,
+          "verse_range": "13-16"
+        },
+        {
+          "why_selected": "To understand the importance of perseverance in prayer.",
+          "book": "Luke",
+          "chapter": 18,
+          "verse_range": "1-8"
+        }
+      ]
+    },
+    {
+      "day_number": 5,
+      "outline": "Healings through Faith",
+      "readings": [
+        {
+          "why_selected": "To see the power of faith in healing.",
+          "book": "Matthew",
+          "chapter": 8,
+          "verse_range": "5-13"
+        },
+        {
+          "why_selected": "To understand the importance of trusting God's promises.",
+          "book": "Hebrews",
+          "chapter": 11,
+          "verse_range": "32-34"
+        }
+      ]
+    },
+    {
+      "day_number": 6,
+      "outline": "Healings in the Life of Paul",
+      "readings": [
+        {
+          "why_selected": "To see God's power to heal through Paul's ministry.",
+          "book": "Acts",
+          "chapter": 9,
+          "verse_range": "32-43"
+        },
+        {
+          "why_selected": "To understand the importance of humility in ministry.",
+          "book": "Acts",
+          "chapter": 9,
+          "verse_range": "1-31"
+        }
+      ]
+    },
+    {
+      "day_number": 7,
+      "outline": "Conclusion: Supernatural Healings Today",
+      "readings": [
+        {
+          "why_selected": "To see the relevance of supernatural healings in our lives today.",
+          "book": "John",
+          "chapter": 9,
+          "verse_range": "1-41"
+        },
+        {
+          "why_selected": "To understand the importance of seeking God's healing power.",
+          "book": "Psalm",
+          "chapter": 103,
+          "verse_range": "1-5"
+        }
+      ]
+    }
+  ]
+}

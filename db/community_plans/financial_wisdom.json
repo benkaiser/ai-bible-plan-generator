@@ -1,0 +1,176 @@
+{
+  "name": "Financial Wisdom",
+  "system_key": "Financial Wisdom",
+  "description": "A 7-day reading plan to help you cultivate financial wisdom and stewardship.",
+  "cover_photo": "https://picsum.photos/seed/67572",
+  "days": [
+    {
+      "day_number": 1,
+      "outline": "Understanding the Value of Money",
+      "readings": [
+        {
+          "why_selected": "To understand the value of money and its role in our lives.",
+          "book": "Proverbs",
+          "chapter": 22,
+          "verse_range": "1-2"
+        },
+        {
+          "why_selected": "To learn about the dangers of debt and the importance of living within our means.",
+          "book": "Proverbs",
+          "chapter": 22,
+          "verse_range": "7"
+        },
+        {
+          "why_selected": "To understand the importance of giving and generosity.",
+          "book": "Proverbs",
+          "chapter": 19,
+          "verse_range": "17"
+        }
+      ]
+    },
+    {
+      "day_number": 2,
+      "outline": "Managing Finances Wisely",
+      "readings": [
+        {
+          "why_selected": "To learn about the importance of living below our means and avoiding debt.",
+          "book": "Matthew",
+          "chapter": 6,
+          "verse_range": "19-24"
+        },
+        {
+          "why_selected": "To understand the importance of saving and investing for the future.",
+          "book": "Proverbs",
+          "chapter": 21,
+          "verse_range": "20"
+        },
+        {
+          "why_selected": "To learn about the dangers of getting caught up in materialism.",
+          "book": "1 Timothy",
+          "chapter": 6,
+          "verse_range": "6-10"
+        }
+      ]
+    },
+    {
+      "day_number": 3,
+      "outline": "The Importance of Contentment",
+      "readings": [
+        {
+          "why_selected": "To learn about the importance of contentment and gratitude.",
+          "book": "Hebrews",
+          "chapter": 13,
+          "verse_range": "5-6"
+        },
+        {
+          "why_selected": "To understand the dangers of coveting and comparing ourselves to others.",
+          "book": "1 Timothy",
+          "chapter": 6,
+          "verse_range": "3-5"
+        },
+        {
+          "why_selected": "To learn about the importance of being thankful for what we have.",
+          "book": "1 Thessalonians",
+          "chapter": 5,
+          "verse_range": "18"
+        }
+      ]
+    },
+    {
+      "day_number": 4,
+      "outline": "Giving and Generosity",
+      "readings": [
+        {
+          "why_selected": "To learn about the importance of giving and generosity.",
+          "book": "Proverbs",
+          "chapter": 19,
+          "verse_range": "17"
+        },
+        {
+          "why_selected": "To understand the blessings of giving and generosity.",
+          "book": "Malachi",
+          "chapter": 3,
+          "verse_range": "10"
+        },
+        {
+          "why_selected": "To learn about the importance of giving to those in need.",
+          "book": "Matthew",
+          "chapter": 25,
+          "verse_range": "31-46"
+        }
+      ]
+    },
+    {
+      "day_number": 5,
+      "outline": "Stewardship and Responsibility",
+      "readings": [
+        {
+          "why_selected": "To learn about the importance of being a good steward of our resources.",
+          "book": "Matthew",
+          "chapter": 25,
+          "verse_range": "14-30"
+        },
+        {
+          "why_selected": "To understand the importance of being responsible with our finances.",
+          "book": "Proverbs",
+          "chapter": 27,
+          "verse_range": "23-24"
+        },
+        {
+          "why_selected": "To learn about the importance of being faithful in our financial responsibilities.",
+          "book": "2 Corinthians",
+          "chapter": 9,
+          "verse_range": "6-7"
+        }
+      ]
+    },
+    {
+      "day_number": 6,
+      "outline": "Financial Wisdom in Relationships",
+      "readings": [
+        {
+          "why_selected": "To learn about the importance of financial communication in relationships.",
+          "book": "1 Corinthians",
+          "chapter": 7,
+          "verse_range": "10-16"
+        },
+        {
+          "why_selected": "To understand the importance of financial responsibility in marriage.",
+          "book": "Proverbs",
+          "chapter": 31,
+          "verse_range": "10-31"
+        },
+        {
+          "why_selected": "To learn about the importance of financial planning for the future.",
+          "book": "Proverbs",
+          "chapter": 27,
+          "verse_range": "23-24"
+        }
+      ]
+    },
+    {
+      "day_number": 7,
+      "outline": "Conclusion and Next Steps",
+      "readings": [
+        {
+          "why_selected": "To reflect on what we've learned and how we can apply it to our lives.",
+          "book": "Proverbs",
+          "chapter": 4,
+          "verse_range": "23"
+        },
+        {
+          "why_selected": "To understand the importance of continuing to seek wisdom and guidance.",
+          "book": "Proverbs",
+          "chapter": 2,
+          "verse_range": "1-6"
+        },
+        {
+          "why_selected": "To learn about the importance of being patient and trusting in God's timing.",
+          "book": "Psalm",
+          "chapter": 37,
+          "verse_range": "3-7"
+        }
+      ]
+    }
+  ]
+}

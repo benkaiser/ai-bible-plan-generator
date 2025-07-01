@@ -34,7 +34,7 @@
     "build:css:move": "cp ./app/assets/stylesheets/bootstrap.minty.min.css ./app/assets/builds/bootstrap.minty.min.css",
     "build:css": "yarn build:css:compile && yarn build:css:prefix && yarn build:css:move",
     "watch:css": "nodemon --watch ./app/assets/stylesheets/ --ext scss,css --exec \"yarn build:css\"",
-  "dev": "concurrently \"npm run build:watch\" \"npm run watch:css\""
+    "dev": "concurrently \"npm run watch:js\" \"npm run watch:css\""
   },
   "browserslist": [
     "defaults"

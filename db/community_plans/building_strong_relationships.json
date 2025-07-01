@@ -1,0 +1,134 @@
+{
+  "name": "Building Strong Relationships",
+  "system_key": "Building Strong Relationships",
+  "description": "A 7-day reading plan to help you build and strengthen your relationships with others, based on biblical principles.",
+  "cover_photo": "https://picsum.photos/seed/74776",
+  "days": [
+    {
+      "day_number": 1,
+      "outline": "Understanding the Importance of Relationships",
+      "readings": [
+        {
+          "why_selected": "To understand the value of relationships in God's eyes.",
+          "book": "Proverbs",
+          "chapter": 17,
+          "verse_range": "1-9"
+        },
+        {
+          "why_selected": "To see the impact of relationships on our lives.",
+          "book": "Proverbs",
+          "chapter": 27,
+          "verse_range": "1-6"
+        }
+      ]
+    },
+    {
+      "day_number": 2,
+      "outline": "Communication in Relationships",
+      "readings": [
+        {
+          "why_selected": "To learn how to communicate effectively in relationships.",
+          "book": "Ephesians",
+          "chapter": 4,
+          "verse_range": "25-32"
+        },
+        {
+          "why_selected": "To understand the importance of active listening.",
+          "book": "James",
+          "chapter": 1,
+          "verse_range": "19-27"
+        }
+      ]
+    },
+    {
+      "day_number": 3,
+      "outline": "Conflict Resolution in Relationships",
+      "readings": [
+        {
+          "why_selected": "To learn how to resolve conflicts in a healthy way.",
+          "book": "Matthew",
+          "chapter": 5,
+          "verse_range": "21-26"
+        },
+        {
+          "why_selected": "To understand the importance of forgiveness in relationships.",
+          "book": "Matthew",
+          "chapter": 6,
+          "verse_range": "14-15"
+        }
+      ]
+    },
+    {
+      "day_number": 4,
+      "outline": "Trust and Loyalty in Relationships",
+      "readings": [
+        {
+          "why_selected": "To understand the importance of trust in relationships.",
+          "book": "Proverbs",
+          "chapter": 10,
+          "verse_range": "9-10"
+        },
+        {
+          "why_selected": "To see the value of loyalty in relationships.",
+          "book": "Proverbs",
+          "chapter": 17,
+          "verse_range": "17-18"
+        }
+      ]
+    },
+    {
+      "day_number": 5,
+      "outline": "Emotional Intelligence in Relationships",
+      "readings": [
+        {
+          "why_selected": "To learn how to manage our emotions in relationships.",
+          "book": "Galatians",
+          "chapter": 5,
+          "verse_range": "22-26"
+        },
+        {
+          "why_selected": "To understand the importance of empathy in relationships.",
+          "book": "Philippians",
+          "chapter": 2,
+          "verse_range": "1-4"
+        }
+      ]
+    },
+    {
+      "day_number": 6,
+      "outline": "Intimacy in Relationships",
+      "readings": [
+        {
+          "why_selected": "To understand the importance of intimacy in relationships.",
+          "book": "Song of Solomon",
+          "chapter": 4,
+          "verse_range": "1-7"
+        },
+        {
+          "why_selected": "To see the value of vulnerability in relationships.",
+          "book": "1 Corinthians",
+          "chapter": 13,
+          "verse_range": "4-7"
+        }
+      ]
+    },
+    {
+      "day_number": 7,
+      "outline": "Maintaining Healthy Relationships",
+      "readings": [
+        {
+          "why_selected": "To learn how to maintain healthy relationships.",
+          "book": "1 Thessalonians",
+          "chapter": 5,
+          "verse_range": "14-22"
+        },
+        {
+          "why_selected": "To understand the importance of gratitude in relationships.",
+          "book": "Colossians",
+          "chapter": 3,
+          "verse_range": "15-17"
+        }
+      ]
+    }
+  ]
+}

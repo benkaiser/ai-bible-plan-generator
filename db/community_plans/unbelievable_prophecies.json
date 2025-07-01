@@ -1,0 +1,134 @@
+{
+  "name": "Unbelievable Prophecies",
+  "system_key": "Unbelievable Prophecies",
+  "description": "A 7-day reading plan exploring some of the most incredible prophecies in the Bible.",
+  "cover_photo": "https://picsum.photos/seed/75795",
+  "days": [
+    {
+      "day_number": 1,
+      "outline": "Introduction to Prophecy",
+      "readings": [
+        {
+          "why_selected": "To understand the importance of prophecy in the Bible and its relevance to our lives.",
+          "book": "Isaiah",
+          "chapter": 2,
+          "verse_range": "1-5"
+        },
+        {
+          "why_selected": "To see the fulfillment of prophecy in the life of Jesus Christ.",
+          "book": "Matthew",
+          "chapter": 2,
+          "verse_range": "1-12"
+        }
+      ]
+    },
+    {
+      "day_number": 2,
+      "outline": "Prophecies of the Messiah",
+      "readings": [
+        {
+          "why_selected": "To understand the prophecies that pointed to Jesus as the Messiah.",
+          "book": "Psalm",
+          "chapter": 2,
+          "verse_range": "7-12"
+        },
+        {
+          "why_selected": "To see the prophecy of the Messiah's birth in Bethlehem.",
+          "book": "Micah",
+          "chapter": 5,
+          "verse_range": "2-5"
+        }
+      ]
+    },
+    {
+      "day_number": 3,
+      "outline": "Prophecies of the Coming King",
+      "readings": [
+        {
+          "why_selected": "To understand the prophecies that described the coming King.",
+          "book": "Daniel",
+          "chapter": 7,
+          "verse_range": "13-14"
+        },
+        {
+          "why_selected": "To see the prophecy of the King's eternal kingdom.",
+          "book": "Daniel",
+          "chapter": 7,
+          "verse_range": "13-14"
+        }
+      ]
+    },
+    {
+      "day_number": 4,
+      "outline": "Prophecies of the Second Coming",
+      "readings": [
+        {
+          "why_selected": "To understand the prophecies that point to Jesus' second coming.",
+          "book": "Revelation",
+          "chapter": 19,
+          "verse_range": "11-16"
+        },
+        {
+          "why_selected": "To see the prophecy of the final judgment.",
+          "book": "Revelation",
+          "chapter": 20,
+          "verse_range": "11-15"
+        }
+      ]
+    },
+    {
+      "day_number": 5,
+      "outline": "Prophecies of the End Times",
+      "readings": [
+        {
+          "why_selected": "To understand the prophecies that describe the end times.",
+          "book": "Daniel",
+          "chapter": 12,
+          "verse_range": "1-3"
+        },
+        {
+          "why_selected": "To see the prophecy of the final rebellion.",
+          "book": "Revelation",
+          "chapter": 20,
+          "verse_range": "7-10"
+        }
+      ]
+    },
+    {
+      "day_number": 6,
+      "outline": "Prophecies of Hope and Encouragement",
+      "readings": [
+        {
+          "why_selected": "To understand the prophecies that offer hope and encouragement.",
+          "book": "Isaiah",
+          "chapter": 40,
+          "verse_range": "1-11"
+        },
+        {
+          "why_selected": "To see the prophecy of God's presence with us.",
+          "book": "Isaiah",
+          "chapter": 41,
+          "verse_range": "10-13"
+        }
+      ]
+    },
+    {
+      "day_number": 7,
+      "outline": "Conclusion: Trusting in God's Prophecies",
+      "readings": [
+        {
+          "why_selected": "To understand the importance of trusting in God's prophecies.",
+          "book": "Hebrews",
+          "chapter": 11,
+          "verse_range": "1-3"
+        },
+        {
+          "why_selected": "To see the prophecy of God's faithfulness.",
+          "book": "Lamentations",
+          "chapter": 3,
+          "verse_range": "22-24"
+        }
+      ]
+    }
+  ]
+}

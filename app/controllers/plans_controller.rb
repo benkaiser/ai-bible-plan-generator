@@ -212,6 +212,10 @@ class PlansController < ApplicationController
       redirect_to plans_path, alert: 'You are not authorized to delete this plan.'
     end
   end
+  def days
+    plan = Plan.find(params[:id])
+    render json: plan.days
+  end
 
   private
 

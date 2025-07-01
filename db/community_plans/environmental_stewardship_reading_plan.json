@@ -1,0 +1,134 @@
+{
+  "name": "Environmental Stewardship Reading Plan",
+  "system_key": "Environmental Stewardship Reading Plan",
+  "description": "A 7-day reading plan exploring the biblical theme of environmental stewardship, highlighting God's creation and our responsibility to care for it.",
+  "cover_photo": "https://picsum.photos/seed/51632",
+  "days": [
+    {
+      "day_number": 1,
+      "outline": "Creation and God's Design",
+      "readings": [
+        {
+          "why_selected": "To understand God's original intention for creation and our role in caring for it.",
+          "book": "Genesis",
+          "chapter": 1,
+          "verse_range": "1-31"
+        },
+        {
+          "why_selected": "To see the beauty and wonder of God's creation.",
+          "book": "Psalm",
+          "chapter": 104,
+          "verse_range": "1-35"
+        }
+      ]
+    },
+    {
+      "day_number": 2,
+      "outline": "Human Impact on Creation",
+      "readings": [
+        {
+          "why_selected": "To understand the consequences of humanity's sin on the environment.",
+          "book": "Genesis",
+          "chapter": 3,
+          "verse_range": "16-19"
+        },
+        {
+          "why_selected": "To see the effects of human greed and exploitation on creation.",
+          "book": "Isaiah",
+          "chapter": 5,
+          "verse_range": "8-24"
+        }
+      ]
+    },
+    {
+      "day_number": 3,
+      "outline": "God's Call to Care for Creation",
+      "readings": [
+        {
+          "why_selected": "To understand God's command to care for the earth.",
+          "book": "Genesis",
+          "chapter": 2,
+          "verse_range": "15"
+        },
+        {
+          "why_selected": "To see the importance of living sustainably and responsibly.",
+          "book": "Leviticus",
+          "chapter": 25,
+          "verse_range": "23-24"
+        }
+      ]
+    },
+    {
+      "day_number": 4,
+      "outline": "The Kingdom of God and Creation",
+      "readings": [
+        {
+          "why_selected": "To understand the relationship between God's kingdom and creation.",
+          "book": "Matthew",
+          "chapter": 13,
+          "verse_range": "31-32"
+        },
+        {
+          "why_selected": "To see the hope of restoration and renewal in God's kingdom.",
+          "book": "Revelation",
+          "chapter": 21,
+          "verse_range": "1-5"
+        }
+      ]
+    },
+    {
+      "day_number": 5,
+      "outline": "Personal Responsibility and Stewardship",
+      "readings": [
+        {
+          "why_selected": "To understand our personal responsibility to care for creation.",
+          "book": "Matthew",
+          "chapter": 25,
+          "verse_range": "14-30"
+        },
+        {
+          "why_selected": "To see the importance of living a simple and sustainable lifestyle.",
+          "book": "Luke",
+          "chapter": 12,
+          "verse_range": "15"
+        }
+      ]
+    },
+    {
+      "day_number": 6,
+      "outline": "Community and Environmental Stewardship",
+      "readings": [
+        {
+          "why_selected": "To understand the importance of community in caring for creation.",
+          "book": "Acts",
+          "chapter": 2,
+          "verse_range": "42-47"
+        },
+        {
+          "why_selected": "To see the role of churches and communities in environmental stewardship.",
+          "book": "1 Timothy",
+          "chapter": 6,
+          "verse_range": "17-19"
+        }
+      ]
+    },
+    {
+      "day_number": 7,
+      "outline": "Conclusion and Call to Action",
+      "readings": [
+        {
+          "why_selected": "To reflect on the importance of environmental stewardship.",
+          "book": "Psalm",
+          "chapter": 24,
+          "verse_range": "1-10"
+        },
+        {
+          "why_selected": "To be inspired to take action in caring for creation.",
+          "book": "1 Corinthians",
+          "chapter": 4,
+          "verse_range": "1-2"
+        }
+      ]
+    }
+  ]
+}

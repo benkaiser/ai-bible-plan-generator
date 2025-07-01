@@ -1,0 +1,134 @@
+{
+  "name": "Mystical Revelations",
+  "system_key": "Mystical Revelations",
+  "description": "A 7-day reading plan exploring the mystical and prophetic aspects of the Bible.",
+  "cover_photo": "https://picsum.photos/seed/40137",
+  "days": [
+    {
+      "day_number": 1,
+      "outline": "Introduction to Mystical Revelations",
+      "readings": [
+        {
+          "why_selected": "To set the tone for the week, we explore the concept of God's sovereignty and the importance of seeking Him.",
+          "book": "Psalm",
+          "chapter": 103,
+          "verse_range": "1-22"
+        },
+        {
+          "why_selected": "To understand the nature of God's presence and how it relates to our lives.",
+          "book": "Exodus",
+          "chapter": 33,
+          "verse_range": "12-23"
+        }
+      ]
+    },
+    {
+      "day_number": 2,
+      "outline": "The Nature of God",
+      "readings": [
+        {
+          "why_selected": "To delve deeper into God's character and attributes.",
+          "book": "Isaiah",
+          "chapter": 6,
+          "verse_range": "1-5"
+        },
+        {
+          "why_selected": "To explore the concept of God's holiness and how it relates to our lives.",
+          "book": "Leviticus",
+          "chapter": 11,
+          "verse_range": "1-47"
+        }
+      ]
+    },
+    {
+      "day_number": 3,
+      "outline": "The Role of the Holy Spirit",
+      "readings": [
+        {
+          "why_selected": "To understand the role of the Holy Spirit in our lives and how He guides us.",
+          "book": "John",
+          "chapter": 14,
+          "verse_range": "15-31"
+        },
+        {
+          "why_selected": "To explore the concept of the Holy Spirit's power and how it relates to our lives.",
+          "book": "Acts",
+          "chapter": 1,
+          "verse_range": "1-8"
+        }
+      ]
+    },
+    {
+      "day_number": 4,
+      "outline": "The Importance of Prayer",
+      "readings": [
+        {
+          "why_selected": "To understand the importance of prayer in our lives and how it relates to our relationship with God.",
+          "book": "Matthew",
+          "chapter": 6,
+          "verse_range": "5-15"
+        },
+        {
+          "why_selected": "To explore the concept of prayer and how it can bring us closer to God.",
+          "book": "Psalm",
+          "chapter": 42,
+          "verse_range": "1-11"
+        }
+      ]
+    },
+    {
+      "day_number": 5,
+      "outline": "The Power of Faith",
+      "readings": [
+        {
+          "why_selected": "To understand the importance of faith in our lives and how it relates to our relationship with God.",
+          "book": "Hebrews",
+          "chapter": 11,
+          "verse_range": "1-40"
+        },
+        {
+          "why_selected": "To explore the concept of faith and how it can bring us closer to God.",
+          "book": "Mark",
+          "chapter": 5,
+          "verse_range": "21-43"
+        }
+      ]
+    },
+    {
+      "day_number": 6,
+      "outline": "The Role of Community",
+      "readings": [
+        {
+          "why_selected": "To understand the importance of community in our lives and how it relates to our relationship with God.",
+          "book": "Acts",
+          "chapter": 2,
+          "verse_range": "1-47"
+        },
+        {
+          "why_selected": "To explore the concept of community and how it can bring us closer to God.",
+          "book": "1 Corinthians",
+          "chapter": 12,
+          "verse_range": "1-31"
+        }
+      ]
+    },
+    {
+      "day_number": 7,
+      "outline": "Conclusion",
+      "readings": [
+        {
+          "why_selected": "To summarize the key takeaways from the week and how they relate to our lives.",
+          "book": "Psalm",
+          "chapter": 119,
+          "verse_range": "1-176"
+        },
+        {
+          "why_selected": "To reflect on the importance of seeking God and how it can bring us closer to Him.",
+          "book": "Jeremiah",
+          "chapter": 29,
+          "verse_range": "1-14"
+        }
+      ]
+    }
+  ]
+}

@@ -375,6 +375,67 @@ class PlanInstancesController < ApplicationController
     render json: { available: is_available }
   end
 
+  # Method to handle starting traditional plans with a specific starting day.
+  def start_traditional_plan
+    plan = Plan.find(params[:plan_id])
+    start_day = params[:start_day].to_i
+    current_date = params[:current_date].present? ? Date.parse(params[:current_date]) : Date.today
+
+    plan_instance = nil
+    plan_instance_user = nil
+
+    ActiveRecord::Base.transaction do
+      # Create a new plan instance
+      plan_instance = PlanInstance.create!(plan: plan, start_date: current_date - (start_day - 1).days)
+
+      # Create the plan instance user record
+      plan_instance_user = PlanInstanceUser.create!(
+        plan_instance: plan_instance,
+        user: current_user,
+        approved: true,
+        creator: true,
+        completed: false,
+        removed: false
+      )
+
+      # Prepare all reading records for bulk insert
+      reading_records = []
+      current_time = Time.current
+
+      (1...start_day).each do |day_number|
+        day = plan.days[day_number - 1]
+        next unless day && day['day_number'] == day_number
+
+        # Add the overview record (reading_index 0)
+        reading_records << {
+          plan_instance_user_id: plan_instance_user.id,
+          day_number: day_number,
+          reading_index: 0,
+          completed: true,
+          created_at: current_time,
+          updated_at: current_time
+        }
+
+        # Add each reading record (reading_index 1, 2, 3, etc.)
+        day['readings'].each_with_index do |_, index|
+          reading_records << {
+            plan_instance_user_id: plan_instance_user.id,
+            day_number: day_number,
+            reading_index: index + 1,
+            completed: true,
+            created_at: current_time,
+            updated_at: current_time
+          }
+        end
+      end
+
+      # Bulk insert all reading records at once
+      PlanInstanceReading.insert_all(reading_records) if reading_records.any?
+    end
+
+    redirect_to plan_instance_path(plan_instance), notice: 'Plan started successfully.'
+  end
+
   private
 
   def strip_markdown(text)

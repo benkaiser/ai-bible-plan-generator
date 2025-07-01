@@ -1,0 +1,134 @@
+{
+  "name": "Crazy Miracles",
+  "system_key": "Crazy Miracles",
+  "description": "A 7-day reading plan exploring some of the most astonishing miracles in the Bible.",
+  "cover_photo": "https://picsum.photos/seed/48224",
+  "days": [
+    {
+      "day_number": 1,
+      "outline": "The Miracles of Jesus' Early Ministry",
+      "readings": [
+        {
+          "why_selected": "Jesus' first miracle, demonstrating His power and authority.",
+          "book": "John",
+          "chapter": 2,
+          "verse_range": "1-11"
+        },
+        {
+          "why_selected": "Jesus' second miracle, showing His compassion and care for others.",
+          "book": "John",
+          "chapter": 4,
+          "verse_range": "46-54"
+        }
+      ]
+    },
+    {
+      "day_number": 2,
+      "outline": "Miracles of Healing and Provision",
+      "readings": [
+        {
+          "why_selected": "Jesus heals a man with an unclean spirit, demonstrating His authority over evil.",
+          "book": "Mark",
+          "chapter": 1,
+          "verse_range": "21-28"
+        },
+        {
+          "why_selected": "Jesus feeds the 5,000, demonstrating His power to provide for physical needs.",
+          "book": "Matthew",
+          "chapter": 14,
+          "verse_range": "13-21"
+        }
+      ]
+    },
+    {
+      "day_number": 3,
+      "outline": "Miracles of Protection and Deliverance",
+      "readings": [
+        {
+          "why_selected": "God protects Shadrach, Meshach, and Abednego from the fiery furnace.",
+          "book": "Daniel",
+          "chapter": 3,
+          "verse_range": "1-30"
+        },
+        {
+          "why_selected": "God delivers the Israelites from the pursuing Egyptians through the Red Sea.",
+          "book": "Exodus",
+          "chapter": 14,
+          "verse_range": "5-31"
+        }
+      ]
+    },
+    {
+      "day_number": 4,
+      "outline": "Miracles of Creation and Restoration",
+      "readings": [
+        {
+          "why_selected": "God creates the world and all living things in six days.",
+          "book": "Genesis",
+          "chapter": 1,
+          "verse_range": "1-31"
+        },
+        {
+          "why_selected": "God restores the withered fig tree, demonstrating His power to bring life and renewal.",
+          "book": "Matthew",
+          "chapter": 21,
+          "verse_range": "18-22"
+        }
+      ]
+    },
+    {
+      "day_number": 5,
+      "outline": "Miracles of Provision and Sustenance",
+      "readings": [
+        {
+          "why_selected": "God provides manna for the Israelites in the wilderness.",
+          "book": "Exodus",
+          "chapter": 16,
+          "verse_range": "4-36"
+        },
+        {
+          "why_selected": "God provides for Elijah in the wilderness, demonstrating His care and provision.",
+          "book": "1 Kings",
+          "chapter": 17,
+          "verse_range": "2-7"
+        }
+      ]
+    },
+    {
+      "day_number": 6,
+      "outline": "Miracles of Judgment and Restoration",
+      "readings": [
+        {
+          "why_selected": "God judges the wicked city of Sodom and Gomorrah.",
+          "book": "Genesis",
+          "chapter": 19,
+          "verse_range": "1-29"
+        },
+        {
+          "why_selected": "God restores the Israelites from their exile in Babylon.",
+          "book": "Ezra",
+          "chapter": 1,
+          "verse_range": "1-11"
+        }
+      ]
+    },
+    {
+      "day_number": 7,
+      "outline": "Miracles of Hope and Encouragement",
+      "readings": [
+        {
+          "why_selected": "God gives a vision of a new heaven and a new earth, offering hope for the future.",
+          "book": "Revelation",
+          "chapter": 21,
+          "verse_range": "1-8"
+        },
+        {
+          "why_selected": "God encourages the Israelites to trust in Him, even in difficult circumstances.",
+          "book": "Psalm",
+          "chapter": 37,
+          "verse_range": "3-11"
+        }
+      ]
+    }
+  ]
+}

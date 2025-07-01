@@ -1,0 +1,134 @@
+{
+  "name": "Finding Purpose in Life",
+  "system_key": "Finding Purpose in Life",
+  "description": "A 7-day reading plan to help you discover your purpose and live a life of meaning and fulfillment.",
+  "cover_photo": "https://picsum.photos/seed/74573",
+  "days": [
+    {
+      "day_number": 1,
+      "outline": "Understanding Your Identity in Christ",
+      "readings": [
+        {
+          "why_selected": "To understand our identity in Christ and how it relates to our purpose in life.",
+          "book": "Romans",
+          "chapter": 8,
+          "verse_range": "1-2"
+        },
+        {
+          "why_selected": "To understand the concept of being a new creation in Christ.",
+          "book": "2 Corinthians",
+          "chapter": 5,
+          "verse_range": "17-21"
+        }
+      ]
+    },
+    {
+      "day_number": 2,
+      "outline": "Discovering Your Passion and Gifts",
+      "readings": [
+        {
+          "why_selected": "To understand the importance of discovering our passions and gifts.",
+          "book": "1 Corinthians",
+          "chapter": 12,
+          "verse_range": "4-11"
+        },
+        {
+          "why_selected": "To understand how our gifts can be used to serve others.",
+          "book": "1 Peter",
+          "chapter": 4,
+          "verse_range": "10-11"
+        }
+      ]
+    },
+    {
+      "day_number": 3,
+      "outline": "Understanding God's Plan for Your Life",
+      "readings": [
+        {
+          "why_selected": "To understand how God's plan for our lives is connected to our purpose.",
+          "book": "Jeremiah",
+          "chapter": 29,
+          "verse_range": "11-13"
+        },
+        {
+          "why_selected": "To understand the importance of seeking God's will in our lives.",
+          "book": "Proverbs",
+          "chapter": 3,
+          "verse_range": "5-6"
+        }
+      ]
+    },
+    {
+      "day_number": 4,
+      "outline": "Overcoming Obstacles and Fears",
+      "readings": [
+        {
+          "why_selected": "To understand how to overcome obstacles and fears that hold us back from our purpose.",
+          "book": "Philippians",
+          "chapter": 4,
+          "verse_range": "4-7"
+        },
+        {
+          "why_selected": "To understand the importance of trusting God in difficult times.",
+          "book": "Psalm",
+          "chapter": 23,
+          "verse_range": "4-6"
+        }
+      ]
+    },
+    {
+      "day_number": 5,
+      "outline": "Living a Life of Purpose and Meaning",
+      "readings": [
+        {
+          "why_selected": "To understand how to live a life of purpose and meaning.",
+          "book": "Matthew",
+          "chapter": 22,
+          "verse_range": "37-40"
+        },
+        {
+          "why_selected": "To understand the importance of serving others in our purpose.",
+          "book": "Galatians",
+          "chapter": 5,
+          "verse_range": "13-14"
+        }
+      ]
+    },
+    {
+      "day_number": 6,
+      "outline": "Staying Focused and Motivated",
+      "readings": [
+        {
+          "why_selected": "To understand how to stay focused and motivated in our purpose.",
+          "book": "Hebrews",
+          "chapter": 12,
+          "verse_range": "1-3"
+        },
+        {
+          "why_selected": "To understand the importance of perseverance in our purpose.",
+          "book": "James",
+          "chapter": 1,
+          "verse_range": "2-4"
+        }
+      ]
+    },
+    {
+      "day_number": 7,
+      "outline": "Living a Life of Fulfillment",
+      "readings": [
+        {
+          "why_selected": "To understand how to live a life of fulfillment in our purpose.",
+          "book": "Psalm",
+          "chapter": 16,
+          "verse_range": "9-11"
+        },
+        {
+          "why_selected": "To understand the importance of trusting God in our purpose.",
+          "book": "Proverbs",
+          "chapter": 3,
+          "verse_range": "5-6"
+        }
+      ]
+    }
+  ]
+}

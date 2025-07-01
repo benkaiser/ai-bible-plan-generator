@@ -137,10 +137,29 @@
   </div>
 </div>
 
+<div>
+  <h2>Traditional Plans</h2>
+  <div class="row">
+    <% Plan.where(system_key: ['traditional_mcheyne', 'traditional_one_year_bible_ot_nt']).each do |plan| %>
+      <div class="col-md-4">
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5 class="card-title"><%= plan.name %></h5>
+            <p class="card-text"><%= plan.description %></p>
+            <%= link_to 'Start or Continue Plan', "#", class: 'btn btn-primary', data: { plan_id: plan.id, action: 'start-traditional-plan' } %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>
+
 <!-- Container for the Preact modal component -->
 <div id="start-plan-with-others-container"></div>
+<div id="start-traditional-plan-container"></div>
 
 <div id='pwa-install'></div>
 
 <%= javascript_include_tag "plan-overview", "data-turbo-track": "reload" %>
+<%= javascript_include_tag "start-traditional-plan", "data-turbo-track": "reload" %>
 <%= javascript_include_tag "start-plan-with-others", "data-turbo-track": "reload" %>

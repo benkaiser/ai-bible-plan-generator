@@ -1,0 +1,134 @@
+{
+  "name": "Heavenly Encounters",
+  "system_key": "Heavenly Encounters",
+  "description": "A 7-day reading plan exploring encounters with God in the Bible.",
+  "cover_photo": "https://picsum.photos/seed/87200",
+  "days": [
+    {
+      "day_number": 1,
+      "outline": "Encounters with God in the Old Testament",
+      "readings": [
+        {
+          "why_selected": "To understand God's presence in the lives of the patriarchs.",
+          "book": "Genesis",
+          "chapter": 12,
+          "verse_range": "1-3"
+        },
+        {
+          "why_selected": "To see God's promise to Abraham and the significance of the covenant.",
+          "book": "Genesis",
+          "chapter": 15,
+          "verse_range": "1-21"
+        }
+      ]
+    },
+    {
+      "day_number": 2,
+      "outline": "Encounters with God in the New Testament",
+      "readings": [
+        {
+          "why_selected": "To understand Jesus' baptism and the Holy Spirit's descent.",
+          "book": "Matthew",
+          "chapter": 3,
+          "verse_range": "13-17"
+        },
+        {
+          "why_selected": "To see Jesus' temptation in the wilderness and His reliance on God.",
+          "book": "Matthew",
+          "chapter": 4,
+          "verse_range": "1-11"
+        }
+      ]
+    },
+    {
+      "day_number": 3,
+      "outline": "Encounters with God in the Wilderness",
+      "readings": [
+        {
+          "why_selected": "To understand the Israelites' rebellion and God's provision in the wilderness.",
+          "book": "Exodus",
+          "chapter": 16,
+          "verse_range": "4-36"
+        },
+        {
+          "why_selected": "To see God's guidance and protection of the Israelites in the wilderness.",
+          "book": "Numbers",
+          "chapter": 20,
+          "verse_range": "1-13"
+        }
+      ]
+    },
+    {
+      "day_number": 4,
+      "outline": "Encounters with God in the Life of David",
+      "readings": [
+        {
+          "why_selected": "To understand David's repentance and God's forgiveness.",
+          "book": "2 Samuel",
+          "chapter": 12,
+          "verse_range": "1-14"
+        },
+        {
+          "why_selected": "To see David's trust in God and His reliance on God's presence.",
+          "book": "Psalm",
+          "chapter": 23,
+          "verse_range": "1-6"
+        }
+      ]
+    },
+    {
+      "day_number": 5,
+      "outline": "Encounters with God in the Life of Jesus",
+      "readings": [
+        {
+          "why_selected": "To understand Jesus' teachings on the kingdom of God.",
+          "book": "Luke",
+          "chapter": 15,
+          "verse_range": "11-32"
+        },
+        {
+          "why_selected": "To see Jesus' compassion and love for the outcasts.",
+          "book": "Luke",
+          "chapter": 7,
+          "verse_range": "36-50"
+        }
+      ]
+    },
+    {
+      "day_number": 6,
+      "outline": "Encounters with God in the Life of Paul",
+      "readings": [
+        {
+          "why_selected": "To understand Paul's conversion and his reliance on God's grace.",
+          "book": "Acts",
+          "chapter": 9,
+          "verse_range": "1-31"
+        },
+        {
+          "why_selected": "To see Paul's trust in God and his reliance on God's presence.",
+          "book": "2 Corinthians",
+          "chapter": 12,
+          "verse_range": "1-10"
+        }
+      ]
+    },
+    {
+      "day_number": 7,
+      "outline": "Encounters with God in the New Heaven and New Earth",
+      "readings": [
+        {
+          "why_selected": "To understand the new heaven and new earth and God's presence in the eternal state.",
+          "book": "Revelation",
+          "chapter": 21,
+          "verse_range": "1-4"
+        },
+        {
+          "why_selected": "To see the ultimate triumph of God and His people in the eternal state.",
+          "book": "Revelation",
+          "chapter": 22,
+          "verse_range": "1-5"
+        }
+      ]
+    }
+  ]
+}
