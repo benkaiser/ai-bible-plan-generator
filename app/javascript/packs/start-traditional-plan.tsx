@@ -199,4 +199,7 @@ const initApp = () => {
   }
 };
 
+// fire on script load and Turbo load
+initApp();
+
 document.addEventListener('turbo:load', initApp);
