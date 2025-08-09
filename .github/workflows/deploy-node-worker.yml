@@ -56,3 +56,4 @@ jobs:
           branch: 'node_worker'
           ci_branch_name: 'node_worker'
           ci_commit: ${{ env.NODE_WORKER_COMMIT }}
+          git_push_flags: '--force'
