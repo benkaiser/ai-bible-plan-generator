@@ -51,7 +51,7 @@ jobs:
       - name: Push to dokku node worker
         uses: dokku/github-action@master
         with:
-          git_remote_url: 'ssh://dokku@kaiserapps.com/bible-planner-node-worker'
+          git_remote_url: 'ssh://dokku@kaiser.lol/bible-planner-node-worker'
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
           branch: 'node_worker'
           ci_branch_name: 'node_worker'
